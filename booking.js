@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 2. DISPLAY CAR DETAILS (This function was missing) ---
+    // --- 2. DISPLAY CAR DETAILS (UPDATED with Price) ---
     function displayCarDetails(car) {
         carDetailsContainer.innerHTML = `
             <img src="${car.image_url}" alt="${car.name}">
@@ -58,7 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>Your Selected Car</h3>
                 <h2>${car.name}</h2>
                 <p>Type: ${car.type} | Transmission: ${car.transmission}</p>
-            </div>
+
+                <div class="car-price-display">
+                    ₹${car.price_per_day.toLocaleString()}<span> / day</span>
+                </div>
+                </div>
         `;
     }
 
