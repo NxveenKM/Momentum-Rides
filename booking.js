@@ -1,7 +1,7 @@
-// booking.js - FINAL VERSION with pre-filled data
+// booking.js - FINAL, COMPLETE, AND CORRECTED VERSION
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- STATE & DOM ELEMENTS (no change) ---
+    // --- STATE & DOM ELEMENTS ---
     let selectedCar = null;
     let rentalDays = 0;
     let totalCost = 0;
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingForm = document.getElementById('booking-form-final');
     const allInputs = document.querySelectorAll('#start-date, #end-date, input[name="extra"], #full-name, #email');
 
-    // --- UPDATED INITIALIZE FUNCTION ---
+    // --- 1. INITIALIZE THE PAGE (Reads URL, fetches data, pre-fills fields) ---
     async function initializePage() {
         const urlParams = new URLSearchParams(window.location.search);
         const carId = urlParams.get('carId');
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Pre-fill location if it exists
         if (location) {
             const locationDiv = document.getElementById('summary-location');
-            locationDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i> Pick-up: <strong>${location}</strong>`;
+            locationDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i> Pick-up: <strong>${location || "Jaipur"}</strong>`;
         }
 
         // Pre-fill date inputs if they exist
@@ -40,8 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Car not found on the server.');
             selectedCar = await response.json();
             
+            // Call the functions to populate the page
             displayCarDetails(selectedCar);
-            updateSummary(); // This will now calculate the price immediately with the pre-filled dates
+            updateSummary();
 
         } catch (error) {
             console.error("Failed to fetch car details:", error);
@@ -49,14 +50,91 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- displayCarDetails function remains the same ---
-    function displayCarDetails(car) { /* ... same as before ... */ }
+    // --- 2. DISPLAY CAR DETAILS (This function was missing) ---
+    function displayCarDetails(car) {
+        carDetailsContainer.innerHTML = `
+            <img src="${car.image_url}" alt="${car.name}">
+            <div>
+                <h3>Your Selected Car</h3>
+                <h2>${car.name}</h2>
+                <p>Type: ${car.type} | Transmission: ${car.transmission}</p>
+            </div>
+        `;
+    }
 
-    // --- updateSummary function remains the same ---
-    function updateSummary() { /* ... same as before ... */ }
+    // --- 3. CALCULATE AND UPDATE BOOKING SUMMARY (This function was missing) ---
+    function updateSummary() {
+        if (!selectedCar) {
+            summaryContent.innerHTML = '<p>Please select a valid car to see the summary.</p>';
+            return;
+        }
+        const startDate = new Date(document.getElementById('start-date').value);
+        const endDate = new Date(document.getElementById('end-date').value);
+        rentalDays = 0;
+        if (endDate > startDate) {
+            const timeDiff = endDate.getTime() - startDate.getTime();
+            rentalDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        }
+        const baseCost = selectedCar.price_per_day * rentalDays;
+        let extrasCost = 0;
+        document.querySelectorAll('input[name="extra"]:checked').forEach(extra => {
+            extrasCost += parseInt(extra.dataset.price) * rentalDays;
+        });
+        totalCost = baseCost + extrasCost;
+        if (rentalDays > 0) {
+            summaryContent.innerHTML = `
+                <div class="summary-line">
+                    <span>${selectedCar.name} (₹${selectedCar.price_per_day.toLocaleString()} x ${rentalDays} days)</span>
+                    <span>₹${baseCost.toLocaleString()}</span>
+                </div>
+                <div class="summary-line">
+                    <span>Extras Cost</span>
+                    <span>₹${extrasCost.toLocaleString()}</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total Cost</span>
+                    <span>₹${totalCost.toLocaleString()}</span>
+                </div>
+            `;
+        } else {
+            summaryContent.innerHTML = '<p>Please select valid pick-up and drop-off dates.</p>';
+        }
+    }
     
-    // --- Form submission logic remains the same ---
-    bookingForm.addEventListener('submit', async (e) => { /* ... same as before ... */ });
+    // --- 4. HANDLE FORM SUBMISSION (This function was missing) ---
+    bookingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!selectedCar || rentalDays <= 0) {
+            alert('Please select a car and valid rental dates before confirming.');
+            return;
+        }
+        const bookingData = {
+            carId: selectedCar.id,
+            carName: selectedCar.name,
+            userName: document.getElementById('full-name').value,
+            userEmail: document.getElementById('email').value,
+            startDate: document.getElementById('start-date').value,
+            endDate: document.getElementById('end-date').value,
+            totalCost: totalCost
+        };
+        try {
+            const response = await fetch('http://localhost:3000/api/bookings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookingData)
+            });
+            const result = await response.json();
+            if (result.success) {
+                alert('Booking Confirmed! You will receive a confirmation email shortly. Thank you for choosing Momentum Rides!');
+                window.location.href = 'index.html';
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            console.error('Booking failed:', error);
+            alert(`Booking failed: ${error.message}. Please try again.`);
+        }
+    });
 
     // --- INITIALIZE THE PAGE AND ADD EVENT LISTENERS ---
     initializePage();
