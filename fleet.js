@@ -8,6 +8,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
     const filters = document.querySelectorAll('.filters input');
 
+        function handleHomepageSearch() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const pickupDate = urlParams.get('pickup');
+        const dropoffDate = urlParams.get('dropoff');
+
+        if (pickupDate && dropoffDate) {
+            console.log(`Search initiated from homepage for dates: ${pickupDate} to ${dropoffDate}`);
+
+            // Create a message to show the user their search is acknowledged
+            const searchInfo = document.createElement('div');
+            searchInfo.className = 'search-info';
+            searchInfo.innerHTML = `
+                <p>Showing all available cars. Your selected dates: <strong>${pickupDate}</strong> to <strong>${dropoffDate}</strong>.</p>
+                <small>(Live date-based filtering is coming soon!)</small>
+            `;
+
+            // Insert this message before the fleet layout
+            const pageContainer = document.querySelector('.page-container');
+            pageContainer.insertBefore(searchInfo, document.querySelector('.fleet-layout'));
+        }
+    }
+
     let allCars = []; // This will be populated from the API call
 
     // --- 1. FETCH CAR DATA FROM OUR NEW BACKEND ---
