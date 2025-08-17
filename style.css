@@ -932,3 +932,20 @@ body {
     color: var(--secondary-color);
     margin-right: 8px;
 }
+
+/* --- Style for Price on Booking Page Car Display --- */
+
+.car-price-display {
+    margin-top: 15px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-family: var(--font-heading);
+}
+
+.car-price-display span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-dark);
+    margin-left: 5px;
+}
