@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filters.forEach(filter => filter.addEventListener('change', applyFilters));
 
     // --- INITIALIZE THE PAGE ---
-    fetchCars(); // This single call now handles fetching AND initial rendering
+    handleHomepageSearch(); // First, check for parameters from the homepage
+    fetchCars();          // Second, fetch the car data from the server
 });
 
