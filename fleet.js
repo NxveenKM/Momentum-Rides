@@ -99,35 +99,3 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchCars(); // This single call now handles fetching AND initial rendering
 });
 
-// --- Homepage Booking Widget Logic ---
-
-// NOTE: This is a separate form handler from the one in the original file.
-// You can remove the old alert-based one if you wish.
-const homepageBookingForm = document.getElementById('booking-form');
-
-if (homepageBookingForm) {
-    homepageBookingForm.addEventListener('submit', function(e) {
-        e.preventDefault(); // Prevent the form from submitting the old way
-
-        // 1. Get the values from the form
-        const location = document.getElementById('pickup-location').value;
-        const pickupDate = document.getElementById('pickup-date').value;
-        const dropoffDate = document.getElementById('dropoff-date').value;
-
-        // 2. Validate that dates are selected
-        if (!pickupDate || !dropoffDate) {
-            alert('Please select both a pick-up and drop-off date.');
-            return;
-        }
-
-        // 3. Build the URL with query parameters
-        const queryParams = new URLSearchParams({
-            location: location,
-            pickup: pickupDate,
-            dropoff: dropoffDate
-        });
-
-        // 4. Redirect the user to the fleet page with the search data
-        window.location.href = `fleet.html?${queryParams.toString()}`;
-    });
-}
