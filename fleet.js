@@ -62,17 +62,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 2. RENDER CARS TO THE PAGE (This function remains the same) ---
+    // --- 2. RENDER CARS TO THE PAGE (UPDATED) ---
     function renderCars(carArray) {
-        fleetGrid.innerHTML = ''; // Clear existing cars
+        fleetGrid.innerHTML = '';
         if (carArray.length === 0) {
             fleetGrid.innerHTML = '<p>No cars match your criteria.</p>';
             return;
         }
 
+        // Get the search parameters from the current page's URL
+        const currentUrlParams = new URLSearchParams(window.location.search);
+
         carArray.forEach(car => {
             const carCard = document.createElement('div');
             carCard.className = 'car-card';
+
+            // Start building the link for the booking page
+            const bookingLink = new URLSearchParams({
+                carId: car.id
+            });
+
+            // Carry forward the homepage search parameters if they exist
+            if (currentUrlParams.has('location')) {
+                bookingLink.append('location', currentUrlParams.get('location'));
+            }
+            if (currentUrlParams.has('pickup')) {
+                bookingLink.append('pickup', currentUrlParams.get('pickup'));
+            }
+            if (currentUrlParams.has('dropoff')) {
+                bookingLink.append('dropoff', currentUrlParams.get('dropoff'));
+            }
+
             carCard.innerHTML = `
                 <img src="${car.image_url}" alt="${car.name}">
                 <div class="card-content">
@@ -85,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="price-section">
                         <span class="price">₹${car.price_per_day} <span>/ day</span></span>
-                        <a href="booking.html?carId=${car.id}" class="btn-card">Book Now</a>
+                        <a href="booking.html?${bookingLink.toString()}" class="btn-card">Book Now</a>
                     </div>
                 </div>
             `;
