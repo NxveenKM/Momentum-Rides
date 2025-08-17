@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/api/cars/${carId}`);
+            const response = await fetch(`https://momentum-rides.onrender.com/api/cars/${carId}`);
             if (!response.ok) throw new Error('Car not found on the server.');
             selectedCar = await response.json();
             
