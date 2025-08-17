@@ -7,9 +7,11 @@ This project was developed on a fine Sunday in Jaipur, Rajasthan, and serves as 
 
 **Live Demo:**
 
--   **Frontend (GitHub Pages):**  `https://your-username.github.io/your-repo-name/`
+-   **Frontend (GitHub Pages):**  `[https://nxveenkm.github.io/Momentum-Rides/]`
 
--   **Backend API (Render):**  `https://momentum-rides-api-jaipur.onrender.com/api/cars`
+-   **Backend API (Render):**  `https://momentum-rides.onrender.com`
+
+---
 
 Features
 --------
@@ -28,89 +30,25 @@ Features
 
 -   **Responsive Design:** A mobile-first design that ensures a great user experience on desktops, tablets, and smartphones.
 
-Technology Stack
-----------------
+---
 
-This project utilizes a modern MERN-stack inspired architecture (without the React part on the frontend).
+## Technology Stack
 
-|
+| Layer             | Technology              | Description                                      |
 
-Category
+|------------------|--------------------------|--------------------------------------------------|
 
- |
+| **Frontend**     | HTML5, CSS3, JavaScript  | Structure, styling, and interactivity (no React) |
 
-Technology
+| **Backend**      | Node.js, Express.js      | REST API handling server-side logic              |
 
- |
+| **Database**     | MongoDB Atlas, Mongoose  | Cloud-based storage for bookings                 |
 
-Description
+| **Hosting**      | GitHub Pages + Render    | Static and dynamic components deployed online    |
 
- |
-|
+| **Dev Tools**    | nodemon, dotenv          | Dev server auto-reload and environment config    |
 
-**Frontend**
-
- |
-
-HTML5, CSS3, JavaScript (ES6+)
-
- |
-
-For the structure, styling, and interactivity of the user interface.
-
- |
-|
-
-**Backend**
-
- |
-
-Node.js, Express.js
-
- |
-
-For building the robust, server-side REST API.
-
- |
-|
-
-**Database**
-
- |
-
-MongoDB Atlas, Mongoose
-
- |
-
-A NoSQL cloud database for storing booking data, with Mongoose as the ODM.
-
- |
-|
-
-**Deployment**
-
- |
-
-GitHub Pages (Frontend), Render (Backend)
-
- |
-
-For hosting the static frontend and the dynamic backend server 24/7.
-
- |
-|
-
-**Dev Tools**
-
- |
-
-`nodemon`, `dotenv`
-
- |
-
-For automatic server restarts and secure management of environment variables.
-
- |
+---
 
 Setup and Installation for Local Development
 --------------------------------------------
@@ -128,7 +66,7 @@ To get a copy of this project running on your local machine, follow these steps.
 1.  **Clone the Repository**
 
     ```
-    git clone https://github.com/your-username/your-repo-name.git
+    git clone https://github.com/NxveenKM/Momentum-Rides.git
     cd your-repo-name
 
     ```
@@ -170,6 +108,8 @@ To get a copy of this project running on your local machine, follow these steps.
 
     -   Your browser will open the website, and it will be fully connected to your local backend server.
 
+---
+
 Project Structure
 -----------------
 
@@ -192,3 +132,5 @@ Project Structure
 └── README.md         # This file
 
 ```
+
+---
