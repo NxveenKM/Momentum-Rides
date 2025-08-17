@@ -1,5 +1,3 @@
-// booking.js - FINAL, COMPLETE, AND CORRECTED VERSION
-
 document.addEventListener('DOMContentLoaded', () => {
     // --- STATE & DOM ELEMENTS ---
     let selectedCar = null;
@@ -50,23 +48,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 2. DISPLAY CAR DETAILS (UPDATED with Price) ---
+    // --- 2. DISPLAY CAR DETAILS (Includes price) ---
     function displayCarDetails(car) {
         carDetailsContainer.innerHTML = `
-            <img src="${car.image_url}" alt="${car.name}">
+            <img src="${car.image_url}" alt="${car.name}" style="width: 300px;">
             <div>
                 <h3>Your Selected Car</h3>
                 <h2>${car.name}</h2>
                 <p>Type: ${car.type} | Transmission: ${car.transmission}</p>
-
                 <div class="car-price-display">
                     ₹${car.price_per_day.toLocaleString()}<span> / day</span>
                 </div>
-                </div>
+            </div>
         `;
     }
 
-    // --- 3. CALCULATE AND UPDATE BOOKING SUMMARY (This function was missing) ---
+    // --- 3. CALCULATE AND UPDATE BOOKING SUMMARY ---
     function updateSummary() {
         if (!selectedCar) {
             summaryContent.innerHTML = '<p>Please select a valid car to see the summary.</p>';
@@ -105,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // --- 4. HANDLE FORM SUBMISSION (This function was missing) ---
+    // --- 4. HANDLE FORM SUBMISSION ---
     bookingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!selectedCar || rentalDays <= 0) {
@@ -129,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const result = await response.json();
             if (result.success) {
-                alert('Booking Confirmed! You will receive a confirmation email shortly. Thank you for choosing Momentum Rides!');
+                alert('Booking Confirmed! A confirmation for your August 2025 trip will be sent shortly. Thank you!');
                 window.location.href = 'index.html';
             } else {
                 throw new Error(result.message);
