@@ -1,14 +1,39 @@
-// server.js - The complete backend API server
+// server.js - UPDATED with Database Connection & Booking Logic
 
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
+require('dotenv').config(); // Loads variables from .env file
 
 const app = express();
 const PORT = 3000;
 
+// --- MIDDLEWARE ---
 app.use(cors());
+app.use(express.json()); // Needed to parse incoming JSON data from frontend
 
-// --- UPDATED "DATABASE" WITH NEW, WORKING IMAGE URLS ---
+// --- DATABASE CONNECTION ---
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ Successfully connected to MongoDB Atlas!'))
+  .catch(err => console.error('❌ Connection error', err));
+
+// --- DATABASE SCHEMA & MODEL ---
+// A Schema is the blueprint for our data
+const bookingSchema = new mongoose.Schema({
+    carId: Number,
+    carName: String,
+    userName: String,
+    userEmail: String,
+    startDate: Date,
+    endDate: Date,
+    totalCost: Number,
+    bookingDate: { type: Date, default: Date.now }
+});
+
+// A Model is the tool we use to interact with the 'bookings' collection
+const Booking = mongoose.model('Booking', bookingSchema);
+
+// --- Car list (still served from here for now) ---
 const cars = [
     { id: 1, name: "Kia Seltos", type: "SUV", passengers: 5, luggage: 3, transmission: "Automatic", price_per_day: 2200, image_url: "https://www.cartoq.com/wp-content/uploads/2024/12/2024-Kia-Seltos-hybrid-rendering-.jpg" },
     { id: 2, name: "Hyundai Verna", type: "Sedan", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 1800, image_url: "https://www.carscoops.com/wp-content/uploads/2023/03/2023-b-Hyundai-Verna-Accent-3.jpg" },
@@ -16,28 +41,27 @@ const cars = [
     { id: 4, name: "Toyota Innova", type: "Van", passengers: 7, luggage: 4, transmission: "Manual", price_per_day: 2500, image_url: "https://www.thrustzone.com/wp-content/uploads/2025/05/Hycross-EE-toyota-innova-2025-scaled.jpg" },
     { id: 5, name: "Honda City", type: "Sedan", passengers: 5, luggage: 3, transmission: "Automatic", price_per_day: 2400, image_url: "https://gaadiwaadi.com/wp-content/uploads/2024/11/2025-honda-city-1164x720.jpg" },
     { id: 6, name: "Mahindra Thar", type: "SUV", passengers: 4, luggage: 2, transmission: "Manual", price_per_day: 2800, image_url: "https://images.overdrive.in/wp-content/uploads/2024/08/mahindra-thar-roxx-left-front-three-quarter0-2024-08-51d5acbccf5c2cdcd8c1e31cb6ff58ff.jpg" },
-    { id: 7, name: "Tata Nexon", type: "Compact SUV", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 2000, image_url: "https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Nexon/9675/1751559838445/front-left-side-47.jpg?impolicy=resize&imwidth=420" },
-
+    { id: 7, name: "Tata Nexon", type: "Compact SUV", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 2000, image_url: "https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Nexon/9675/1751559838445/front-left-side-47.jpg?impolicy=resize&imwidth=420" }
 ];
 
 // --- API ENDPOINTS ---
-
-// GET endpoint for all cars
-app.get('/api/cars', (req, res) => {
-    console.log(`[${new Date().toLocaleTimeString()}] Request received for all cars.`);
-    res.json(cars);
+app.get('/api/cars', (req, res) => res.json(cars));
+app.get('/api/cars/:id', (req, res) => {
+    const car = cars.find(c => c.id === parseInt(req.params.id));
+    if (car) res.json(car);
+    else res.status(404).json({ message: 'Car not found' });
 });
 
-// GET endpoint for a single car by ID
-app.get('/api/cars/:id', (req, res) => {
-    const carId = parseInt(req.params.id);
-    console.log(`[${new Date().toLocaleTimeString()}] Request received for car ID: ${carId}`);
-    const car = cars.find(c => c.id === carId);
-
-    if (car) {
-        res.json(car);
-    } else {
-        res.status(404).json({ message: 'Car not found' });
+// === NEW ENDPOINT TO CREATE A BOOKING ===
+app.post('/api/bookings', async (req, res) => {
+    console.log('Received booking request:', req.body);
+    try {
+        const newBooking = new Booking(req.body);
+        await newBooking.save();
+        res.status(201).json({ success: true, message: 'Booking confirmed successfully!' });
+    } catch (error) {
+        console.error('Error saving booking:', error);
+        res.status(500).json({ success: false, message: 'Failed to confirm booking.' });
     }
 });
 
