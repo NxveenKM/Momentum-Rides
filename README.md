@@ -34,20 +34,13 @@ Features
 
 ## Technology Stack
 
-| Layer             | Technology              | Description                                      |
-
-|------------------|--------------------------|--------------------------------------------------|
-
-| **Frontend**     | HTML5, CSS3, JavaScript  | Structure, styling, and interactivity (no React) |
-
-| **Backend**      | Node.js, Express.js      | REST API handling server-side logic              |
-
-| **Database**     | MongoDB Atlas, Mongoose  | Cloud-based storage for bookings                 |
-
-| **Hosting**      | GitHub Pages + Render    | Static and dynamic components deployed online    |
-
-| **Dev Tools**    | nodemon, dotenv          | Dev server auto-reload and environment config    |
-
+| **Category** | **Technology**                            | **Description**                                                               |
+| ------------ | ----------------------------------------- | ----------------------------------------------------------------------------- |
+| Frontend     | HTML5, CSS3, JavaScript (ES6+)            | For the structure, styling, and interactivity of the user interface.          |
+| Backend      | Node.js, Express.js                       | For building the robust, server-side REST API.                                |
+| Database     | MongoDB Atlas, Mongoose                   | A NoSQL cloud database for storing booking data, with Mongoose as the ODM.    |
+| Deployment   | GitHub Pages (Frontend), Render (Backend) | For hosting the static frontend and the dynamic backend server 24/7.          |
+| Dev Tools    | `nodemon`, `dotenv`                       | For automatic server restarts and secure management of environment variables. |
 ---
 
 Setup and Installation for Local Development
@@ -67,7 +60,7 @@ To get a copy of this project running on your local machine, follow these steps.
 
     ```
     git clone https://github.com/NxveenKM/Momentum-Rides.git
-    cd your-repo-name
+    cd Momentum-Rides
 
     ```
 
