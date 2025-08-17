@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Momentum Rides - Your Journey, Your Car</title>
+    <meta name="description" content="Rent the perfect car for your next journey in Jaipur. Easy booking, wide selection, and no hidden fees with Momentum Rides.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="nav-logo">Momentum Rides</a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="fleet.html" class="nav-link">Fleet</a></li>
+                <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <a href="fleet.html" class="nav-cta">Book Now</a>
+            <div class="hamburger">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="fade-in">Your Journey, Your Car, Your Price.</h1>
+                <p class="fade-in">Explore Jaipur and beyond with our reliable and affordable rental cars.</p>
+                <div class="booking-widget fade-in">
+                    <form id="booking-form">
+                        <div class="input-group">
+                            <label for="pickup-location"><i class="fas fa-map-marker-alt"></i> Pick-up Location</label>
+                            <input type="text" id="pickup-location" placeholder="e.g., Jaipur International Airport" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="pickup-date"><i class="fas fa-calendar-alt"></i> Pick-up Date</label>
+                            <input type="date" id="pickup-date" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="dropoff-date"><i class="fas fa-calendar-alt"></i> Drop-off Date</label>
+                            <input type="date" id="dropoff-date" required>
+                        </div>
+                        <button type="submit" class="btn-search">Search for Cars <i class="fas fa-arrow-right"></i></button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        <section class="how-it-works container reveal">
+            <h2 class="section-title">Rent a Car in 3 Easy Steps</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-car"></i></div>
+                    <h3>1. Choose a Car</h3>
+                    <p>Browse our diverse fleet to find the perfect car for your needs.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>2. Add Details</h3>
+                    <p>Provide your rental dates and personal information securely.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-key"></i></div>
+                    <h3>3. Drive Away</h3>
+                    <p>Pick up your keys and start your journey with confidence.</p>
+                </div>
+            </div>
+        </section>
+        </main>
+    <footer class="footer">
+        </footer>
+    <script src="script.js"></script>
+</body>
+</html>

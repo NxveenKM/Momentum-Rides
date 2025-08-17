@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Fleet - Momentum Rides</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <header class="header scrolled">
+        <nav class="navbar">
+            <a href="index.html" class="nav-logo">Momentum Rides</a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="fleet.html" class="nav-link">Fleet</a></li>
+                <li class="nav-item"><a href="services.html" class="nav-link">Services</a></li>
+                <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
+                <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+            </ul>
+             <a href="fleet.html" class="nav-cta">Book Now</a>
+             <div class="hamburger">
+                <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+    <main class="page-container">
+        <h1 class="page-title">Explore Our Fleet</h1>
+        <div class="fleet-layout">
+            <aside class="filters">
+                <h3>Filter Options</h3>
+                <div class="filter-group">
+                    <h4>Car Type</h4>
+                    <label><input type="checkbox" name="type" value="SUV"> SUV</label>
+                    <label><input type="checkbox" name="type" value="Sedan"> Sedan</label>
+                    <label><input type="checkbox" name="type" value="Luxury"> Luxury</label>
+                    <label><input type="checkbox" name="type" value="Van"> Van</label>
+                </div>
+                <div class="filter-group">
+                    <h4>Transmission</h4>
+                    <label><input type="checkbox" name="transmission" value="Automatic"> Automatic</label>
+                    <label><input type="checkbox" name="transmission" value="Manual"> Manual</label>
+                </div>
+                <div class="filter-group">
+                    <h4>Price Range (per day)</h4>
+                    <label for="price-range">Max: ₹<span id="price-value">5000</span></label>
+                    <input type="range" id="price-range" min="1500" max="5000" step="100" value="5000">
+                </div>
+            </aside>
+            <section class="fleet-grid-container">
+                <div id="loader" class="loader"></div>
+                <div id="fleet-grid" class="fleet-grid"></div>
+            </section>
+        </div>
+    </main>
+    <script src="fleet.js"></script>
+</body>
+</html>
