@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             totalCost: totalCost
         };
         try {
-            const response = await fetch('https://momentum-rides.onrender.com', {
+            const response = await fetch('https://momentum-rides.onrender.com/api/cars', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(bookingData)
