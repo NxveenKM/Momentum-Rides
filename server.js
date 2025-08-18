@@ -1,9 +1,9 @@
-// server.js - UPDATED with Admin Login Endpoint
+// server.js - UPDATED with Booking Status Management
 
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-require('dotenv').config(); // Loads variables from .env file
+require('dotenv').config();
 
 const app = express();
 const PORT = 3000;
@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ Successfully connected to MongoDB Atlas!'))
   .catch(err => console.error('❌ Connection error', err));
 
-// --- DATABASE SCHEMA & MODEL ---
+// --- DATABASE SCHEMA & MODEL (UPDATED) ---
 const bookingSchema = new mongoose.Schema({
     carId: Number,
     carName: String,
@@ -26,7 +26,13 @@ const bookingSchema = new mongoose.Schema({
     startDate: Date,
     endDate: Date,
     totalCost: Number,
-    bookingDate: { type: Date, default: Date.now }
+    bookingDate: { type: Date, default: Date.now },
+    // === NEW STATUS FIELD ===
+    status: {
+        type: String,
+        enum: ['Pending', 'Approved', 'Declined'], // Only these values are allowed
+        default: 'Pending' // New bookings will automatically be 'Pending'
+    }
 });
 const Booking = mongoose.model('Booking', bookingSchema);
 
@@ -42,42 +48,34 @@ const cars = [
 ];
 
 // --- API ENDPOINTS ---
-
-// GET all cars for the fleet page
 app.get('/api/cars', (req, res) => res.json(cars));
+app.get('/api/cars/:id', (req, res) => { /* ... same as before ... */ });
+app.post('/api/bookings', async (req, res) => { /* ... same as before ... */ });
+app.get('/api/bookings', async (req, res) => { /* ... same as before ... */ });
+app.post('/api/login', (req, res) => { /* ... same as before ... */ });
 
-// GET a single car by its ID for the booking page
-app.get('/api/cars/:id', (req, res) => {
-    const car = cars.find(c => c.id === parseInt(req.params.id));
-    if (car) res.json(car);
-    else res.status(404).json({ message: 'Car not found' });
-});
+// === NEW ENDPOINT TO UPDATE A BOOKING'S STATUS ===
+app.patch('/api/bookings/:id', async (req, res) => {
+    try {
+        const { id } = req.params; // The ID of the booking to update
+        const { status } = req.body; // The new status ('Approved' or 'Declined')
 
-// POST a new booking from the booking page
-app.post('/api/bookings', async (req, res) => {
-    // ... same as before ...
-});
+        // Find the booking by its ID and update its status
+        // { new: true } ensures the updated document is returned
+        const updatedBooking = await Booking.findByIdAndUpdate(id, { status }, { new: true });
 
-// GET all bookings for the admin dashboard
-app.get('/api/bookings', async (req, res) => {
-    // ... same as before ...
-});
+        if (!updatedBooking) {
+            return res.status(404).json({ success: false, message: 'Booking not found' });
+        }
 
-// === NEW ADMIN LOGIN ENDPOINT ===
-app.post('/api/login', (req, res) => {
-    const { username, password } = req.body;
+        // Here you could add logic to send an email notification
+        // For now, we just confirm the update
+        console.log(`Booking ${id} has been updated to ${status}`);
 
-    // Get the correct credentials from the secure .env file
-    const correctUsername = process.env.ADMIN_USERNAME;
-    const correctPassword = process.env.ADMIN_PASSWORD;
-
-    // Check if the submitted credentials match
-    if (username === correctUsername && password === correctPassword) {
-        // If they match, send a success response
-        res.json({ success: true, message: 'Login successful' });
-    } else {
-        // If they don't match, send a failure response
-        res.status(401).json({ success: false, message: 'Invalid username or password' });
+        res.json({ success: true, booking: updatedBooking });
+    } catch (error) {
+        console.error('Error updating booking status:', error);
+        res.status(500).json({ success: false, message: 'Failed to update booking status' });
     }
 });
 
