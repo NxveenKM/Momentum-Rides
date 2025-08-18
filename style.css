@@ -1061,7 +1061,7 @@ body {
     transition: color 0.3s ease;
 }
 
-/* Change the color on hover to a clean white for a subtle, elegant effect */
+/* Change the color on hover to a clean white for a subtle, elegant effect. */
 .footer-links a:hover,
 .footer-contact a:hover {
     color: var(--white);
