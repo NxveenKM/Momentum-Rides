@@ -1041,11 +1041,11 @@ body {
 /* --- Style for Hidden Admin Link in Footer --- */
 
 .admin-link {
-    text-decoration: none; /* Removes the underline */
-    color: #ccc;            /* Matches the normal footer text color */
+    text-decoration: none; /* This removes the underline */
+    color: #ccc;            /* This makes the text color match the rest of the footer */
     transition: color 0.3s ease;
 }
 
 .admin-link:hover {
-    color: var(--white);   /* Adds a subtle brightening effect on hover */
+    color: var(--white);   /* This adds a subtle brightening effect when you hover over it */
 }
