@@ -1090,6 +1090,7 @@ body {
 .status-pending { background-color: #f0ad4e; } /* Orange */
 .status-approved { background-color: #5cb85c; } /* Green */
 .status-declined { background-color: #d9534f; } /* Red */
+.status-completed { background-color: #5bc0de; } /* Blue */
 
 /* --- Booking Page Car Image Size --- */
 
