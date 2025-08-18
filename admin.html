@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Momentum Rides</title>
+    <!-- Link to the same CSS and Fonts -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header scrolled">
+        <nav class="navbar">
+            <a href="index.html" class="nav-logo">Momentum Rides</a>
+            <div class="nav-admin-title">Admin Dashboard</div>
+        </nav>
+    </header>
+
+    <main class="page-container">
+        <h1 class="page-title">All Bookings</h1>
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Email</th>
+                        <th>Car Booked</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Total Cost</th>
+                        <th>Booking Date</th>
+                    </tr>
+                </thead>
+                <tbody id="bookings-tbody">
+                    <!-- Booking rows will be inserted here by JavaScript -->
+                    <tr><td colspan="7" class="loading-row">Loading bookings...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+</html>
