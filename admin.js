@@ -1,4 +1,4 @@
-// admin.js - UPDATED with Status Dropdown Menu
+// admin.js - REFACTORED with a single, interactive status dropdown
 
 document.addEventListener('DOMContentLoaded', () => {
     // Security check remains the same
@@ -20,15 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
             displayBookings(bookings);
         } catch (error) {
             console.error('Error:', error);
-            bookingsTbody.innerHTML = `<tr><td colspan="7" class="error-row">Could not load bookings.</td></tr>`;
+            bookingsTbody.innerHTML = `<tr><td colspan="6" class="error-row">Could not load bookings.</td></tr>`;
         }
     }
 
-    // Displays the bookings in the table with a dropdown
+    // Displays the bookings in the table with a single status dropdown
     function displayBookings(bookings) {
         bookingsTbody.innerHTML = '';
         if (bookings.length === 0) {
-            bookingsTbody.innerHTML = `<tr><td colspan="7">No bookings found.</td></tr>`;
+            bookingsTbody.innerHTML = `<tr><td colspan="6">No bookings found.</td></tr>`;
             return;
         }
 
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const endDate = new Date(booking.endDate).toLocaleDateString();
             const bookingDate = new Date(booking.bookingDate).toLocaleString();
 
-            // Generate the HTML for the status dropdown
+            // Generate the HTML for the interactive status dropdown
             const statusDropdown = `
                 <select class="status-select status-${booking.status.toLowerCase()}" data-id="${booking._id}">
                     <option value="Pending" ${booking.status === 'Pending' ? 'selected' : ''}>Pending</option>
@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${startDate} - ${endDate}</td>
                 <td>₹${booking.totalCost.toLocaleString()}</td>
                 <td>${bookingDate}</td>
-                <td><span class="status-badge status-${booking.status.toLowerCase()}">${booking.status}</span></td>
                 <td>${statusDropdown}</td>
             `;
             bookingsTbody.appendChild(row);
@@ -70,11 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (!response.ok) throw new Error('Failed to update status');
             
-            // Refresh the table to show the change immediately
-            fetchBookings(); 
+            // No need to refresh the whole table, just gives user confidence
+            console.log(`Status for booking ${bookingId} updated to ${newStatus}`);
         } catch (error) {
             console.error('Update Error:', error);
             alert('Failed to update booking status.');
+            // If the update fails, we refresh the table to show the original state
+            fetchBookings();
         }
     }
 
@@ -83,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target.matches('.status-select')) {
             const bookingId = event.target.dataset.id;
             const newStatus = event.target.value;
-            // Update the dropdown's own color
+            // Update the dropdown's own color immediately for instant feedback
             event.target.className = `status-select status-${newStatus.toLowerCase()}`;
             // Send the update to the server
             updateBookingStatus(bookingId, newStatus);
