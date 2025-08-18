@@ -1,7 +1,7 @@
-// admin.js - REFACTORED with a single, interactive status dropdown
+// admin.js - FINAL CORRECTED VERSION
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Security check remains the same
+    // Security check to ensure user is logged in
     const isAuthenticated = sessionStorage.getItem('isAdminAuthenticated');
     if (isAuthenticated !== 'true') {
         alert('You must be logged in to view this page.');
@@ -20,11 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
             displayBookings(bookings);
         } catch (error) {
             console.error('Error:', error);
-            bookingsTbody.innerHTML = `<tr><td colspan="6" class="error-row">Could not load bookings.</td></tr>`;
+            bookingsTbody.innerHTML = `<tr><td colspan="7" class="error-row">Could not load bookings.</td></tr>`;
         }
     }
-
-// admin.js
 
     // Displays the bookings in the table
     function displayBookings(bookings) {
@@ -49,8 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </select>
             `;
 
-            // === THIS IS THE UPDATED PART ===
-            // We now create an <i> tag with Font Awesome classes
             row.innerHTML = `
                 <td>${booking.userName}<br><small>${booking.userEmail}</small>${locationHTML}</td>
                 <td>${booking.carName}</td>
@@ -58,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>₹${booking.totalCost.toLocaleString()}</td>
                 <td>${bookingDate}</td>
                 <td>${statusDropdown}</td>
-                <td><i class="delete-icon fa-solid fa-trash-can" data-id="${booking._id}" title="Delete Booking"></i></td>
+                <td><i class="delete-icon fas fa-trash-can" data-id="${booking._id}" title="Delete Booking"></i></td>
             `;
             bookingsTbody.appendChild(row);
         });
@@ -73,25 +69,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: newStatus })
             });
             if (!response.ok) throw new Error('Failed to update status');
-            
-            // No need to refresh the whole table, just gives user confidence
             console.log(`Status for booking ${bookingId} updated to ${newStatus}`);
         } catch (error) {
             console.error('Update Error:', error);
             alert('Failed to update booking status.');
-            // If the update fails, we refresh the table to show the original state
-            fetchBookings();
+            fetchBookings(); // Refresh table on error to show original state
         }
     }
 
-    // Event Delegation for the status dropdowns
+    // Sends a request to the server to delete a booking
+    async function deleteBooking(bookingId) {
+        try {
+            const response = await fetch(`https://momentum-rides.onrender.com/api/bookings/${bookingId}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) throw new Error('Failed to delete booking');
+            fetchBookings(); // Refresh the table to show the change
+        } catch (error) {
+            console.error('Delete Error:', error);
+            alert('Failed to delete booking.');
+        }
+    }
+
+    // Event Delegation for all actions in the table body
+    bookingsTbody.addEventListener('click', (event) => {
+        // Handle Delete Icon Clicks
+        if (event.target.matches('.delete-icon')) {
+            const bookingId = event.target.dataset.id;
+            if (confirm('Are you sure you want to permanently delete this booking? This action cannot be undone.')) {
+                deleteBooking(bookingId);
+            }
+        }
+    });
+    
     bookingsTbody.addEventListener('change', (event) => {
+        // Handle Status Dropdown Changes
         if (event.target.matches('.status-select')) {
             const bookingId = event.target.dataset.id;
             const newStatus = event.target.value;
-            // Update the dropdown's own color immediately for instant feedback
             event.target.className = `status-select status-${newStatus.toLowerCase()}`;
-            // Send the update to the server
             updateBookingStatus(bookingId, newStatus);
         }
     });
