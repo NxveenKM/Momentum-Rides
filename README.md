@@ -7,7 +7,7 @@ This project was developed on a fine Sunday in Jaipur, Rajasthan, and serves as 
 
 **Live Demo:**
 
--   **Frontend (GitHub Pages):**  `[https://nxveenkm.github.io/Momentum-Rides/]`
+-   **Frontend (GitHub Pages):**  <https://nxveenkm.github.io/Momentum-Rides/>
 
 -   **Backend API (Render):**  `https://momentum-rides.onrender.com`
 
