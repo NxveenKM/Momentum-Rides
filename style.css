@@ -1067,20 +1067,7 @@ body {
     color: var(--white);
 }
 
-/* --- Admin Dashboard - Status & Actions Styles (UPDATED for Dropdown) --- */
-
-.status-badge {
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--white);
-    text-transform: uppercase;
-}
-
-.status-pending { background-color: #f0ad4e; } /* Orange */
-.status-approved { background-color: #5cb85c; } /* Green */
-.status-declined { background-color: #d9534f; } /* Red */
+/* --- Admin Dashboard - Status Styles (Dropdown) --- */
 
 .status-select {
     padding: 8px;
@@ -1098,6 +1085,11 @@ body {
     padding-right: 2em; /* Make space for arrow */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
 }
+
+/* Color coding for the dropdown based on its status class */
+.status-pending { background-color: #f0ad4e; } /* Orange */
+.status-approved { background-color: #5cb85c; } /* Green */
+.status-declined { background-color: #d9534f; } /* Red */
 
 /* --- Booking Page Car Image Size --- */
 
