@@ -1,4 +1,4 @@
-// server.js - Corrected and Cleaned Version
+// server.js - UPDATED with Admin Login Endpoint
 
 const express = require('express');
 const cors = require('cors');
@@ -10,7 +10,7 @@ const PORT = 3000;
 
 // --- MIDDLEWARE ---
 app.use(cors());
-app.use(express.json()); // Needed to parse incoming JSON data from frontend
+app.use(express.json());
 
 // --- DATABASE CONNECTION ---
 mongoose.connect(process.env.MONGO_URI)
@@ -55,25 +55,29 @@ app.get('/api/cars/:id', (req, res) => {
 
 // POST a new booking from the booking page
 app.post('/api/bookings', async (req, res) => {
-    console.log('Received booking request:', req.body);
-    try {
-        const newBooking = new Booking(req.body);
-        await newBooking.save();
-        res.status(201).json({ success: true, message: 'Booking confirmed successfully!' });
-    } catch (error) {
-        console.error('Error saving booking:', error);
-        res.status(500).json({ success: false, message: 'Failed to confirm booking.' });
-    }
+    // ... same as before ...
 });
 
 // GET all bookings for the admin dashboard
 app.get('/api/bookings', async (req, res) => {
-    try {
-        const bookings = await Booking.find({}).sort({ bookingDate: -1 });
-        res.json(bookings);
-    } catch (error) {
-        console.error('Error fetching bookings:', error);
-        res.status(500).json({ success: false, message: 'Failed to fetch bookings.' });
+    // ... same as before ...
+});
+
+// === NEW ADMIN LOGIN ENDPOINT ===
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+
+    // Get the correct credentials from the secure .env file
+    const correctUsername = process.env.ADMIN_USERNAME;
+    const correctPassword = process.env.ADMIN_PASSWORD;
+
+    // Check if the submitted credentials match
+    if (username === correctUsername && password === correctPassword) {
+        // If they match, send a success response
+        res.json({ success: true, message: 'Login successful' });
+    } else {
+        // If they don't match, send a failure response
+        res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
 });
 
