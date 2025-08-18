@@ -1,4 +1,4 @@
-// server.js - Corrected and Cleaned Version with CORS
+// server.js - UPDATED with Live Availability Filtering
 
 const express = require('express');
 const cors = require('cors');
@@ -9,9 +9,7 @@ const app = express();
 const PORT = 3000;
 
 // --- MIDDLEWARE ---
-// This is the most important part for fixing the CORS error.
-// It must come BEFORE your API endpoints.
-app.use(cors()); 
+app.use(cors());
 app.use(express.json());
 
 // --- DATABASE CONNECTION ---
@@ -48,6 +46,41 @@ const cars = [
     { id: 6, name: "Mahindra Thar", type: "SUV", passengers: 4, luggage: 2, transmission: "Manual", price_per_day: 2800, image_url: "https://images.overdrive.in/wp-content/uploads/2024/08/mahindra-thar-roxx-left-front-three-quarter0-2024-08-51d5acbccf5c2cdcd8c1e31cb6ff58ff.jpg" },
     { id: 7, name: "Tata Nexon", type: "Compact SUV", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 2000, image_url: "https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Nexon/9675/1751559838445/front-left-side-47.jpg?impolicy=resize&imwidth=420" }
 ];
+
+// --- API ENDPOINTS ---
+
+// GET all cars for the fleet page (UPDATED with date filtering)
+app.get('/api/cars', async (req, res) => {
+    const { pickup, dropoff } = req.query;
+
+    // If no dates are provided, return all cars
+    if (!pickup || !dropoff) {
+        return res.json(cars);
+    }
+
+    try {
+        // Find all 'Approved' bookings that conflict with the requested date range
+        const conflictingBookings = await Booking.find({
+            status: 'Approved',
+            // The logic for an overlapping date range is:
+            // (booking.startDate < requestedDropoff) AND (booking.endDate > requestedPickup)
+            startDate: { $lt: new Date(dropoff) },
+            endDate: { $gt: new Date(pickup) }
+        });
+
+        // Create a list of car IDs that are unavailable
+        const unavailableCarIds = conflictingBookings.map(booking => booking.carId);
+
+        // Filter the master car list to exclude the unavailable cars
+        const availableCars = cars.filter(car => !unavailableCarIds.includes(car.id));
+
+        res.json(availableCars);
+
+    } catch (error) {
+        console.error('Error fetching available cars:', error);
+        res.status(500).json({ message: 'Error filtering cars by availability' });
+    }
+});
 
 // --- API ENDPOINTS ---
 app.get('/api/cars', (req, res) => res.json(cars));
