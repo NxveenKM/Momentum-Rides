@@ -24,11 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Displays the bookings in the table with a single status dropdown
+// admin.js
+
+    // Displays the bookings in the table
     function displayBookings(bookings) {
         bookingsTbody.innerHTML = '';
         if (bookings.length === 0) {
-            bookingsTbody.innerHTML = `<tr><td colspan="6">No bookings found.</td></tr>`;
+            bookingsTbody.innerHTML = `<tr><td colspan="7">No bookings found.</td></tr>`;
             return;
         }
 
@@ -37,20 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const startDate = new Date(booking.startDate).toLocaleDateString();
             const endDate = new Date(booking.endDate).toLocaleDateString();
             const bookingDate = new Date(booking.bookingDate).toLocaleString();
-            const locationHTML = booking.location
-                ? `<br><small><strong>Location:</strong> ${booking.location}</small>`
-                : '';
-
-            // Generate the HTML for the interactive status dropdown
+            const locationHTML = booking.location ? `<br><small><strong>Location:</strong> ${booking.location}</small>` : '';
             const statusDropdown = `
                 <select class="status-select status-${booking.status.toLowerCase()}" data-id="${booking._id}">
                     <option value="Pending" ${booking.status === 'Pending' ? 'selected' : ''}>Pending</option>
                     <option value="Approved" ${booking.status === 'Approved' ? 'selected' : ''}>Approved</option>
                     <option value="Declined" ${booking.status === 'Declined' ? 'selected' : ''}>Declined</option>
-                    <option value="Completed" ${booking.status === 'Completed'? 'selected' : ''}>Completed</option>
+                    <option value="Completed" ${booking.status === 'Completed' ? 'selected' : ''}>Completed</option>
                 </select>
             `;
 
+            // === THIS IS THE UPDATED PART ===
+            // We now create an <i> tag with Font Awesome classes
             row.innerHTML = `
                 <td>${booking.userName}<br><small>${booking.userEmail}</small>${locationHTML}</td>
                 <td>${booking.carName}</td>
@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>₹${booking.totalCost.toLocaleString()}</td>
                 <td>${bookingDate}</td>
                 <td>${statusDropdown}</td>
+                <td><i class="delete-icon fa-solid fa-trash-can" data-id="${booking._id}" title="Delete Booking"></i></td>
             `;
             bookingsTbody.appendChild(row);
         });
