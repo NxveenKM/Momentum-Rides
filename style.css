@@ -1037,3 +1037,15 @@ body {
     margin-top: 15px;
     height: 20px; /* Reserve space to prevent layout shift */
 }
+
+/* --- Style for Hidden Admin Link in Footer --- */
+
+.admin-link {
+    text-decoration: none; /* Removes the underline */
+    color: #ccc;            /* Matches the normal footer text color */
+    transition: color 0.3s ease;
+}
+
+.admin-link:hover {
+    color: var(--white);   /* Adds a subtle brightening effect on hover */
+}
