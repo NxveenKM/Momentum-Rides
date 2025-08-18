@@ -28,6 +28,7 @@ const bookingSchema = new mongoose.Schema({
     startDate: Date,
     endDate: Date,
     totalCost: Number,
+    location: { type: String, required: false },
     bookingDate: { type: Date, default: Date.now },
     status: {
         type: String,
