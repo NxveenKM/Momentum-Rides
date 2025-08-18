@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <option value="Pending" ${booking.status === 'Pending' ? 'selected' : ''}>Pending</option>
                     <option value="Approved" ${booking.status === 'Approved' ? 'selected' : ''}>Approved</option>
                     <option value="Declined" ${booking.status === 'Declined' ? 'selected' : ''}>Declined</option>
+                    <option value="Completed" ${booking.status === 'Completed'? 'selected' : ''}>Completed</option>
                 </select>
             `;
 
