@@ -1145,7 +1145,6 @@ body {
     color: var(--primary-color);
 }
 
-/* === NEW STYLES FOR ACTION ICONS === */
 .action-icon {
     font-size: 1.1rem;
     cursor: pointer;
@@ -1153,20 +1152,10 @@ body {
     transition: color 0.2s ease-in-out;
 }
 
-.icon-edit {
-    color: #6c757d; /* Neutral gray */
-}
-.icon-edit:hover {
-    color: var(--secondary-color); /* Blue */
-}
-
-.icon-delete {
-    color: #6c757d; /* Neutral gray */
-}
-.icon-delete:hover {
-    color: #d9534f; /* Red */
-}
-
+.icon-edit { color: #6c757d; }
+.icon-edit:hover { color: var(--secondary-color); }
+.icon-delete { color: #6c757d; }
+.icon-delete:hover { color: #d9534f; }
 
 /* Modal Styles */
 .modal-overlay {
@@ -1199,21 +1188,50 @@ body {
     color: var(--primary-color);
 }
 
+/* === NEW STYLES FOR FORM LAYOUT AND DROPDOWN === */
+#car-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+#car-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23333333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+}
+
 .modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 15px;
     margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
 }
 
-/* === UPDATED STYLES FOR MODAL BUTTONS === */
-/* The primary "Save" button keeps its solid style */
 .modal-actions .btn-primary-full {
     width: auto;
     padding: 12px 30px;
 }
-/* The secondary "Cancel" button gets an outline style */
 .modal-actions .btn-secondary {
     width: auto;
     padding: 12px 30px;
+    background-color: #6c757d; /* Darker gray for cancel button */
+    border-color: #6c757d;
+    color: white;
+}
+.modal-actions .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
 }
