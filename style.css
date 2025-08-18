@@ -995,3 +995,45 @@ body {
     color: #555;
     padding: 40px !important;
 }
+
+/* --- Admin Login Page Styles --- */
+
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--neutral-light);
+}
+
+.login-container {
+    background-color: var(--white);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    font-size: 2rem;
+}
+
+.login-header p {
+    color: #555;
+    font-size: 1.1rem;
+}
+
+.error-message {
+    color: #d9534f; /* A shade of red */
+    text-align: center;
+    margin-top: 15px;
+    height: 20px; /* Reserve space to prevent layout shift */
+}
