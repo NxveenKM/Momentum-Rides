@@ -99,6 +99,23 @@ app.patch('/api/bookings/:id', async (req, res) => {
     }
 });
 
+app.delete('/api/bookings/:id', async (req, res) => {
+    try {
+        const { id } = req.params; // The ID of the booking to delete
+        const deletedBooking = await Booking.findByIdAndDelete(id);
+
+        if (!deletedBooking) {
+            return res.status(404).json({ success: false, message: 'Booking not found' });
+        }
+
+        console.log(`Booking ${id} has been deleted.`);
+        res.json({ success: true, message: 'Booking deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting booking:', error);
+        res.status(500).json({ success: false, message: 'Failed to delete booking' });
+    }
+});
+
 // --- START SERVER ---
 app.listen(PORT, () => {
     console.log(`Server is running for Momentum Rides Jaipur on http://localhost:${PORT}`);
