@@ -1,4 +1,4 @@
-// server.js - FINAL CORRECTED VERSION with Robust Availability Filtering
+// server.js - UPDATED with Database-Driven Fleet Management
 
 const express = require('express');
 const cors = require('cors');
@@ -14,10 +14,16 @@ app.use(express.json());
 
 // --- DATABASE CONNECTION ---
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ Successfully connected to MongoDB Atlas!'))
+  .then(() => {
+      console.log('✅ Successfully connected to MongoDB Atlas!');
+      // After connecting, run the initial data seeding
+      seedInitialCars();
+  })
   .catch(err => console.error('❌ Connection error', err));
 
-// --- DATABASE SCHEMA & MODEL ---
+// --- DATABASE SCHEMAS & MODELS ---
+
+// Booking Schema
 const bookingSchema = new mongoose.Schema({
     carId: Number,
     carName: String,
@@ -36,8 +42,21 @@ const bookingSchema = new mongoose.Schema({
 });
 const Booking = mongoose.model('Booking', bookingSchema);
 
-// --- Car list ---
-const cars = [
+// Car Schema
+const carSchema = new mongoose.Schema({
+    id: { type: Number, required: true, unique: true },
+    name: { type: String, required: true },
+    type: String,
+    passengers: Number,
+    luggage: Number,
+    transmission: String,
+    price_per_day: Number,
+    image_url: String
+});
+const Car = mongoose.model('Car', carSchema);
+
+// --- Initial Data for Cars ---
+const initialCars = [
     { id: 1, name: "Kia Seltos", type: "SUV", passengers: 5, luggage: 3, transmission: "Automatic", price_per_day: 2200, image_url: "https://www.cartoq.com/wp-content/uploads/2024/12/2024-Kia-Seltos-hybrid-rendering-.jpg" },
     { id: 2, name: "Hyundai Verna", type: "Sedan", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 1800, image_url: "https://www.carscoops.com/wp-content/uploads/2023/03/2023-b-Hyundai-Verna-Accent-3.jpg" },
     { id: 3, name: "Ford Mustang", type: "Luxury", passengers: 2, luggage: 1, transmission: "Automatic", price_per_day: 4500, image_url: "https://www.bpmcdn.com/f/files/lacombe/import/2023-11/34476566_web1_231107-TodaysDrive-2025FordMustangGTD_1.jpg;w=960" },
@@ -47,49 +66,68 @@ const cars = [
     { id: 7, name: "Tata Nexon", type: "Compact SUV", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 2000, image_url: "https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Nexon/9675/1751559838445/front-left-side-47.jpg?impolicy=resize&imwidth=420" }
 ];
 
+// This function will run once on startup to populate the database
+async function seedInitialCars() {
+    try {
+        const count = await Car.countDocuments();
+        if (count === 0) {
+            console.log('No cars found in database. Seeding initial data...');
+            await Car.insertMany(initialCars);
+            console.log('Initial car data has been seeded successfully.');
+        }
+    } catch (error) {
+        console.error('Error seeding initial car data:', error);
+    }
+}
+
+
 // --- API ENDPOINTS ---
 
-// GET all cars for the fleet page (UPDATED with corrected date filtering logic)
+// GET all cars for the fleet page (fetches from database)
 app.get('/api/cars', async (req, res) => {
     const { pickup, dropoff } = req.query;
 
-    if (!pickup || !dropoff) {
-        return res.json(cars);
-    }
-
     try {
+        const allCars = await Car.find({}).sort({ id: 1 });
+
+        if (!pickup || !dropoff) {
+            return res.json(allCars);
+        }
+        
         const requestedPickup = new Date(pickup);
         requestedPickup.setUTCHours(0, 0, 0, 0);
-
         const requestedDropoff = new Date(dropoff);
         requestedDropoff.setUTCHours(0, 0, 0, 0);
 
-        // Find all 'Approved' bookings that conflict with the requested date range
         const conflictingBookings = await Booking.find({
             status: 'Approved',
-            // === THIS IS THE CORRECTED LOGIC ===
-            // An existing booking conflicts if its range overlaps with the requested range.
-            // (Existing Start <= Requested End) AND (Existing End >= Requested Start)
             startDate: { $lte: requestedDropoff },
             endDate: { $gte: requestedPickup }
         });
 
         const unavailableCarIds = conflictingBookings.map(booking => booking.carId);
-        const availableCars = cars.filter(car => !unavailableCarIds.includes(car.id));
+        const availableCars = allCars.filter(car => !unavailableCarIds.includes(car.id));
 
         res.json(availableCars);
 
     } catch (error) {
-        console.error('Error fetching available cars:', error);
-        res.status(500).json({ message: 'Error filtering cars by availability' });
+        console.error('Error fetching cars:', error);
+        res.status(500).json({ message: 'Error fetching cars' });
     }
 });
 
-// GET a single car by its ID
-app.get('/api/cars/:id', (req, res) => {
-    const car = cars.find(c => c.id === parseInt(req.params.id));
-    if (car) res.json(car);
-    else res.status(404).json({ message: 'Car not found' });
+// GET a single car by its ID (fetches from database)
+app.get('/api/cars/:id', async (req, res) => {
+    try {
+        const car = await Car.findOne({ id: parseInt(req.params.id) });
+        if (car) {
+            res.json(car);
+        } else {
+            res.status(404).json({ message: 'Car not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching car' });
+    }
 });
 
 // POST a new booking
