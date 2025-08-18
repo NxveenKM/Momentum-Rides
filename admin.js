@@ -1,6 +1,19 @@
-// admin.js
+// admin.js - UPDATED with Security Check
 
 document.addEventListener('DOMContentLoaded', () => {
+    // === NEW: SECURITY GUARD ===
+    // This check runs immediately when the page loads.
+    const isAuthenticated = sessionStorage.getItem('isAdminAuthenticated');
+
+    if (isAuthenticated !== 'true') {
+        // If the user is NOT authenticated, redirect them to the login page.
+        alert('You must be logged in to view this page.');
+        window.location.href = 'login.html';
+        return; // Stop the rest of the script from running
+    }
+    // If the check passes, the script continues to run as normal.
+    // ===========================
+
     const bookingsTbody = document.getElementById('bookings-tbody');
 
     async function fetchBookings() {
@@ -29,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         bookings.forEach(booking => {
             const row = document.createElement('tr');
             
-            // Format dates for better readability
             const startDate = new Date(booking.startDate).toLocaleDateString();
             const endDate = new Date(booking.endDate).toLocaleDateString();
             const bookingDate = new Date(booking.bookingDate).toLocaleString();
