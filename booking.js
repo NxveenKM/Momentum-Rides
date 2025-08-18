@@ -1,4 +1,43 @@
+// booking.js - UPDATED with Date Validation
+
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Disable Past Dates in Booking Form ---
+    function setMinDateForPickers() {
+        const today = new Date().toISOString().split('T')[0];
+        const pickupDateInput = document.getElementById('start-date');
+        const dropoffDateInput = document.getElementById('end-date');
+
+        if (pickupDateInput) {
+            pickupDateInput.setAttribute('min', today);
+        }
+        if (dropoffDateInput) {
+            dropoffDateInput.setAttribute('min', today);
+        }
+    }
+    setMinDateForPickers();
+
+    // --- NEW: Link Start and End Dates ---
+    function linkDatePickers() {
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+
+        if (startDateInput && endDateInput) {
+            startDateInput.addEventListener('change', () => {
+                // When the start date changes, set the minimum for the end date
+                if (startDateInput.value) {
+                    endDateInput.min = startDateInput.value;
+                    // If the current end date is now invalid, clear it and recalculate the summary
+                    if (endDateInput.value < startDateInput.value) {
+                        endDateInput.value = '';
+                        updateSummary();
+                    }
+                }
+            });
+        }
+    }
+    linkDatePickers();
+    // --- END of new block ---
+
     // --- STATE & DOM ELEMENTS ---
     let selectedCar = null;
     let rentalDays = 0;
@@ -9,17 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingForm = document.getElementById('booking-form-final');
     const allInputs = document.querySelectorAll('#start-date, #end-date, input[name="extra"], #full-name, #email');
 
-    // Add this block inside the DOMContentLoaded listener at the top
-    function setMinDateForPickers() {
-        const today = new Date().toISOString().split('T')[0];
-        const pickupDateInput = document.getElementById('start-date');
-        const dropoffDateInput = document.getElementById('end-date');
-        if (pickupDateInput) pickupDateInput.setAttribute('min', today);
-        if (dropoffDateInput) dropoffDateInput.setAttribute('min', today);
-    }
-    setMinDateForPickers();
-
-    // --- 1. INITIALIZE THE PAGE (Reads URL, fetches data, pre-fills fields) ---
+    // --- 1. INITIALIZE THE PAGE ---
     async function initializePage() {
         const urlParams = new URLSearchParams(window.location.search);
         const carId = urlParams.get('carId');
@@ -35,6 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pickupDate && dropoffDate) {
             document.getElementById('start-date').value = pickupDate;
             document.getElementById('end-date').value = dropoffDate;
+            // Also set the min value for the end date picker based on the pre-filled start date
+            document.getElementById('end-date').min = pickupDate;
         }
         if (!carId) {
             carDetailsContainer.innerHTML = '<p>No car selected. Please <a href="fleet.html">return to the fleet page</a>.</p>';
@@ -42,24 +73,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // This fetch call is correct (gets a single car)
             const response = await fetch(`https://momentum-rides.onrender.com/api/cars/${carId}`);
             if (!response.ok) throw new Error('Car not found on the server.');
             selectedCar = await response.json();
-            
             displayCarDetails(selectedCar);
             updateSummary();
-
         } catch (error) {
             console.error("Failed to fetch car details:", error);
             carDetailsContainer.innerHTML = `<p class="error-message">Error: Could not load car details.</p>`;
         }
     }
 
-// --- 2. DISPLAY CAR DETAILS (Corrected) ---
+    // --- 2. DISPLAY CAR DETAILS ---
     function displayCarDetails(car) {
         carDetailsContainer.innerHTML = `
-            <img src="${car.image_url}" alt="${car.name}">
+            <img src="${car.image_url}" alt="${car.name}" style="width: 300px;">
             <div>
                 <h3>Your Selected Car</h3>
                 <h2>${car.name}</h2>
@@ -73,8 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 3. CALCULATE AND UPDATE BOOKING SUMMARY ---
     function updateSummary() {
-        // ... this function is correct and remains the same ...
-        if (!selectedCar) { return; }
+        if (!selectedCar) {
+            summaryContent.innerHTML = '<p>Please select a valid car to see the summary.</p>';
+            return;
+        }
         const startDate = new Date(document.getElementById('start-date').value);
         const endDate = new Date(document.getElementById('end-date').value);
         rentalDays = 0;
@@ -126,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
             location: bookingLocation
         };
         try {
-            // === THIS IS THE CORRECTED LINE ===
             const response = await fetch('https://momentum-rides.onrender.com/api/bookings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
