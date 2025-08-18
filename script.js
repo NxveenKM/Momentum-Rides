@@ -1,20 +1,16 @@
 // script.js for index.html
 document.addEventListener('DOMContentLoaded', function() {
 
+    // Add this block inside the DOMContentLoaded listener at the top
     function setMinDateForPickers() {
         const today = new Date().toISOString().split('T')[0];
         const pickupDateInput = document.getElementById('pickup-date');
         const dropoffDateInput = document.getElementById('dropoff-date');
-
-        if (pickupDateInput) {
-            pickupDateInput.setAttribute('min', today);
-        }
-        if (dropoffDateInput) {
-            dropoffDateInput.setAttribute('min', today);
-        }
+        if (pickupDateInput) pickupDateInput.setAttribute('min', today);
+        if (dropoffDateInput) dropoffDateInput.setAttribute('min', today);
     }
     setMinDateForPickers();
-    
+
     // Mobile Navigation
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');

@@ -9,17 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingForm = document.getElementById('booking-form-final');
     const allInputs = document.querySelectorAll('#start-date, #end-date, input[name="extra"], #full-name, #email');
 
+    // Add this block inside the DOMContentLoaded listener at the top
     function setMinDateForPickers() {
         const today = new Date().toISOString().split('T')[0];
-        const pickupDateInput = document.getElementById('pickup-date');
-        const dropoffDateInput = document.getElementById('dropoff-date');
-
-        if (pickupDateInput) {
-            pickupDateInput.setAttribute('min', today);
-        }
-        if (dropoffDateInput) {
-            dropoffDateInput.setAttribute('min', today);
-        }
+        const pickupDateInput = document.getElementById('start-date');
+        const dropoffDateInput = document.getElementById('end-date');
+        if (pickupDateInput) pickupDateInput.setAttribute('min', today);
+        if (dropoffDateInput) dropoffDateInput.setAttribute('min', today);
     }
     setMinDateForPickers();
 
