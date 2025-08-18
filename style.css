@@ -1100,3 +1100,17 @@ body {
     object-fit: cover;
     border-radius: 8px;
 }
+
+/* --- Admin Dashboard - Delete Icon Style (UPDATED for Font Awesome) --- */
+
+.delete-icon {
+    font-size: 1.1rem; /* Adjust size as needed */
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    padding: 5px 10px;
+}
+
+.delete-icon:hover {
+    color: #d9534f; /* Red */
+}
