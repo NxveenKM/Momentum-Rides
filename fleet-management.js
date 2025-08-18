@@ -1,4 +1,4 @@
-// fleet-management.js - Logic for the Admin Fleet Management Page
+// fleet-management.js - FINAL CORRECTED VERSION
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Security Check ---
@@ -47,9 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         cars.forEach(car => {
             const row = document.createElement('tr');
-            
-            // === THIS IS THE UPDATED PART ===
-            // We are now using <i> tags with Font Awesome icons
             row.innerHTML = `
                 <td>${car.id}</td>
                 <td>${car.name}</td>
@@ -69,13 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
         carForm.reset();
         if (mode === 'add') {
             modalTitle.textContent = 'Add New Car';
-            document.getElementById('car-db-id').value = ''; // Clear the hidden DB ID
+            document.getElementById('car-db-id').value = '';
             document.getElementById('car-id').readOnly = false;
         } else if (mode === 'edit' && carData) {
             modalTitle.textContent = 'Edit Car';
             document.getElementById('car-db-id').value = carData._id;
             document.getElementById('car-id').value = carData.id;
-            document.getElementById('car-id').readOnly = true; // Prevent editing the unique ID
+            document.getElementById('car-id').readOnly = true;
             document.getElementById('car-name').value = carData.name;
             document.getElementById('car-type').value = carData.type;
             document.getElementById('car-price').value = carData.price_per_day;
@@ -119,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'add'} car`);
             
             closeModal();
-            fetchCars(); // Refresh the list
+            fetchCars();
         } catch (error) {
             console.error('Form submission error:', error);
             alert(`Error: Could not save the car. Please try again.`);
@@ -131,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${carId}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete car');
-            fetchCars(); // Refresh the list
+            fetchCars();
         } catch (error) {
             console.error('Delete error:', error);
             alert('Error: Could not delete the car.');
@@ -140,10 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
 
-    // Open modal to add a new car
     addCarBtn.addEventListener('click', () => openModal('add'));
 
-    // Close modal
     cancelBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (event) => {
         if (event.target === modal) {
@@ -151,22 +146,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handle form submission
     carForm.addEventListener('submit', handleFormSubmit);
 
-    // Handle clicks on Edit and Delete buttons (Event Delegation)
+    // === THIS IS THE CORRECTED PART ===
+    // The event listener now looks for the correct icon classes
     carsTbody.addEventListener('click', (event) => {
         const target = event.target;
         const carId = target.dataset.id;
 
-        if (target.matches('.btn-edit')) {
+        if (target.matches('.icon-edit')) {
             const carToEdit = allCars.find(car => car.id == carId);
             if (carToEdit) {
                 openModal('edit', carToEdit);
             }
         }
 
-        if (target.matches('.btn-delete-car')) {
+        if (target.matches('.icon-delete')) {
             if (confirm(`Are you sure you want to delete the car with ID ${carId}?`)) {
                 deleteCar(carId);
             }
