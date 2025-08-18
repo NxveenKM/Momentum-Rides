@@ -49,7 +49,7 @@ const cars = [
 
 // --- API ENDPOINTS ---
 
-// GET all cars for the fleet page (UPDATED with robust date filtering)
+// GET all cars for the fleet page (UPDATED with corrected date filtering logic)
 app.get('/api/cars', async (req, res) => {
     const { pickup, dropoff } = req.query;
 
@@ -64,10 +64,14 @@ app.get('/api/cars', async (req, res) => {
         const requestedDropoff = new Date(dropoff);
         requestedDropoff.setUTCHours(0, 0, 0, 0);
 
+        // Find all 'Approved' bookings that conflict with the requested date range
         const conflictingBookings = await Booking.find({
             status: 'Approved',
-            startDate: { $lt: requestedDropoff },
-            endDate: { $gt: requestedPickup }
+            // === THIS IS THE CORRECTED LOGIC ===
+            // An existing booking conflicts if its range overlaps with the requested range.
+            // (Existing Start <= Requested End) AND (Existing End >= Requested Start)
+            startDate: { $lte: requestedDropoff },
+            endDate: { $gte: requestedPickup }
         });
 
         const unavailableCarIds = conflictingBookings.map(booking => booking.carId);
