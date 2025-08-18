@@ -1,4 +1,4 @@
-// server.js - UPDATED with Booking Status Management
+// server.js - Corrected and Cleaned Version with CORS
 
 const express = require('express');
 const cors = require('cors');
@@ -9,7 +9,9 @@ const app = express();
 const PORT = 3000;
 
 // --- MIDDLEWARE ---
-app.use(cors());
+// This is the most important part for fixing the CORS error.
+// It must come BEFORE your API endpoints.
+app.use(cors()); 
 app.use(express.json());
 
 // --- DATABASE CONNECTION ---
@@ -17,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ Successfully connected to MongoDB Atlas!'))
   .catch(err => console.error('❌ Connection error', err));
 
-// --- DATABASE SCHEMA & MODEL (UPDATED) ---
+// --- DATABASE SCHEMA & MODEL ---
 const bookingSchema = new mongoose.Schema({
     carId: Number,
     carName: String,
@@ -27,16 +29,15 @@ const bookingSchema = new mongoose.Schema({
     endDate: Date,
     totalCost: Number,
     bookingDate: { type: Date, default: Date.now },
-    // === NEW STATUS FIELD ===
     status: {
         type: String,
-        enum: ['Pending', 'Approved', 'Declined'], // Only these values are allowed
-        default: 'Pending' // New bookings will automatically be 'Pending'
+        enum: ['Pending', 'Approved', 'Declined'],
+        default: 'Pending'
     }
 });
 const Booking = mongoose.model('Booking', bookingSchema);
 
-// --- Car list (still served from here for now) ---
+// --- Car list ---
 const cars = [
     { id: 1, name: "Kia Seltos", type: "SUV", passengers: 5, luggage: 3, transmission: "Automatic", price_per_day: 2200, image_url: "https://www.cartoq.com/wp-content/uploads/2024/12/2024-Kia-Seltos-hybrid-rendering-.jpg" },
     { id: 2, name: "Hyundai Verna", type: "Sedan", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 1800, image_url: "https://www.carscoops.com/wp-content/uploads/2023/03/2023-b-Hyundai-Verna-Accent-3.jpg" },
@@ -49,36 +50,53 @@ const cars = [
 
 // --- API ENDPOINTS ---
 app.get('/api/cars', (req, res) => res.json(cars));
-app.get('/api/cars/:id', (req, res) => { /* ... same as before ... */ });
-app.post('/api/bookings', async (req, res) => { /* ... same as before ... */ });
-app.get('/api/bookings', async (req, res) => { /* ... same as before ... */ });
-app.post('/api/login', (req, res) => { /* ... same as before ... */ });
-
-// === NEW ENDPOINT TO UPDATE A BOOKING'S STATUS ===
+app.get('/api/cars/:id', (req, res) => {
+    const car = cars.find(c => c.id === parseInt(req.params.id));
+    if (car) res.json(car);
+    else res.status(404).json({ message: 'Car not found' });
+});
+app.post('/api/bookings', async (req, res) => {
+    try {
+        const newBooking = new Booking(req.body);
+        await newBooking.save();
+        res.status(201).json({ success: true, message: 'Booking confirmed successfully!' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to confirm booking.' });
+    }
+});
+app.get('/api/bookings', async (req, res) => {
+    try {
+        const bookings = await Booking.find({}).sort({ bookingDate: -1 });
+        res.json(bookings);
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch bookings.' });
+    }
+});
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+    const correctUsername = process.env.ADMIN_USERNAME;
+    const correctPassword = process.env.ADMIN_PASSWORD;
+    if (username === correctUsername && password === correctPassword) {
+        res.json({ success: true, message: 'Login successful' });
+    } else {
+        res.status(401).json({ success: false, message: 'Invalid username or password' });
+    }
+});
 app.patch('/api/bookings/:id', async (req, res) => {
     try {
-        const { id } = req.params; // The ID of the booking to update
-        const { status } = req.body; // The new status ('Approved' or 'Declined')
-
-        // Find the booking by its ID and update its status
-        // { new: true } ensures the updated document is returned
+        const { id } = req.params;
+        const { status } = req.body;
         const updatedBooking = await Booking.findByIdAndUpdate(id, { status }, { new: true });
-
         if (!updatedBooking) {
             return res.status(404).json({ success: false, message: 'Booking not found' });
         }
-
-        // Here you could add logic to send an email notification
-        // For now, we just confirm the update
         console.log(`Booking ${id} has been updated to ${status}`);
-
         res.json({ success: true, booking: updatedBooking });
     } catch (error) {
         console.error('Error updating booking status:', error);
         res.status(500).json({ success: false, message: 'Failed to update booking status' });
     }
 });
-
 
 // --- START SERVER ---
 app.listen(PORT, () => {
