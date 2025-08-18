@@ -1,4 +1,4 @@
-// server.js - UPDATED with Live Availability Filtering
+// server.js - UPDATED with Robust Availability Filtering
 
 const express = require('express');
 const cors = require('cors');
@@ -49,29 +49,32 @@ const cars = [
 
 // --- API ENDPOINTS ---
 
-// GET all cars for the fleet page (UPDATED with date filtering)
+// GET all cars for the fleet page (UPDATED with robust date filtering)
 app.get('/api/cars', async (req, res) => {
     const { pickup, dropoff } = req.query;
 
-    // If no dates are provided, return all cars
     if (!pickup || !dropoff) {
         return res.json(cars);
     }
 
     try {
+        // To avoid timezone issues, we convert the incoming date strings to UTC dates at the start of the day.
+        const requestedPickup = new Date(pickup);
+        requestedPickup.setUTCHours(0, 0, 0, 0);
+
+        const requestedDropoff = new Date(dropoff);
+        requestedDropoff.setUTCHours(0, 0, 0, 0);
+
         // Find all 'Approved' bookings that conflict with the requested date range
         const conflictingBookings = await Booking.find({
             status: 'Approved',
-            // The logic for an overlapping date range is:
-            // (booking.startDate < requestedDropoff) AND (booking.endDate > requestedPickup)
-            startDate: { $lt: new Date(dropoff) },
-            endDate: { $gt: new Date(pickup) }
+            // An existing booking conflicts if its range overlaps with the requested range.
+            // (Existing Start < Requested End) AND (Existing End > Requested Start)
+            startDate: { $lt: requestedDropoff },
+            endDate: { $gt: requestedPickup }
         });
 
-        // Create a list of car IDs that are unavailable
         const unavailableCarIds = conflictingBookings.map(booking => booking.carId);
-
-        // Filter the master car list to exclude the unavailable cars
         const availableCars = cars.filter(car => !unavailableCarIds.includes(car.id));
 
         res.json(availableCars);
@@ -82,13 +85,14 @@ app.get('/api/cars', async (req, res) => {
     }
 });
 
-// --- API ENDPOINTS ---
-app.get('/api/cars', (req, res) => res.json(cars));
+// GET a single car by its ID
 app.get('/api/cars/:id', (req, res) => {
     const car = cars.find(c => c.id === parseInt(req.params.id));
     if (car) res.json(car);
     else res.status(404).json({ message: 'Car not found' });
 });
+
+// POST a new booking
 app.post('/api/bookings', async (req, res) => {
     try {
         const newBooking = new Booking(req.body);
@@ -98,6 +102,8 @@ app.post('/api/bookings', async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to confirm booking.' });
     }
 });
+
+// GET all bookings for the admin dashboard
 app.get('/api/bookings', async (req, res) => {
     try {
         const bookings = await Booking.find({}).sort({ bookingDate: -1 });
@@ -106,6 +112,8 @@ app.get('/api/bookings', async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to fetch bookings.' });
     }
 });
+
+// POST to log in an admin
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     const correctUsername = process.env.ADMIN_USERNAME;
@@ -116,6 +124,8 @@ app.post('/api/login', (req, res) => {
         res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
 });
+
+// PATCH to update a booking's status
 app.patch('/api/bookings/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -124,30 +134,26 @@ app.patch('/api/bookings/:id', async (req, res) => {
         if (!updatedBooking) {
             return res.status(404).json({ success: false, message: 'Booking not found' });
         }
-        console.log(`Booking ${id} has been updated to ${status}`);
         res.json({ success: true, booking: updatedBooking });
     } catch (error) {
-        console.error('Error updating booking status:', error);
         res.status(500).json({ success: false, message: 'Failed to update booking status' });
     }
 });
 
+// DELETE a booking
 app.delete('/api/bookings/:id', async (req, res) => {
     try {
-        const { id } = req.params; // The ID of the booking to delete
+        const { id } = req.params;
         const deletedBooking = await Booking.findByIdAndDelete(id);
-
         if (!deletedBooking) {
             return res.status(404).json({ success: false, message: 'Booking not found' });
         }
-
-        console.log(`Booking ${id} has been deleted.`);
         res.json({ success: true, message: 'Booking deleted successfully' });
     } catch (error) {
-        console.error('Error deleting booking:', error);
         res.status(500).json({ success: false, message: 'Failed to delete booking' });
     }
 });
+
 
 // --- START SERVER ---
 app.listen(PORT, () => {
