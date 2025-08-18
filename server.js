@@ -1,4 +1,4 @@
-// server.js - UPDATED with Database-Driven Fleet Management
+// server.js - FINAL VERSION with Full Fleet Management API
 
 const express = require('express');
 const cors = require('cors');
@@ -16,14 +16,11 @@ app.use(express.json());
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
       console.log('✅ Successfully connected to MongoDB Atlas!');
-      // After connecting, run the initial data seeding
       seedInitialCars();
   })
   .catch(err => console.error('❌ Connection error', err));
 
 // --- DATABASE SCHEMAS & MODELS ---
-
-// Booking Schema
 const bookingSchema = new mongoose.Schema({
     carId: Number,
     carName: String,
@@ -42,7 +39,6 @@ const bookingSchema = new mongoose.Schema({
 });
 const Booking = mongoose.model('Booking', bookingSchema);
 
-// Car Schema
 const carSchema = new mongoose.Schema({
     id: { type: Number, required: true, unique: true },
     name: { type: String, required: true },
@@ -66,7 +62,6 @@ const initialCars = [
     { id: 7, name: "Tata Nexon", type: "Compact SUV", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 2000, image_url: "https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Nexon/9675/1751559838445/front-left-side-47.jpg?impolicy=resize&imwidth=420" }
 ];
 
-// This function will run once on startup to populate the database
 async function seedInitialCars() {
     try {
         const count = await Car.countDocuments();
@@ -83,16 +78,12 @@ async function seedInitialCars() {
 
 // --- API ENDPOINTS ---
 
-// GET all cars for the fleet page (fetches from database)
+// GET all cars (with availability filtering)
 app.get('/api/cars', async (req, res) => {
     const { pickup, dropoff } = req.query;
-
     try {
         const allCars = await Car.find({}).sort({ id: 1 });
-
-        if (!pickup || !dropoff) {
-            return res.json(allCars);
-        }
+        if (!pickup || !dropoff) return res.json(allCars);
         
         const requestedPickup = new Date(pickup);
         requestedPickup.setUTCHours(0, 0, 0, 0);
@@ -104,33 +95,62 @@ app.get('/api/cars', async (req, res) => {
             startDate: { $lte: requestedDropoff },
             endDate: { $gte: requestedPickup }
         });
-
         const unavailableCarIds = conflictingBookings.map(booking => booking.carId);
         const availableCars = allCars.filter(car => !unavailableCarIds.includes(car.id));
-
         res.json(availableCars);
-
     } catch (error) {
-        console.error('Error fetching cars:', error);
         res.status(500).json({ message: 'Error fetching cars' });
     }
 });
 
-// GET a single car by its ID (fetches from database)
+// GET a single car by its ID
 app.get('/api/cars/:id', async (req, res) => {
     try {
         const car = await Car.findOne({ id: parseInt(req.params.id) });
-        if (car) {
-            res.json(car);
-        } else {
-            res.status(404).json({ message: 'Car not found' });
-        }
+        if (car) res.json(car);
+        else res.status(404).json({ message: 'Car not found' });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching car' });
     }
 });
 
-// POST a new booking
+// === NEW: POST a new car ===
+app.post('/api/cars', async (req, res) => {
+    try {
+        const newCar = new Car(req.body);
+        await newCar.save();
+        res.status(201).json({ success: true, message: 'Car added successfully', car: newCar });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to add car' });
+    }
+});
+
+// === NEW: PATCH (update) an existing car ===
+app.patch('/api/cars/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedCar = await Car.findOneAndUpdate({ id: id }, req.body, { new: true });
+        if (!updatedCar) return res.status(404).json({ success: false, message: 'Car not found' });
+        res.json({ success: true, message: 'Car updated successfully', car: updatedCar });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to update car' });
+    }
+});
+
+// === NEW: DELETE a car ===
+app.delete('/api/cars/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedCar = await Car.findOneAndDelete({ id: id });
+        if (!deletedCar) return res.status(404).json({ success: false, message: 'Car not found' });
+        res.json({ success: true, message: 'Car deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to delete car' });
+    }
+});
+
+
+// --- Booking and Login Endpoints ---
 app.post('/api/bookings', async (req, res) => {
     try {
         const newBooking = new Booking(req.body);
@@ -141,7 +161,6 @@ app.post('/api/bookings', async (req, res) => {
     }
 });
 
-// GET all bookings for the admin dashboard
 app.get('/api/bookings', async (req, res) => {
     try {
         const bookings = await Booking.find({}).sort({ bookingDate: -1 });
@@ -151,7 +170,6 @@ app.get('/api/bookings', async (req, res) => {
     }
 });
 
-// POST to log in an admin
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     const correctUsername = process.env.ADMIN_USERNAME;
@@ -163,7 +181,6 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// PATCH to update a booking's status
 app.patch('/api/bookings/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -178,7 +195,6 @@ app.patch('/api/bookings/:id', async (req, res) => {
     }
 });
 
-// DELETE a booking
 app.delete('/api/bookings/:id', async (req, res) => {
     try {
         const { id } = req.params;
