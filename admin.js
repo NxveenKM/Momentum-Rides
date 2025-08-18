@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchBookings() {
         try {
             // Use your live Render URL here
-            const response = await fetch('https://momentum-rides-api-jaipur.onrender.com/api/bookings');
+            const response = await fetch('https://momentum-rides.onrender.com/api/bookings');
             if (!response.ok) {
                 throw new Error('Failed to fetch bookings');
             }
