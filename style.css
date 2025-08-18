@@ -1103,3 +1103,12 @@ body {
 
 .btn-approve { background-color: #5cb85c; } /* Green */
 .btn-decline { background-color: #d9534f; } /* Red */
+
+/* --- Booking Page Car Image Size --- */
+
+#car-details-container img {
+    width: 300px; /* You can adjust this value */
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+}

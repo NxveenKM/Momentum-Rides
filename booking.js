@@ -44,11 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 2. DISPLAY CAR DETAILS (Includes price) ---
+// --- 2. DISPLAY CAR DETAILS (Corrected) ---
     function displayCarDetails(car) {
-        // ... this function is correct and remains the same ...
         carDetailsContainer.innerHTML = `
-            <img src="${car.image_url}" alt="${car.name}" style="width: 300px;">
+            <img src="${car.image_url}" alt="${car.name}">
             <div>
                 <h3>Your Selected Car</h3>
                 <h2>${car.name}</h2>
