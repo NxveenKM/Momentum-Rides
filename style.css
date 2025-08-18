@@ -949,3 +949,49 @@ body {
     color: var(--text-dark);
     margin-left: 5px;
 }
+
+/* --- Admin Dashboard Styles --- */
+
+.nav-admin-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--white);
+}
+
+.admin-table-container {
+    overflow-x: auto; /* Allows horizontal scrolling on small screens */
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    font-size: 0.95rem;
+}
+
+.admin-table th, .admin-table td {
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.admin-table thead {
+    background-color: var(--primary-color);
+    color: var(--white);
+    font-family: var(--font-heading);
+}
+
+.admin-table tbody tr:nth-child(even) {
+    background-color: var(--neutral-light);
+}
+
+.admin-table tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.loading-row, .error-row {
+    text-align: center !important;
+    font-style: italic;
+    color: #555;
+    padding: 40px !important;
+}
