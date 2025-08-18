@@ -47,14 +47,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         cars.forEach(car => {
             const row = document.createElement('tr');
+            
+            // === THIS IS THE UPDATED PART ===
+            // We are now using <i> tags with Font Awesome icons
             row.innerHTML = `
                 <td>${car.id}</td>
                 <td>${car.name}</td>
                 <td>${car.type}</td>
                 <td>₹${car.price_per_day.toLocaleString()}</td>
                 <td class="actions-cell">
-                    <button class="action-btn btn-edit" data-id="${car.id}">Edit</button>
-                    <button class="action-btn btn-delete-car" data-id="${car.id}">Delete</button>
+                    <i class="action-icon icon-edit fas fa-pencil-alt" data-id="${car.id}" title="Edit Car"></i>
+                    <i class="action-icon icon-delete fas fa-trash-alt" data-id="${car.id}" title="Delete Car"></i>
                 </td>
             `;
             carsTbody.appendChild(row);
