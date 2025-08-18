@@ -1050,3 +1050,19 @@ body {
 .footer-bottom a.admin-link:hover {
     color: var(--white) !important;   /* Adds a subtle brightening effect on hover */
 }
+
+/* --- Footer Link Color Adjustment --- */
+
+/* Target the links in the 'Quick Links' and 'Contact Us' sections of the footer */
+.footer-links a,
+.footer-contact a {
+    color: #ccc;            /* Sets the default color to a soft light gray */
+    text-decoration: none;   /* Removes the underline */
+    transition: color 0.3s ease;
+}
+
+/* Change the color on hover to a clean white for a subtle, elegant effect */
+.footer-links a:hover,
+.footer-contact a:hover {
+    color: var(--white);
+}
