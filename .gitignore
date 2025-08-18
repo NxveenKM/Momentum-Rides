@@ -2,3 +2,4 @@
 /node_modules
 /MongoPass.txt
 /.env
+/.vscode-settings.json
