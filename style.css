@@ -1114,3 +1114,74 @@ body {
 .delete-icon:hover {
     color: #d9534f; /* Red */
 }
+
+/* --- Admin Fleet Management Styles --- */
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.admin-header .btn-primary-full {
+    width: auto;
+}
+
+.nav-cta-secondary {
+    background-color: transparent;
+    border: 1px solid var(--white);
+    color: var(--white);
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-right: 15px;
+    transition: all 0.3s ease;
+}
+
+.nav-cta-secondary:hover {
+    background-color: var(--white);
+    color: var(--primary-color);
+}
+
+.btn-edit { background-color: var(--secondary-color); }
+.btn-delete-car { background-color: #6c757d; }
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-content h2 {
+    font-family: var(--font-heading);
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: var(--primary-color);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
