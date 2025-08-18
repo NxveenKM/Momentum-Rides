@@ -58,6 +58,17 @@ document.addEventListener('DOMContentLoaded', () => {
             bookingsTbody.appendChild(row);
         });
     }
+    
+    // === NEW: LOGOUT BUTTON LOGIC ===
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            // Remove the authentication flag from session storage
+            sessionStorage.removeItem('isAdminAuthenticated');
+            // Redirect to the login page
+            window.location.href = 'login.html';
+        });
+    }
 
     fetchBookings();
 });
