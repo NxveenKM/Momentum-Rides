@@ -37,6 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const startDate = new Date(booking.startDate).toLocaleDateString();
             const endDate = new Date(booking.endDate).toLocaleDateString();
             const bookingDate = new Date(booking.bookingDate).toLocaleString();
+            const locationHTML = booking.location
+                ? `<br><small><strong>Location:</strong> ${booking.location}</small>`
+                : '';
 
             // Generate the HTML for the interactive status dropdown
             const statusDropdown = `
@@ -49,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             row.innerHTML = `
-                <td>${booking.userName}<br><small>${booking.userEmail}</small></td>
+                <td>${booking.userName}<br><small>${booking.userEmail}</small>${locationHTML}</td>
                 <td>${booking.carName}</td>
                 <td>${startDate} - ${endDate}</td>
                 <td>₹${booking.totalCost.toLocaleString()}</td>
