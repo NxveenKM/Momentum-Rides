@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedCar = null;
     let rentalDays = 0;
     let totalCost = 0;
+    let bookingLocation = '';
     const carDetailsContainer = document.getElementById('car-details-container');
     const summaryContent = document.getElementById('summary-content');
     const bookingForm = document.getElementById('booking-form-final');
@@ -13,12 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const carId = urlParams.get('carId');
         const location = urlParams.get('location');
+        bookingLocation = location;
         const pickupDate = urlParams.get('pickup');
         const dropoffDate = urlParams.get('dropoff');
 
         if (location) {
             const locationDiv = document.getElementById('summary-location');
-            locationDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i> Pick-up: <strong>${location || "Jaipur"}</strong>`;
+            locationDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i> Pick-up: <strong>${location}</strong>`;
         }
         if (pickupDate && dropoffDate) {
             document.getElementById('start-date').value = pickupDate;
@@ -110,7 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
             userEmail: document.getElementById('email').value,
             startDate: document.getElementById('start-date').value,
             endDate: document.getElementById('end-date').value,
-            totalCost: totalCost
+            totalCost: totalCost,
+            location: bookingLocation
         };
         try {
             // === THIS IS THE CORRECTED LINE ===
