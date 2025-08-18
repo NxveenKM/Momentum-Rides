@@ -1,4 +1,4 @@
-// server.js - UPDATED with Robust Availability Filtering
+// server.js - FINAL CORRECTED VERSION with Robust Availability Filtering
 
 const express = require('express');
 const cors = require('cors');
@@ -58,18 +58,14 @@ app.get('/api/cars', async (req, res) => {
     }
 
     try {
-        // To avoid timezone issues, we convert the incoming date strings to UTC dates at the start of the day.
         const requestedPickup = new Date(pickup);
         requestedPickup.setUTCHours(0, 0, 0, 0);
 
         const requestedDropoff = new Date(dropoff);
         requestedDropoff.setUTCHours(0, 0, 0, 0);
 
-        // Find all 'Approved' bookings that conflict with the requested date range
         const conflictingBookings = await Booking.find({
             status: 'Approved',
-            // An existing booking conflicts if its range overlaps with the requested range.
-            // (Existing Start < Requested End) AND (Existing End > Requested Start)
             startDate: { $lt: requestedDropoff },
             endDate: { $gt: requestedPickup }
         });
