@@ -1,4 +1,4 @@
-// admin.js - UPDATED with Status Management
+// admin.js - UPDATED with Status Dropdown Menu
 
 document.addEventListener('DOMContentLoaded', () => {
     // Security check remains the same
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const bookingsTbody = document.getElementById('bookings-tbody');
 
+    // Fetches all bookings from the server
     async function fetchBookings() {
         try {
             const response = await fetch('https://momentum-rides.onrender.com/api/bookings');
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Displays the bookings in the table with a dropdown
     function displayBookings(bookings) {
         bookingsTbody.innerHTML = '';
         if (bookings.length === 0) {
@@ -36,14 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const endDate = new Date(booking.endDate).toLocaleDateString();
             const bookingDate = new Date(booking.bookingDate).toLocaleString();
 
-            // Generate the HTML for the action buttons based on status
-            let actionButtons = '';
-            if (booking.status === 'Pending') {
-                actionButtons = `
-                    <button class="action-btn btn-approve" data-id="${booking._id}" data-status="Approved">Approve</button>
-                    <button class="action-btn btn-decline" data-id="${booking._id}" data-status="Declined">Decline</button>
-                `;
-            }
+            // Generate the HTML for the status dropdown
+            const statusDropdown = `
+                <select class="status-select status-${booking.status.toLowerCase()}" data-id="${booking._id}">
+                    <option value="Pending" ${booking.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                    <option value="Approved" ${booking.status === 'Approved' ? 'selected' : ''}>Approved</option>
+                    <option value="Declined" ${booking.status === 'Declined' ? 'selected' : ''}>Declined</option>
+                </select>
+            `;
 
             row.innerHTML = `
                 <td>${booking.userName}<br><small>${booking.userEmail}</small></td>
@@ -52,12 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>₹${booking.totalCost.toLocaleString()}</td>
                 <td>${bookingDate}</td>
                 <td><span class="status-badge status-${booking.status.toLowerCase()}">${booking.status}</span></td>
-                <td class="actions-cell">${actionButtons}</td>
+                <td>${statusDropdown}</td>
             `;
             bookingsTbody.appendChild(row);
         });
     }
 
+    // Sends a request to the server to update a booking's status
     async function updateBookingStatus(bookingId, newStatus) {
         try {
             const response = await fetch(`https://momentum-rides.onrender.com/api/bookings/${bookingId}`, {
@@ -67,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (!response.ok) throw new Error('Failed to update status');
             
-            // Refresh the table to show the change
+            // Refresh the table to show the change immediately
             fetchBookings(); 
         } catch (error) {
             console.error('Update Error:', error);
@@ -75,18 +78,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Event Delegation for action buttons
-    bookingsTbody.addEventListener('click', (event) => {
-        if (event.target.matches('.action-btn')) {
+    // Event Delegation for the status dropdowns
+    bookingsTbody.addEventListener('change', (event) => {
+        if (event.target.matches('.status-select')) {
             const bookingId = event.target.dataset.id;
-            const newStatus = event.target.dataset.status;
-            if (confirm(`Are you sure you want to ${newStatus.toLowerCase()} this booking?`)) {
-                updateBookingStatus(bookingId, newStatus);
-            }
+            const newStatus = event.target.value;
+            // Update the dropdown's own color
+            event.target.className = `status-select status-${newStatus.toLowerCase()}`;
+            // Send the update to the server
+            updateBookingStatus(bookingId, newStatus);
         }
     });
 
-    // Logout button logic remains the same
+    // Logout button logic
     const logoutButton = document.getElementById('logout-button');
     if (logoutButton) {
         logoutButton.addEventListener('click', () => {
@@ -95,5 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Initial load of bookings when the page opens
     fetchBookings();
 });
