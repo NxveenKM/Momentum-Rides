@@ -1,98 +1,93 @@
-// fleet.js - MODIFIED to fetch from the backend API
-
-// REMOVE the local import, we don't need it anymore
-// import { cars } from './cars.js';
+// fleet.js - UPDATED to send dates for live filtering (Complete File)
 
 document.addEventListener('DOMContentLoaded', () => {
     const fleetGrid = document.getElementById('fleet-grid');
     const loader = document.getElementById('loader');
     const filters = document.querySelectorAll('.filters input');
 
-        function handleHomepageSearch() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const pickupDate = urlParams.get('pickup');
-        const dropoffDate = urlParams.get('dropoff');
-
-        if (pickupDate && dropoffDate) {
-            console.log(`Search initiated from homepage for dates: ${pickupDate} to ${dropoffDate}`);
-
-            // Create a message to show the user their search is acknowledged
-            const searchInfo = document.createElement('div');
-            searchInfo.className = 'search-info';
-            searchInfo.innerHTML = `
-                <p>Showing all available cars. Your selected dates: <strong>${pickupDate}</strong> to <strong>${dropoffDate}</strong>.</p>
-                <small>(Live date-based filtering is coming soon!)</small>
-            `;
-
-            // Insert this message before the fleet layout
-            const pageContainer = document.querySelector('.page-container');
-            pageContainer.insertBefore(searchInfo, document.querySelector('.fleet-layout'));
-        }
-    }
-
     let allCars = []; // This will be populated from the API call
 
-    // --- 1. FETCH CAR DATA FROM OUR NEW BACKEND ---
+    // This function now reads URL params and builds the correct API request URL
     async function fetchCars() {
         loader.style.display = 'block';
         fleetGrid.style.display = 'none';
 
+        // Check for search parameters from the homepage
+        const urlParams = new URLSearchParams(window.location.search);
+        const pickupDate = urlParams.get('pickup');
+        const dropoffDate = urlParams.get('dropoff');
+
+        let fetchUrl = 'https://momentum-rides.onrender.com/api/cars';
+
+        // If dates are present in the URL, add them to the fetch request
+        if (pickupDate && dropoffDate) {
+            const queryParams = new URLSearchParams({
+                pickup: pickupDate,
+                dropoff: dropoffDate
+            });
+            fetchUrl += `?${queryParams.toString()}`;
+        }
+
         try {
-            // Use the browser's fetch API to make a request to our server
-            const response = await fetch('https://momentum-rides.onrender.com/api/cars');
-            
-            // Check if the request was successful
+            const response = await fetch(fetchUrl);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            // Parse the JSON response from the server
             const carsFromAPI = await response.json();
+            allCars = carsFromAPI;
+
+            // Update the info message based on the results
+            updateSearchInfo(pickupDate, dropoffDate, allCars.length);
             
-            allCars = carsFromAPI; // Store the fetched data
-            renderCars(allCars); // Render the cars on the page
+            // Apply sidebar filters on the initially fetched car list
+            applyFilters();
 
         } catch (error) {
             console.error("Could not fetch cars:", error);
             fleetGrid.innerHTML = '<p>Sorry, we could not load the car listings. Please try again later.</p>';
         } finally {
-            // Hide loader and show grid regardless of success or failure
             loader.style.display = 'none';
             fleetGrid.style.display = 'grid';
         }
     }
 
-    // --- 2. RENDER CARS TO THE PAGE (UPDATED) ---
+    // This new function displays the dynamic search message
+    function updateSearchInfo(pickup, dropoff, carCount) {
+        // Remove any existing search info message to prevent duplicates
+        const existingInfo = document.querySelector('.search-info');
+        if (existingInfo) {
+            existingInfo.remove();
+        }
+
+        if (pickup && dropoff) {
+            const searchInfo = document.createElement('div');
+            searchInfo.className = 'search-info';
+            searchInfo.innerHTML = `
+                <p>Found <strong>${carCount} available cars</strong> for your selected dates: <strong>${pickup}</strong> to <strong>${dropoff}</strong>.</p>
+            `;
+            const pageContainer = document.querySelector('.page-container');
+            pageContainer.insertBefore(searchInfo, document.querySelector('.fleet-layout'));
+        }
+    }
+
+    // Renders the filtered list of cars to the page
     function renderCars(carArray) {
         fleetGrid.innerHTML = '';
         if (carArray.length === 0) {
-            fleetGrid.innerHTML = '<p>No cars match your criteria.</p>';
+            fleetGrid.innerHTML = '<p>No cars match your criteria or are available for the selected dates.</p>';
             return;
         }
 
-        // Get the search parameters from the current page's URL
         const currentUrlParams = new URLSearchParams(window.location.search);
 
         carArray.forEach(car => {
             const carCard = document.createElement('div');
+            const bookingLink = new URLSearchParams({ carId: car.id });
+            if (currentUrlParams.has('location')) bookingLink.append('location', currentUrlParams.get('location'));
+            if (currentUrlParams.has('pickup')) bookingLink.append('pickup', currentUrlParams.get('pickup'));
+            if (currentUrlParams.has('dropoff')) bookingLink.append('dropoff', currentUrlParams.get('dropoff'));
+
             carCard.className = 'car-card';
-
-            // Start building the link for the booking page
-            const bookingLink = new URLSearchParams({
-                carId: car.id
-            });
-
-            // Carry forward the homepage search parameters if they exist
-            if (currentUrlParams.has('location')) {
-                bookingLink.append('location', currentUrlParams.get('location'));
-            }
-            if (currentUrlParams.has('pickup')) {
-                bookingLink.append('pickup', currentUrlParams.get('pickup'));
-            }
-            if (currentUrlParams.has('dropoff')) {
-                bookingLink.append('dropoff', currentUrlParams.get('dropoff'));
-            }
-
             carCard.innerHTML = `
                 <img src="${car.image_url}" alt="${car.name}">
                 <div class="card-content">
@@ -113,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 3. HANDLE FILTERING LOGIC (This function remains the same) ---
+    // Applies the sidebar filters (type, transmission, price) on the current list of cars
     function applyFilters() {
         const typeFilters = Array.from(document.querySelectorAll('input[name="type"]:checked')).map(el => el.value);
         const transmissionFilters = Array.from(document.querySelectorAll('input[name="transmission"]:checked')).map(el => el.value);
@@ -129,16 +124,21 @@ document.addEventListener('DOMContentLoaded', () => {
         renderCars(filteredCars);
     }
     
-    // Event listeners and price slider code remain the same...
+    // Event listeners for sidebar filters
     const priceRange = document.getElementById('price-range');
     const priceValue = document.getElementById('price-value');
-    priceRange.addEventListener('input', (e) => {
-        priceValue.textContent = e.target.value;
+    if (priceRange) {
+        priceRange.addEventListener('input', (e) => {
+            priceValue.textContent = e.target.value;
+            applyFilters();
+        });
+    }
+    filters.forEach(filter => {
+        if (filter.type === 'checkbox') {
+            filter.addEventListener('change', applyFilters);
+        }
     });
-    filters.forEach(filter => filter.addEventListener('change', applyFilters));
 
-    // --- INITIALIZE THE PAGE ---
-    handleHomepageSearch(); // First, check for parameters from the homepage
-    fetchCars();          // Second, fetch the car data from the server
+    // Initial load when the page is opened
+    fetchCars();
 });
-
