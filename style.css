@@ -1115,7 +1115,7 @@ body {
     color: #d9534f; /* Red */
 }
 
-/* --- Admin Fleet Management Styles --- */
+/* --- Admin Fleet Management Styles (UPDATED) --- */
 
 .admin-header {
     display: flex;
@@ -1145,8 +1145,28 @@ body {
     color: var(--primary-color);
 }
 
-.btn-edit { background-color: var(--secondary-color); }
-.btn-delete-car { background-color: #6c757d; }
+/* === NEW STYLES FOR ACTION ICONS === */
+.action-icon {
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: color 0.2s ease-in-out;
+}
+
+.icon-edit {
+    color: #6c757d; /* Neutral gray */
+}
+.icon-edit:hover {
+    color: var(--secondary-color); /* Blue */
+}
+
+.icon-delete {
+    color: #6c757d; /* Neutral gray */
+}
+.icon-delete:hover {
+    color: #d9534f; /* Red */
+}
+
 
 /* Modal Styles */
 .modal-overlay {
@@ -1184,4 +1204,16 @@ body {
     justify-content: flex-end;
     gap: 15px;
     margin-top: 30px;
+}
+
+/* === UPDATED STYLES FOR MODAL BUTTONS === */
+/* The primary "Save" button keeps its solid style */
+.modal-actions .btn-primary-full {
+    width: auto;
+    padding: 12px 30px;
+}
+/* The secondary "Cancel" button gets an outline style */
+.modal-actions .btn-secondary {
+    width: auto;
+    padding: 12px 30px;
 }
