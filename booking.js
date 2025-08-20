@@ -57,13 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const pickupDate = urlParams.get('pickup');
         const dropoffDate = urlParams.get('dropoff');
         const locationDetailsDiv = document.getElementById('booking-location-details');
-
+        
         if (locationDetailsDiv && location) {
             locationDetailsDiv.innerHTML = `
                 <h4><i class="fas fa-map-marker-alt"></i> Pickup Location</h4>
                 <p>${location}</p>
             `;
         }
+
 
         if (location) {
             const locationDiv = document.getElementById('summary-location');
