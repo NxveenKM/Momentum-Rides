@@ -54,13 +54,24 @@
                 </div>
                 
                 <form id="booking-form-final" class="booking-form-final">
+                    <!-- === SECTIONS REORDERED === -->
+                    <h3>Your Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="full-name">Full Name</label>
+                            <input type="text" id="full-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" required>
+                        </div>
+                    </div>
+
                     <h3>Booking Details</h3>
-                    <!-- === THIS IS THE UPDATED PART === -->
                     <div class="form-group">
                         <label for="booking-location-select">Pickup Location</label>
                         <select id="booking-location-select" required>
                             <option value="" disabled selected>Select a location</option>
-                            <!-- Locations will be populated by JavaScript -->
                         </select>
                     </div>
                     <div class="form-row">
@@ -71,19 +82,6 @@
                         <div class="form-group">
                             <label for="end-date">Drop-off Date</label>
                             <input type="date" id="end-date" required>
-                        </div>
-                    </div>
-                    <!-- === END OF UPDATED PART === -->
-
-                    <h3>Your Details</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="full-name">Full Name</label>
-                            <input type="text" id="full-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input type="email" id="email" required>
                         </div>
                     </div>
                     
@@ -99,8 +97,9 @@
             <!-- Right Side: Booking Summary -->
             <aside class="booking-summary">
                 <h3>Booking Summary</h3>
+                <!-- The summary will now be fully built by JavaScript -->
                 <div id="summary-content">
-                    <p>Please select a car and dates to see the summary.</p>
+                    <p>Please complete your booking details.</p>
                 </div>
                 <button type="submit" form="booking-form-final" class="btn-primary-full">Confirm Booking</button>
             </aside>
