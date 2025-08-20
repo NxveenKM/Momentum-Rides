@@ -200,16 +200,10 @@ body {
     color: var(--secondary-color);
 }
 
-.input-group input {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    background-color: var(--neutral-light);
-}
+/* --- Styles for Booking Widget Inputs & Select --- */
 
-/* --- Style for Booking Widget Dropdown --- */
+/* This unified rule makes the dropdown and date pickers look identical */
+.booking-widget input,
 .booking-widget select {
     width: 100%;
     padding: 12px;
@@ -217,6 +211,12 @@ body {
     border-radius: 5px;
     font-size: 1rem;
     background-color: var(--neutral-light);
+    color: var(--text-dark);
+    font-family: var(--font-body);
+}
+
+/* This adds the custom arrow only to the dropdown */
+.booking-widget select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
