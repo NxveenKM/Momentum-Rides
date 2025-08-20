@@ -1249,23 +1249,35 @@ body {
     align-self: end;    /* Align it to the bottom */
 }
 
-/* --- Fleet Page Sorting Styles --- */
+/* --- Fleet Page Sorting Styles (UPDATED) --- */
 .sort-container {
-    margin-bottom: 25px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    margin-bottom: 25px; /* Add space below the sort dropdown */
 }
 
 .sort-container label {
-    margin-right: 10px;
+    display: block; /* Make label appear on its own line */
+    margin-bottom: 10px;
     font-weight: 600;
-    color: var(--text-dark);
+    font-family: var(--font-heading); /* Use the heading font for consistency */
+    color: var(--primary-color);
+    font-size: 1.2rem; /* Match the other filter headings */
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
 }
 
 .sort-container select {
-    padding: 8px 12px;
-    border-radius: 5px;
+    width: 100%; /* Make the dropdown full-width */
+    padding: 10px;
     border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
     background-color: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23333333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+    cursor: pointer;
 }
