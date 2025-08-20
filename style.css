@@ -624,6 +624,25 @@ body {
 
 /* --- Booking Page Specific Styles --- */
 
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+}
+.summary-label {
+    color: #555;
+}
+.summary-value {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.summary-divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
 .booking-form-final .form-group {
     margin-bottom: 20px;
 }
