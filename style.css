@@ -624,6 +624,10 @@ body {
 
 /* --- Booking Page Specific Styles --- */
 
+.booking-form-final .form-group {
+    margin-bottom: 20px;
+}
+
 #booking-location-select {
     width: 100%;
     padding: 10px;
