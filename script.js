@@ -1,4 +1,4 @@
-// script.js for index.html - UPDATED with Date Validation
+// script.js for index.html
 
 document.addEventListener('DOMContentLoaded', function() {
     // --- Disable Past Dates in Booking Widget ---
@@ -16,17 +16,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     setMinDateForPickers();
 
-    // --- NEW: Link Start and End Dates ---
+    // --- Link Start and End Dates ---
     function linkDatePickers() {
         const pickupDateInput = document.getElementById('pickup-date');
         const dropoffDateInput = document.getElementById('dropoff-date');
 
         if (pickupDateInput && dropoffDateInput) {
             pickupDateInput.addEventListener('change', () => {
-                // When the start date changes, set the minimum for the end date
                 if (pickupDateInput.value) {
                     dropoffDateInput.min = pickupDateInput.value;
-                    // If the current end date is now invalid, clear it
                     if (dropoffDateInput.value < pickupDateInput.value) {
                         dropoffDateInput.value = '';
                     }
@@ -35,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     linkDatePickers();
-    // --- END of new block ---
 
     // Mobile Navigation
     const hamburger = document.querySelector('.hamburger');
