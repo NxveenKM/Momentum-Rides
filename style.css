@@ -1241,3 +1241,10 @@ body {
     background-color: #5a6268;
     border-color: #5a6268;
 }
+
+/* --- Fleet Management Modal - New Type Field --- */
+#new-car-type-group {
+    grid-column: 2 / 3; /* Position it in the second column */
+    grid-row: 1 / 2;    /* On the same row as the dropdown */
+    align-self: end;    /* Align it to the bottom */
+}
