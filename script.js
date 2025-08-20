@@ -1,6 +1,35 @@
-// script.js for index.html
+// script.js for index.html - UPDATED with Dynamic Locations
 
 document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- NEW: Fetch and populate pickup locations ---
+    async function populateLocationsDropdown() {
+        const locationSelect = document.getElementById('pickup-location');
+        if (!locationSelect) return;
+
+        try {
+            const response = await fetch('https://momentum-rides.onrender.com/api/locations');
+            if (!response.ok) throw new Error('Failed to fetch locations');
+            
+            const locations = await response.json();
+            
+            locations.sort().forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = location;
+                locationSelect.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error('Error populating locations:', error);
+            // Optionally, show an error to the user
+            const errorOption = document.createElement('option');
+            errorOption.textContent = 'Could not load locations';
+            errorOption.disabled = true;
+            locationSelect.appendChild(errorOption);
+        }
+    }
+
     // --- Disable Past Dates in Booking Widget ---
     function setMinDateForPickers() {
         const today = new Date().toISOString().split('T')[0];
@@ -14,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
             dropoffDateInput.setAttribute('min', today);
         }
     }
-    setMinDateForPickers();
 
     // --- Link Start and End Dates ---
     function linkDatePickers() {
@@ -32,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    linkDatePickers();
 
     // Mobile Navigation
     const hamburger = document.querySelector('.hamburger');
@@ -77,6 +104,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const location = document.getElementById('pickup-location').value;
             const pickupDate = document.getElementById('pickup-date').value;
             const dropoffDate = document.getElementById('dropoff-date').value;
+            if (!location) {
+                alert('Please select a pick-up location.');
+                return;
+            }
             if (!pickupDate || !dropoffDate) {
                 alert('Please select both a pick-up and drop-off date.');
                 return;
@@ -89,4 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = `fleet.html?${queryParams.toString()}`;
         });
     }
+
+    // --- Initialize all homepage functions ---
+    populateLocationsDropdown();
+    setMinDateForPickers();
+    linkDatePickers();
 });
