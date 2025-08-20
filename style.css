@@ -926,6 +926,12 @@ body {
     color: var(--primary-color);
 }
 
+.team-member-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+}
+
 .cta-section {
     text-align: center;
     padding: 60px 20px;
