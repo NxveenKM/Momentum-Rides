@@ -1,4 +1,4 @@
-// booking.js - FINAL CORRECTED VERSION
+// booking.js - UPDATED with Comprehensive Summary
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Disable Past Dates in Booking Form ---
@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Failed to fetch locations');
             const locations = await response.json();
             
-            // Clear placeholder and add new options
             locationSelect.innerHTML = '<option value="" disabled selected>Select a location</option>';
             
             locations.sort().forEach(location => {
@@ -54,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 option.textContent = location;
                 locationSelect.appendChild(option);
             });
-            // After populating, check if a location was passed in the URL
             const urlParams = new URLSearchParams(window.location.search);
             const locationFromUrl = urlParams.get('location');
             if (locationFromUrl && locations.includes(locationFromUrl)) {
@@ -110,50 +108,74 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // --- 3. CALCULATE AND UPDATE BOOKING SUMMARY ---
+    // --- 3. CALCULATE AND UPDATE BOOKING SUMMARY (UPDATED) ---
     function updateSummary() {
         if (!selectedCar) {
-            summaryContent.innerHTML = '<p>Please select a valid car to see the summary.</p>';
+            summaryContent.innerHTML = '<p>Please complete your booking details.</p>';
             return;
         }
-        const startDate = new Date(document.getElementById('start-date').value);
-        const endDate = new Date(document.getElementById('end-date').value);
+        const location = locationSelect.value;
+        const startDateValue = document.getElementById('start-date').value;
+        const endDateValue = document.getElementById('end-date').value;
+        
+        const startDate = new Date(startDateValue);
+        const endDate = new Date(endDateValue);
+        
         rentalDays = 0;
         if (endDate > startDate) {
             const timeDiff = endDate.getTime() - startDate.getTime();
             rentalDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
         }
+
         const baseCost = selectedCar.price_per_day * rentalDays;
         let extrasCost = 0;
         document.querySelectorAll('input[name="extra"]:checked').forEach(extra => {
             extrasCost += parseInt(extra.dataset.price) * rentalDays;
         });
         totalCost = baseCost + extrasCost;
-        if (rentalDays > 0) {
-            summaryContent.innerHTML = `
-                <div class="summary-line">
-                    <span>${selectedCar.name} (₹${selectedCar.price_per_day.toLocaleString()} x ${rentalDays} days)</span>
-                    <span>₹${baseCost.toLocaleString()}</span>
-                </div>
-                <div class="summary-line">
-                    <span>Extras Cost</span>
-                    <span>₹${extrasCost.toLocaleString()}</span>
-                </div>
-                <div class="summary-total">
-                    <span>Total Cost</span>
-                    <span>₹${totalCost.toLocaleString()}</span>
+
+        // Build the new summary HTML
+        let summaryHTML = `
+            <div class="summary-item">
+                <span class="summary-label">Location</span>
+                <span class="summary-value">${location || 'Not selected'}</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Dates</span>
+                <span class="summary-value">${startDateValue && endDateValue ? `${startDateValue} to ${endDateValue}` : 'Not selected'}</span>
+            </div>
+            <hr class="summary-divider">
+            <div class="summary-item">
+                <span class="summary-label">${selectedCar.name} (${rentalDays} days)</span>
+                <span class="summary-value">₹${baseCost.toLocaleString()}</span>
+            </div>
+        `;
+        
+        if (extrasCost > 0) {
+            summaryHTML += `
+                <div class="summary-item">
+                    <span class="summary-label">Extras</span>
+                    <span class="summary-value">₹${extrasCost.toLocaleString()}</span>
                 </div>
             `;
-        } else {
-            summaryContent.innerHTML = '<p>Please select valid pick-up and drop-off dates.</p>';
         }
+
+        summaryHTML += `
+            <hr class="summary-divider">
+            <div class="summary-total">
+                <span>Total Cost</span>
+                <span>₹${totalCost.toLocaleString()}</span>
+            </div>
+        `;
+
+        summaryContent.innerHTML = summaryHTML;
     }
     
     // --- 4. HANDLE FORM SUBMISSION ---
     bookingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!selectedCar || rentalDays <= 0) {
-            alert('Please select a car and valid rental dates before confirming.');
+        if (!selectedCar || rentalDays <= 0 || !locationSelect.value) {
+            alert('Please select a car, location, and valid rental dates before confirming.');
             return;
         }
         const bookingData = {
@@ -174,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const result = await response.json();
             if (result.success) {
-                alert('Booking Confirmed! A confirmation for your August 2025 trip will be sent shortly. Thank you!');
+                alert('Booking Confirmed! A confirmation for your trip will be sent shortly. Thank you!');
                 window.location.href = 'index.html';
             } else {
                 throw new Error(result.message);
