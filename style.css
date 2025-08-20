@@ -1248,3 +1248,24 @@ body {
     grid-row: 1 / 2;    /* On the same row as the dropdown */
     align-self: end;    /* Align it to the bottom */
 }
+
+/* --- Fleet Page Sorting Styles --- */
+.sort-container {
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.sort-container label {
+    margin-right: 10px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.sort-container select {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+}
