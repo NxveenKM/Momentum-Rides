@@ -1,4 +1,4 @@
-// fleet-management.js - FINAL CORRECTED VERSION
+// fleet-management.js - UPDATED with Dynamic Car Type Logic
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Security Check ---
@@ -17,28 +17,58 @@ document.addEventListener('DOMContentLoaded', () => {
     const carForm = document.getElementById('car-form');
     const cancelBtn = document.getElementById('cancel-btn');
     const logoutButton = document.getElementById('logout-button');
+    const carTypeSelect = document.getElementById('car-type-select');
+    const newCarTypeGroup = document.getElementById('new-car-type-group');
+    const newCarTypeInput = document.getElementById('car-type-new');
 
-    let allCars = []; // To store the fetched car data
+    let allCars = [];
+    let carTypes = [];
 
-    // --- API URL ---
-    const API_URL = 'https://momentum-rides.onrender.com/api/cars';
+    // --- API URLs ---
+    const CARS_API_URL = 'https://momentum-rides.onrender.com/api/cars';
+    const TYPES_API_URL = 'https://momentum-rides.onrender.com/api/cars/types';
 
     // --- Functions ---
 
-    // 1. Fetch all cars from the server
-    async function fetchCars() {
+    // 1. Fetch all initial data (cars and types)
+    async function initializePage() {
         try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('Failed to fetch cars');
-            allCars = await response.json();
+            // Fetch cars and types at the same time for efficiency
+            const [carsResponse, typesResponse] = await Promise.all([
+                fetch(CARS_API_URL),
+                fetch(TYPES_API_URL)
+            ]);
+            if (!carsResponse.ok) throw new Error('Failed to fetch cars');
+            if (!typesResponse.ok) throw new Error('Failed to fetch car types');
+            
+            allCars = await carsResponse.json();
+            carTypes = await typesResponse.json();
+            
             displayCars(allCars);
+            populateCarTypeDropdown();
         } catch (error) {
-            console.error('Error fetching cars:', error);
-            carsTbody.innerHTML = `<tr><td colspan="5" class="error-row">Could not load fleet.</td></tr>`;
+            console.error('Initialization Error:', error);
+            carsTbody.innerHTML = `<tr><td colspan="5" class="error-row">Could not load fleet data.</td></tr>`;
         }
     }
 
-    // 2. Display cars in the table
+    // 2. Populate the car type dropdown menu
+    function populateCarTypeDropdown() {
+        carTypeSelect.innerHTML = ''; // Clear existing options
+        carTypes.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            carTypeSelect.appendChild(option);
+        });
+        // Add the 'Add New...' option at the end
+        const addNewOption = document.createElement('option');
+        addNewOption.value = 'add_new';
+        addNewOption.textContent = 'Add New Type...';
+        carTypeSelect.appendChild(addNewOption);
+    }
+
+    // 3. Display cars in the table
     function displayCars(cars) {
         carsTbody.innerHTML = '';
         if (cars.length === 0) {
@@ -61,9 +91,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Modal Handling
+    // 4. Modal Handling
     function openModal(mode = 'add', carData = null) {
         carForm.reset();
+        newCarTypeGroup.style.display = 'none'; // Hide the new type field by default
+
         if (mode === 'add') {
             modalTitle.textContent = 'Add New Car';
             document.getElementById('car-db-id').value = '';
@@ -74,12 +106,20 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('car-id').value = carData.id;
             document.getElementById('car-id').readOnly = true;
             document.getElementById('car-name').value = carData.name;
-            document.getElementById('car-type').value = carData.type;
             document.getElementById('car-price').value = carData.price_per_day;
             document.getElementById('car-passengers').value = carData.passengers;
             document.getElementById('car-luggage').value = carData.luggage;
             document.getElementById('car-transmission').value = carData.transmission;
             document.getElementById('car-image').value = carData.image_url;
+
+            // Smartly handle the car type dropdown for editing
+            if (carTypes.includes(carData.type)) {
+                carTypeSelect.value = carData.type;
+            } else {
+                carTypeSelect.value = 'add_new';
+                newCarTypeGroup.style.display = 'block';
+                newCarTypeInput.value = carData.type;
+            }
         }
         modal.style.display = 'flex';
     }
@@ -88,15 +128,25 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = 'none';
     }
 
-    // 4. Handle Form Submission (Create or Update)
+    // 5. Handle Form Submission (Create or Update)
     async function handleFormSubmit(event) {
         event.preventDefault();
         const isEditing = !!document.getElementById('car-db-id').value;
 
+        // Determine the car type from either the dropdown or the new input field
+        let carType = carTypeSelect.value;
+        if (carType === 'add_new') {
+            carType = newCarTypeInput.value.trim();
+            if (!carType) {
+                alert('Please enter a name for the new car type.');
+                return;
+            }
+        }
+
         const carData = {
             id: document.getElementById('car-id').value,
             name: document.getElementById('car-name').value,
-            type: document.getElementById('car-type').value,
+            type: carType,
             price_per_day: document.getElementById('car-price').value,
             passengers: document.getElementById('car-passengers').value,
             luggage: document.getElementById('car-luggage').value,
@@ -104,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             image_url: document.getElementById('car-image').value,
         };
 
-        const url = isEditing ? `${API_URL}/${carData.id}` : API_URL;
+        const url = isEditing ? `${CARS_API_URL}/${carData.id}` : CARS_API_URL;
         const method = isEditing ? 'PATCH' : 'POST';
 
         try {
@@ -116,19 +166,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'add'} car`);
             
             closeModal();
-            fetchCars();
+            initializePage(); // Re-fetch everything to update the list and dropdown
         } catch (error) {
             console.error('Form submission error:', error);
             alert(`Error: Could not save the car. Please try again.`);
         }
     }
 
-    // 5. Handle Car Deletion
+    // 6. Handle Car Deletion
     async function deleteCar(carId) {
         try {
-            const response = await fetch(`${API_URL}/${carId}`, { method: 'DELETE' });
+            const response = await fetch(`${CARS_API_URL}/${carId}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete car');
-            fetchCars();
+            initializePage(); // Re-fetch everything
         } catch (error) {
             console.error('Delete error:', error);
             alert('Error: Could not delete the car.');
@@ -136,31 +186,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Event Listeners ---
-
     addCarBtn.addEventListener('click', () => openModal('add'));
-
     cancelBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            closeModal();
+        if (event.target === modal) closeModal();
+    });
+    carForm.addEventListener('submit', handleFormSubmit);
+
+    // Show/hide the new car type input field
+    carTypeSelect.addEventListener('change', () => {
+        if (carTypeSelect.value === 'add_new') {
+            newCarTypeGroup.style.display = 'block';
+            newCarTypeInput.required = true;
+        } else {
+            newCarTypeGroup.style.display = 'none';
+            newCarTypeInput.required = false;
         }
     });
 
-    carForm.addEventListener('submit', handleFormSubmit);
-
-    // === THIS IS THE CORRECTED PART ===
-    // The event listener now looks for the correct icon classes
+    // Event Delegation for Edit/Delete icons
     carsTbody.addEventListener('click', (event) => {
         const target = event.target;
         const carId = target.dataset.id;
-
         if (target.matches('.icon-edit')) {
             const carToEdit = allCars.find(car => car.id == carId);
-            if (carToEdit) {
-                openModal('edit', carToEdit);
-            }
+            if (carToEdit) openModal('edit', carToEdit);
         }
-
         if (target.matches('.icon-delete')) {
             if (confirm(`Are you sure you want to delete the car with ID ${carId}?`)) {
                 deleteCar(carId);
@@ -177,5 +228,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Initial Load ---
-    fetchCars();
+    initializePage();
 });
