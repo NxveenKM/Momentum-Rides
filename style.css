@@ -552,6 +552,7 @@ body {
 /* Modern Range Slider Styles */
 #price-range {
     -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     height: 8px;
     background: #ddd;
@@ -867,13 +868,6 @@ body {
     color: var(--primary-color);
 }
 
-/* Responsive adjustment for about section */
-@media (max-width: 768px) {
-    .about-section {
-        flex-direction: column;
-    }
-}
-
 /* --- Contact Page Styles --- */
 
 .contact-layout {
@@ -929,13 +923,6 @@ body {
     width: 100%;
     height: 300px;
     border: none;
-}
-
-/* Responsive adjustments for contact page */
-@media (max-width: 992px) {
-    .contact-layout {
-        grid-template-columns: 1fr; /* Stack columns on smaller screens */
-    }
 }
 
 /* --- Style for Homepage Search Info on Fleet Page --- */
@@ -1318,4 +1305,38 @@ body {
     background-position: right 10px center;
     background-size: 1em;
     cursor: pointer;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
+    .fleet-grid, .features-grid, .footer-content {
+        grid-template-columns: 1fr 1fr;
+    }
+    .hero h1 { font-size: 2.8rem; }
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        left: -100%;
+        top: 80px;
+        flex-direction: column;
+        background-color: var(--primary-color);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+    }
+    .nav-menu.active {
+        left: 0;
+    }
+    .nav-item { margin: 20px 0; }
+    .hamburger { display: block; }
+    .hamburger.active .bar:nth-child(2) { opacity: 0; }
+    .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+    .booking-widget form { flex-direction: column; align-items: stretch; }
+    .steps-container { flex-direction: column; align-items: center; }
+    .fleet-grid, .features-grid, .footer-content { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2.2rem; }
 }
