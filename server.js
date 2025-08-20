@@ -1,4 +1,4 @@
-// server.js - UPDATED with Endpoint to Fetch Car Types
+// server.js - UPDATED with Corrected Locations
 
 const express = require('express');
 const cors = require('cors');
@@ -75,6 +75,14 @@ async function seedInitialCars() {
     }
 }
 
+// === CORRECTED list of pickup locations ===
+const pickupLocations = [
+    "Jaipur International Airport (JAI)",
+    "Jaipur Junction Railway Station",
+    "Sindhi Camp Bus Station",
+    "Mall of Jaipur"
+];
+
 
 // --- API ENDPOINTS ---
 
@@ -103,15 +111,19 @@ app.get('/api/cars', async (req, res) => {
     }
 });
 
-// === NEW: GET all unique car types ===
+// GET all unique car types
 app.get('/api/cars/types', async (req, res) => {
     try {
-        // .distinct() is a powerful MongoDB function to get unique values for a field
         const types = await Car.distinct('type');
         res.json(types);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching car types' });
     }
+});
+
+// GET all pickup locations
+app.get('/api/locations', (req, res) => {
+    res.json(pickupLocations);
 });
 
 // GET a single car by its ID
