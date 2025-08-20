@@ -1,4 +1,4 @@
-// booking.js - UPDATED with Comprehensive Summary
+// booking.js - UPDATED with Correct Same-Day Rental Calculation
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Disable Past Dates in Booking Form ---
@@ -118,13 +118,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const startDateValue = document.getElementById('start-date').value;
         const endDateValue = document.getElementById('end-date').value;
         
-        const startDate = new Date(startDateValue);
-        const endDate = new Date(endDateValue);
-        
         rentalDays = 0;
-        if (endDate > startDate) {
-            const timeDiff = endDate.getTime() - startDate.getTime();
-            rentalDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        if (startDateValue && endDateValue) {
+            const startDate = new Date(startDateValue);
+            const endDate = new Date(endDateValue);
+
+            if (endDate >= startDate) {
+                // === THIS IS THE FIX ===
+                // Calculate the difference in milliseconds
+                const timeDiff = endDate.getTime() - startDate.getTime();
+                // Convert milliseconds to days and round up
+                const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                // A same-day rental will be 0 days, so we set it to a minimum of 1
+                rentalDays = dayDiff === 0 ? 1 : dayDiff;
+            }
         }
 
         const baseCost = selectedCar.price_per_day * rentalDays;
@@ -145,11 +152,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="summary-value">${startDateValue && endDateValue ? `${startDateValue} to ${endDateValue}` : 'Not selected'}</span>
             </div>
             <hr class="summary-divider">
-            <div class="summary-item">
-                <span class="summary-label">${selectedCar.name} (${rentalDays} days)</span>
-                <span class="summary-value">₹${baseCost.toLocaleString()}</span>
-            </div>
         `;
+
+        if (rentalDays > 0) {
+            summaryHTML += `
+                <div class="summary-item">
+                    <span class="summary-label">${selectedCar.name} (${rentalDays} day${rentalDays > 1 ? 's' : ''})</span>
+                    <span class="summary-value">₹${baseCost.toLocaleString()}</span>
+                </div>
+            `;
+        }
         
         if (extrasCost > 0) {
             summaryHTML += `
@@ -160,13 +172,17 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        summaryHTML += `
-            <hr class="summary-divider">
-            <div class="summary-total">
-                <span>Total Cost</span>
-                <span>₹${totalCost.toLocaleString()}</span>
-            </div>
-        `;
+        if (rentalDays > 0) {
+            summaryHTML += `
+                <hr class="summary-divider">
+                <div class="summary-total">
+                    <span>Total Cost</span>
+                    <span>₹${totalCost.toLocaleString()}</span>
+                </div>
+            `;
+        } else {
+            summaryHTML += `<p>Please select valid dates to see the cost.</p>`;
+        }
 
         summaryContent.innerHTML = summaryHTML;
     }
