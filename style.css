@@ -457,42 +457,9 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- Responsive Design --- */
-@media (max-width: 992px) {
-    .fleet-grid, .features-grid, .footer-content {
-        grid-template-columns: 1fr 1fr;
-    }
-    .hero h1 { font-size: 2.8rem; }
-}
-
-@media (max-width: 768px) {
-    .nav-menu {
-        position: fixed;
-        left: -100%;
-        top: 80px;
-        flex-direction: column;
-        background-color: var(--primary-color);
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-    }
-    .nav-menu.active {
-        left: 0;
-    }
-    .nav-item { margin: 20px 0; }
-    .hamburger { display: block; }
-    .hamburger.active .bar:nth-child(2) { opacity: 0; }
-    .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-    .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
-
-    .booking-widget form { flex-direction: column; align-items: stretch; }
-    .steps-container { flex-direction: column; align-items: center; }
-    .fleet-grid, .features-grid, .footer-content { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 2.2rem; }
-}
-/* --- Fleet Page Specific Styles --- */
+/* --- Fleet Page Specific Styles (REDESIGNED) --- */
 .page-container {
-    padding-top: 120px; /* Space for sticky header */
+    padding-top: 120px;
     max-width: 1200px;
     margin: 0 auto;
     padding-bottom: 60px;
@@ -509,43 +476,114 @@ body {
 .fleet-layout {
     display: flex;
     gap: 30px;
+    align-items: flex-start;
 }
 
 .filters {
     width: 300px;
     flex-shrink: 0;
-    background: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
+    background: var(--white);
+    padding: 25px;
+    border-radius: 12px;
     height: fit-content;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.filters h3 {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .filter-group {
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .filter-group h4 {
     font-family: var(--font-heading);
-    margin-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    margin-bottom: 15px;
 }
 
 .filter-group label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23333333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
     cursor: pointer;
 }
 
-.filter-group input[type="range"] {
+.price-range-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 8px;
+}
+
+.filter-loading {
+    font-style: italic;
+    color: #888;
+}
+
+/* Modern Range Slider Styles */
+#price-range {
+    -webkit-appearance: none;
     width: 100%;
+    height: 8px;
+    background: #ddd;
+    border-radius: 5px;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+}
+#price-range:hover {
+    opacity: 1;
+}
+#price-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--secondary-color);
+    cursor: pointer;
+    border-radius: 50%;
+}
+#price-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--secondary-color);
+    cursor: pointer;
+    border-radius: 50%;
 }
 
 .fleet-grid-container {
     flex-grow: 1;
 }
 
-/* Override grid columns for this specific page */
 #fleet-grid.fleet-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
