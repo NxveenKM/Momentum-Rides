@@ -1,4 +1,4 @@
-// fleet-management.js - DEBUGGING VERSION
+// fleet-management.js - FINAL CORRECTED VERSION
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Security Check ---
@@ -125,10 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = 'none';
     }
 
-    // 5. Handle Form Submission (Create or Update) - WITH DEBUGGING
+    // 5. Handle Form Submission (Create or Update)
     async function handleFormSubmit(event) {
         event.preventDefault();
-        console.log('--- DEBUG: Form Submitted ---'); // DEBUG
         const isEditing = !!document.getElementById('car-db-id').value;
 
         let carType = carTypeSelect.value;
@@ -139,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
         }
-        console.log('DEBUG: Determined car type:', carType); // DEBUG
 
         const carData = {
             id: document.getElementById('car-id').value,
@@ -152,11 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
             image_url: document.getElementById('car-image').value,
         };
 
-        console.log('DEBUG: Data being sent to server:', carData); // DEBUG
-
         const url = isEditing ? `${CARS_API_URL}/${carData.id}` : CARS_API_URL;
         const method = isEditing ? 'PATCH' : 'POST';
-        console.log('DEBUG: Sending request to URL:', url, 'with method:', method); // DEBUG
 
         try {
             const response = await fetch(url, {
@@ -166,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (!response.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'add'} car`);
             
-            console.log('DEBUG: Server responded successfully.'); // DEBUG
             closeModal();
             initializePage();
         } catch (error) {
