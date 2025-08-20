@@ -40,7 +40,10 @@
                         <div class="input-group">
                             <label for="pickup-location"><i class="fas fa-map-marker-alt"></i> Pick-up Location</label>
                             <!-- === THIS IS THE UPDATED PART === -->
-                            <input type="text" id="pickup-location" placeholder="City, Airport, Address (Optional)">
+                            <select id="pickup-location" required>
+                                <option value="" disabled selected>Select a location</option>
+                                <!-- Locations will be populated by JavaScript -->
+                            </select>
                         </div>
                         <div class="input-group">
                             <label for="pickup-date"><i class="fas fa-calendar-alt"></i> Pick-up Date</label>
