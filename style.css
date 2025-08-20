@@ -512,7 +512,7 @@ body {
 }
 
 .filters {
-    width: 250px;
+    width: 300px;
     flex-shrink: 0;
     background: #f9f9f9;
     padding: 20px;
