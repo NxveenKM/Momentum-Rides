@@ -34,18 +34,16 @@
         <div class="fleet-layout">
             <!-- Filtering Sidebar -->
             <aside class="filters">
-                <!-- === SORTING DROPDOWN MOVED HERE === -->
-                <div class="sort-container">
-                    <label for="sort-by">Sort by</label>
+                <!-- === UPDATED SIDEBAR STRUCTURE === -->
+                <h3>Sort & Filter</h3>
+                <div class="filter-group">
+                    <h4>Sort by</h4>
                     <select id="sort-by">
                         <option value="default">Default</option>
                         <option value="price-asc">Price: Low to High</option>
                         <option value="price-desc">Price: High to Low</option>
                     </select>
                 </div>
-                <!-- === END OF MOVED PART === -->
-
-                <h3>Filter Options</h3>
                 <div class="filter-group">
                     <h4>Car Type</h4>
                     <div id="car-type-filters">
@@ -59,8 +57,11 @@
                 </div>
                 <div class="filter-group">
                     <h4>Price Range (per day)</h4>
-                    <label for="price-range">Max: ₹<span id="price-value">5000</span></label>
                     <input type="range" id="price-range" min="1500" max="5000" step="100" value="5000">
+                    <div class="price-range-values">
+                        <span>₹1,500</span>
+                        <span>Max: ₹<span id="price-value">5,000</span></span>
+                    </div>
                 </div>
             </aside>
 
