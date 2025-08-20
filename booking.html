@@ -6,15 +6,14 @@
     <title>Complete Your Booking - Momentum Rides</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
     <header class="header scrolled">
         <nav class="navbar">
-            <a href="index.html" class="nav-logo" style="display: flex; align-items: center;">
-                <!-- === THIS IS THE CORRECTED SVG === -->
+            <a href="index.html" class="nav-logo">
                 <svg width="240" height="40" viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg">
                     <!-- Icon: Steering Wheel -->
                     <g transform="translate(25, 25)">
@@ -37,22 +36,45 @@
                 <li class="nav-item"><a href="about.html" class="nav-link">About Us</a></li>
                 <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
             </ul>
-             <a href="fleet.html" class="nav-cta">Book Now</a>
-             <div class="hamburger">
+            <a href="fleet.html" class="nav-cta">Book Now</a>
+            <div class="hamburger">
                 <span class="bar"></span><span class="bar"></span><span class="bar"></span>
             </div>
         </nav>
     </header>
+
     <main class="page-container">
         <h1 class="page-title">Complete Your Booking</h1>
         <div class="booking-layout">
+            
+            <!-- Left Side: Car Details & Form -->
             <div class="booking-main">
                 <div id="car-details-container">
-                    <div class="loader"></div>
+                    <!-- Car details will be loaded here -->
                 </div>
-                <div class="booking-location-details" id="booking-location-details">
-                </div>
+                
                 <form id="booking-form-final" class="booking-form-final">
+                    <h3>Booking Details</h3>
+                    <!-- === THIS IS THE UPDATED PART === -->
+                    <div class="form-group">
+                        <label for="booking-location-select">Pickup Location</label>
+                        <select id="booking-location-select" required>
+                            <option value="" disabled selected>Select a location</option>
+                            <!-- Locations will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start-date">Pick-up Date</label>
+                            <input type="date" id="start-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end-date">Drop-off Date</label>
+                            <input type="date" id="end-date" required>
+                        </div>
+                    </div>
+                    <!-- === END OF UPDATED PART === -->
+
                     <h3>Your Details</h3>
                     <div class="form-row">
                         <div class="form-group">
@@ -64,16 +86,7 @@
                             <input type="email" id="email" required>
                         </div>
                     </div>
-                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="start-date">Pick-up Date</label>
-                            <input type="date" id="start-date" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="end-date">Drop-off Date</label>
-                            <input type="date" id="end-date" required>
-                        </div>
-                    </div>
+                    
                     <h3>Extras</h3>
                     <div class="extras">
                         <label><input type="checkbox" data-price="1000" name="extra"> Collision Damage Waiver (₹1000/day)</label>
@@ -82,11 +95,10 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Right Side: Booking Summary -->
             <aside class="booking-summary">
                 <h3>Booking Summary</h3>
-
-                <div class="summary-location" id="summary-location">
-                    </div>
                 <div id="summary-content">
                     <p>Please select a car and dates to see the summary.</p>
                 </div>
@@ -94,7 +106,7 @@
             </aside>
         </div>
     </main>
-    <!-- =================== FOOTER START =================== -->
+
     <footer class="footer">
         <div class="container footer-content">
             <div class="footer-about">
@@ -122,7 +134,7 @@
             <a href="login.html" class="admin-link">&copy; 2025 Momentum Rides. All Rights Reserved.</a>
         </div>
     </footer>
-    <!-- =================== FOOTER END =================== -->
+    
     <script src="booking.js"></script>
 </body>
 </html>
