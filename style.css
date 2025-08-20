@@ -538,7 +538,7 @@ body {
 
 .price-range-values {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end; /* Aligns the single item to the right */
     font-size: 0.9rem;
     color: #555;
     margin-top: 8px;
@@ -586,7 +586,7 @@ body {
 }
 
 #fleet-grid.fleet-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr); /* Forces 3 columns */
 }
 
 .loader {
@@ -1244,7 +1244,6 @@ body {
     padding-top: 20px;
 }
 
-/* === THIS IS THE CORRECTED PART === */
 /* Base styles for BOTH buttons in the modal to ensure identical size */
 .modal-actions .btn-primary-full,
 .modal-actions .btn-secondary {
@@ -1272,39 +1271,6 @@ body {
     grid-column: 2 / 3; /* Position it in the second column */
     grid-row: 1 / 2;    /* On the same row as the dropdown */
     align-self: end;    /* Align it to the bottom */
-}
-
-/* --- Fleet Page Sorting Styles (UPDATED) --- */
-.sort-container {
-    margin-bottom: 25px; /* Add space below the sort dropdown */
-}
-
-.sort-container label {
-    display: block; /* Make label appear on its own line */
-    margin-bottom: 10px;
-    font-weight: 600;
-    font-family: var(--font-heading); /* Use the heading font for consistency */
-    color: var(--primary-color);
-    font-size: 1.2rem; /* Match the other filter headings */
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
-}
-
-.sort-container select {
-    width: 100%; /* Make the dropdown full-width */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-    background-color: white;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23333333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 1em;
-    cursor: pointer;
 }
 
 /* --- Responsive Design --- */
