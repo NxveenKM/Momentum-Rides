@@ -1,4 +1,4 @@
-// fleet.js - UPDATED with Sorting Functionality
+// fleet.js - UPDATED with Slider Fill Effect
 
 document.addEventListener('DOMContentLoaded', () => {
     const fleetGrid = document.getElementById('fleet-grid');
@@ -72,6 +72,17 @@ document.addEventListener('DOMContentLoaded', () => {
         priceRange.max = maxPrice;
         priceRange.value = maxPrice;
         priceValue.textContent = maxPrice.toLocaleString();
+        updateSliderFill(); // Initial fill
+    }
+    
+    // === NEW FUNCTION: Updates the visual fill of the slider ===
+    function updateSliderFill() {
+        if (!priceRange) return;
+        const min = priceRange.min;
+        const max = priceRange.max;
+        const value = priceRange.value;
+        const percentage = ((value - min) / (max - min)) * 100;
+        priceRange.style.background = `linear-gradient(to right, var(--secondary-color) ${percentage}%, #ddd ${percentage}%)`;
     }
 
     // Displays the dynamic search message
@@ -135,35 +146,32 @@ document.addEventListener('DOMContentLoaded', () => {
             return typeMatch && transmissionMatch && priceMatch;
         });
 
-        // === NEW SORTING LOGIC ===
         const sortBy = sortBySelect.value;
         if (sortBy === 'price-asc') {
             filteredCars.sort((a, b) => a.price_per_day - b.price_per_day);
         } else if (sortBy === 'price-desc') {
             filteredCars.sort((a, b) => b.price_per_day - a.price_per_day);
         }
-        // If 'default', no sorting is needed.
 
         renderCars(filteredCars);
     }
     
     // Attaches event listeners to ALL filter inputs
     function attachFilterEventListeners() {
-        const allFilterInputs = document.querySelectorAll('.filters input');
+        const allFilterInputs = document.querySelectorAll('.filters input, .filters select');
         allFilterInputs.forEach(input => {
-            if (input.type === 'checkbox') {
+            if (input.type === 'checkbox' || input.tagName === 'SELECT') {
                 input.addEventListener('change', applyFilters);
             } else if (input.type === 'range') {
                 input.addEventListener('input', () => {
                     if (priceValue) {
                         priceValue.textContent = parseInt(input.value).toLocaleString();
                     }
+                    updateSliderFill(); // Update fill on every input change
                     applyFilters();
                 });
             }
         });
-        // Add event listener for the new sort dropdown
-        sortBySelect.addEventListener('change', applyFilters);
     }
 
     // Initial load
