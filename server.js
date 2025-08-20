@@ -1,4 +1,4 @@
-// server.js - UPDATED with Corrected Locations
+// server.js - UPDATED with Server-Side Availability Check
 
 const express = require('express');
 const cors = require('cors');
@@ -75,7 +75,6 @@ async function seedInitialCars() {
     }
 }
 
-// === CORRECTED list of pickup locations ===
 const pickupLocations = [
     "Jaipur International Airport (JAI)",
     "Jaipur Junction Railway Station",
@@ -174,12 +173,36 @@ app.delete('/api/cars/:id', async (req, res) => {
 
 
 // --- Booking and Login Endpoints ---
+
+// POST a new booking (UPDATED with final availability check)
 app.post('/api/bookings', async (req, res) => {
     try {
+        const { carId, startDate, endDate } = req.body;
+
+        // === THIS IS THE FIX ===
+        // Perform a final check for conflicting bookings right before saving
+        const conflictingBookings = await Booking.find({
+            carId: carId,
+            status: 'Approved',
+            startDate: { $lt: new Date(endDate) },
+            endDate: { $gt: new Date(startDate) }
+        });
+
+        // If any conflicts are found, reject the new booking
+        if (conflictingBookings.length > 0) {
+            return res.status(409).json({ // 409 Conflict is the appropriate status code
+                success: false, 
+                message: 'Sorry, this car has just been booked for the selected dates. Please try another date range.' 
+            });
+        }
+        // === END OF FIX ===
+
+        // If no conflicts, proceed to save the new booking
         const newBooking = new Booking(req.body);
         await newBooking.save();
         res.status(201).json({ success: true, message: 'Booking confirmed successfully!' });
     } catch (error) {
+        console.error('Error saving booking:', error);
         res.status(500).json({ success: false, message: 'Failed to confirm booking.' });
     }
 });
