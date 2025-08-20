@@ -1,4 +1,4 @@
-// fleet.js - UPDATED with Dynamic Car Type Filters
+// fleet.js - UPDATED with Sorting Functionality
 
 document.addEventListener('DOMContentLoaded', () => {
     const fleetGrid = document.getElementById('fleet-grid');
@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const priceRange = document.getElementById('price-range');
     const priceValue = document.getElementById('price-value');
     const carTypeFiltersContainer = document.getElementById('car-type-filters');
+    const sortBySelect = document.getElementById('sort-by');
 
     let allCars = []; // This will be populated from the API call
 
@@ -25,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const typesUrl = 'https://momentum-rides.onrender.com/api/cars/types';
 
         try {
-            // Fetch cars and types simultaneously
             const [carsResponse, typesResponse] = await Promise.all([
                 fetch(carsUrl),
                 fetch(typesUrl)
@@ -36,12 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
             allCars = await carsResponse.json();
             const carTypes = await typesResponse.json();
 
-            // Use the fetched data to build the page
             populateTypeFilters(carTypes);
             setupPriceSlider(allCars);
             updateSearchInfo(pickupDate, dropoffDate, allCars.length);
-            applyFilters(); // Apply initial filters
-            attachFilterEventListeners(); // Attach listeners to all filters
+            applyFilters();
+            attachFilterEventListeners();
 
         } catch (error)
         {
@@ -53,9 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // NEW FUNCTION: Dynamically creates the car type checkboxes
+    // Dynamically creates the car type checkboxes
     function populateTypeFilters(types) {
-        carTypeFiltersContainer.innerHTML = ''; // Clear "Loading..." message
+        carTypeFiltersContainer.innerHTML = '';
         types.sort().forEach(type => {
             const label = document.createElement('label');
             label.innerHTML = `<input type="checkbox" name="type" value="${type}"> ${type}`;
@@ -123,21 +122,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Applies the sidebar filters
+    // Applies the sidebar filters AND the sorting
     function applyFilters() {
         const typeFilters = Array.from(document.querySelectorAll('input[name="type"]:checked')).map(el => el.value);
         const transmissionFilters = Array.from(document.querySelectorAll('input[name="transmission"]:checked')).map(el => el.value);
         const maxPrice = priceRange ? priceRange.value : 9999;
+        
         let filteredCars = allCars.filter(car => {
             const typeMatch = typeFilters.length === 0 || typeFilters.includes(car.type);
             const transmissionMatch = transmissionFilters.length === 0 || transmissionFilters.includes(car.transmission);
             const priceMatch = car.price_per_day <= maxPrice;
             return typeMatch && transmissionMatch && priceMatch;
         });
+
+        // === NEW SORTING LOGIC ===
+        const sortBy = sortBySelect.value;
+        if (sortBy === 'price-asc') {
+            filteredCars.sort((a, b) => a.price_per_day - b.price_per_day);
+        } else if (sortBy === 'price-desc') {
+            filteredCars.sort((a, b) => b.price_per_day - a.price_per_day);
+        }
+        // If 'default', no sorting is needed.
+
         renderCars(filteredCars);
     }
     
-    // NEW FUNCTION: Attaches event listeners to ALL filter inputs
+    // Attaches event listeners to ALL filter inputs
     function attachFilterEventListeners() {
         const allFilterInputs = document.querySelectorAll('.filters input');
         allFilterInputs.forEach(input => {
@@ -152,6 +162,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
+        // Add event listener for the new sort dropdown
+        sortBySelect.addEventListener('change', applyFilters);
     }
 
     // Initial load
