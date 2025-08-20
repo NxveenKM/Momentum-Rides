@@ -37,7 +37,6 @@
                 <h3>Filter Options</h3>
                 <div class="filter-group">
                     <h4>Car Type</h4>
-                    <!-- This div will be filled dynamically by JavaScript -->
                     <div id="car-type-filters">
                         <p class="filter-loading">Loading types...</p>
                     </div>
@@ -56,6 +55,17 @@
 
             <!-- Car Listings -->
             <section class="fleet-grid-container">
+                <!-- === NEW SORTING DROPDOWN === -->
+                <div class="sort-container">
+                    <label for="sort-by">Sort by:</label>
+                    <select id="sort-by">
+                        <option value="default">Default</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                    </select>
+                </div>
+                <!-- === END OF NEW PART === -->
+
                 <div id="loader" class="loader"></div>
                 <div id="fleet-grid" class="fleet-grid"></div>
             </section>
