@@ -1,4 +1,4 @@
-// server.js - FINAL VERSION with Full Fleet Management API
+// server.js - UPDATED with Endpoint to Fetch Car Types
 
 const express = require('express');
 const cors = require('cors');
@@ -103,6 +103,17 @@ app.get('/api/cars', async (req, res) => {
     }
 });
 
+// === NEW: GET all unique car types ===
+app.get('/api/cars/types', async (req, res) => {
+    try {
+        // .distinct() is a powerful MongoDB function to get unique values for a field
+        const types = await Car.distinct('type');
+        res.json(types);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching car types' });
+    }
+});
+
 // GET a single car by its ID
 app.get('/api/cars/:id', async (req, res) => {
     try {
@@ -114,7 +125,7 @@ app.get('/api/cars/:id', async (req, res) => {
     }
 });
 
-// === NEW: POST a new car ===
+// POST a new car
 app.post('/api/cars', async (req, res) => {
     try {
         const newCar = new Car(req.body);
@@ -125,7 +136,7 @@ app.post('/api/cars', async (req, res) => {
     }
 });
 
-// === NEW: PATCH (update) an existing car ===
+// PATCH (update) an existing car
 app.patch('/api/cars/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -137,7 +148,7 @@ app.patch('/api/cars/:id', async (req, res) => {
     }
 });
 
-// === NEW: DELETE a car ===
+// DELETE a car
 app.delete('/api/cars/:id', async (req, res) => {
     try {
         const { id } = req.params;
