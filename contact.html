@@ -15,7 +15,30 @@
 <body>
     <header class="header scrolled">
         <nav class="navbar">
-            <a href="index.html" class="nav-logo">Momentum Rides</a>
+            <a href="index.html" class="nav-logo" style="display: flex; align-items: center;">
+                <svg width="240" height="40" viewBox="0 0 240 40" xmlns="http://www.w3.org/2000/svg">
+                    <style>
+                        .logo-text {
+                            font-family: 'Poppins', sans-serif;
+                            font-size: 20px;
+                            font-weight: 600;
+                            fill: white;
+                        }
+                    </style>
+                    <!-- Icon: Car and Arrow -->
+                    <g transform="translate(0, 5)">
+                        <!-- Car Body -->
+                        <path d="M5,25 L15,12 L40,12 L50,25 L5,25 Z" fill="white"/>
+                        <!-- Arrow Accent -->
+                        <path d="M40,12 L50,25 L40,25 Z" fill="#FF7F50"/>
+                        <!-- Wheels -->
+                        <circle cx="18" cy="25" r="4" fill="#0D1B2A" stroke="white" stroke-width="1.5"/>
+                        <circle cx="37" cy="25" r="4" fill="#0D1B2A" stroke="white" stroke-width="1.5"/>
+                    </g>
+                    <!-- Text: Momentum Rides -->
+                    <text x="65" y="28" class="logo-text">Momentum Rides</text>
+                </svg>
+            </a>
             <ul class="nav-menu">
                 <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="fleet.html" class="nav-link">Fleet</a></li>
