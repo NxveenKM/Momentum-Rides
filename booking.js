@@ -1,4 +1,4 @@
-// booking.js - UPDATED with Date Validation
+// booking.js - FINAL CORRECTED VERSION
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Disable Past Dates in Booking Form ---
@@ -6,27 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const today = new Date().toISOString().split('T')[0];
         const pickupDateInput = document.getElementById('start-date');
         const dropoffDateInput = document.getElementById('end-date');
-
-        if (pickupDateInput) {
-            pickupDateInput.setAttribute('min', today);
-        }
-        if (dropoffDateInput) {
-            dropoffDateInput.setAttribute('min', today);
-        }
+        if (pickupDateInput) pickupDateInput.setAttribute('min', today);
+        if (dropoffDateInput) dropoffDateInput.setAttribute('min', today);
     }
-    setMinDateForPickers();
 
-    // --- NEW: Link Start and End Dates ---
+    // --- Link Start and End Dates ---
     function linkDatePickers() {
         const startDateInput = document.getElementById('start-date');
         const endDateInput = document.getElementById('end-date');
-
         if (startDateInput && endDateInput) {
             startDateInput.addEventListener('change', () => {
-                // When the start date changes, set the minimum for the end date
                 if (startDateInput.value) {
                     endDateInput.min = startDateInput.value;
-                    // If the current end date is now invalid, clear it and recalculate the summary
                     if (endDateInput.value < startDateInput.value) {
                         endDateInput.value = '';
                         updateSummary();
@@ -35,45 +26,56 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-    linkDatePickers();
-    // --- END of new block ---
 
     // --- STATE & DOM ELEMENTS ---
     let selectedCar = null;
     let rentalDays = 0;
     let totalCost = 0;
-    let bookingLocation = '';
     const carDetailsContainer = document.getElementById('car-details-container');
     const summaryContent = document.getElementById('summary-content');
     const bookingForm = document.getElementById('booking-form-final');
-    const allInputs = document.querySelectorAll('#start-date, #end-date, input[name="extra"], #full-name, #email');
+    const allInputs = document.querySelectorAll('#start-date, #end-date, input[name="extra"], #full-name, #email, #booking-location-select');
+    const locationSelect = document.getElementById('booking-location-select');
+
+    // --- Fetch and populate pickup locations ---
+    async function populateLocationsDropdown() {
+        if (!locationSelect) return;
+        try {
+            const response = await fetch('https://momentum-rides.onrender.com/api/locations');
+            if (!response.ok) throw new Error('Failed to fetch locations');
+            const locations = await response.json();
+            
+            // Clear placeholder and add new options
+            locationSelect.innerHTML = '<option value="" disabled selected>Select a location</option>';
+            
+            locations.sort().forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = location;
+                locationSelect.appendChild(option);
+            });
+            // After populating, check if a location was passed in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const locationFromUrl = urlParams.get('location');
+            if (locationFromUrl && locations.includes(locationFromUrl)) {
+                locationSelect.value = locationFromUrl;
+            }
+        } catch (error) {
+            console.error('Error populating locations:', error);
+            locationSelect.innerHTML = '<option value="" disabled selected>Could not load locations</option>';
+        }
+    }
 
     // --- 1. INITIALIZE THE PAGE ---
     async function initializePage() {
         const urlParams = new URLSearchParams(window.location.search);
         const carId = urlParams.get('carId');
-        const location = urlParams.get('location');
-        bookingLocation = location;
         const pickupDate = urlParams.get('pickup');
         const dropoffDate = urlParams.get('dropoff');
-        const locationDetailsDiv = document.getElementById('booking-location-details');
-        
-        if (locationDetailsDiv && location) {
-            locationDetailsDiv.innerHTML = `
-                <h4><i class="fas fa-map-marker-alt"></i> Pickup Location</h4>
-                <p>${location}</p>
-            `;
-        }
 
-
-        if (location) {
-            const locationDiv = document.getElementById('summary-location');
-            locationDiv.innerHTML = `<i class="fas fa-map-marker-alt"></i> Pick-up: <strong>${location}</strong>`;
-        }
         if (pickupDate && dropoffDate) {
             document.getElementById('start-date').value = pickupDate;
             document.getElementById('end-date').value = dropoffDate;
-            // Also set the min value for the end date picker based on the pre-filled start date
             document.getElementById('end-date').min = pickupDate;
         }
         if (!carId) {
@@ -162,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             startDate: document.getElementById('start-date').value,
             endDate: document.getElementById('end-date').value,
             totalCost: totalCost,
-            location: bookingLocation
+            location: locationSelect.value
         };
         try {
             const response = await fetch('https://momentum-rides.onrender.com/api/bookings', {
@@ -184,6 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- INITIALIZE THE PAGE AND ADD EVENT LISTENERS ---
+    setMinDateForPickers();
+    linkDatePickers();
+    populateLocationsDropdown();
     initializePage();
     allInputs.forEach(input => input.addEventListener('change', updateSummary));
 });
