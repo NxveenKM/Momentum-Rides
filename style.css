@@ -623,6 +623,35 @@ body {
 }
 
 /* --- Booking Page Specific Styles --- */
+
+.booking-location-details {
+    background-color: var(--neutral-light);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.booking-location-details h4 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.booking-location-details i {
+    color: var(--secondary-color);
+    margin-right: 10px;
+}
+
+.booking-location-details p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    padding-left: 30px;
+}
+
 .booking-layout {
     display: flex;
     gap: 30px;
