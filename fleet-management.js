@@ -1,4 +1,4 @@
-// fleet-management.js - UPDATED with Dynamic Car Type Logic
+// fleet-management.js - DEBUGGING VERSION
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Security Check ---
@@ -30,10 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Functions ---
 
-    // 1. Fetch all initial data (cars and types)
+    // 1. Fetch all initial data
     async function initializePage() {
         try {
-            // Fetch cars and types at the same time for efficiency
             const [carsResponse, typesResponse] = await Promise.all([
                 fetch(CARS_API_URL),
                 fetch(TYPES_API_URL)
@@ -54,14 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Populate the car type dropdown menu
     function populateCarTypeDropdown() {
-        carTypeSelect.innerHTML = ''; // Clear existing options
+        carTypeSelect.innerHTML = '';
         carTypes.forEach(type => {
             const option = document.createElement('option');
             option.value = type;
             option.textContent = type;
             carTypeSelect.appendChild(option);
         });
-        // Add the 'Add New...' option at the end
         const addNewOption = document.createElement('option');
         addNewOption.value = 'add_new';
         addNewOption.textContent = 'Add New Type...';
@@ -94,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. Modal Handling
     function openModal(mode = 'add', carData = null) {
         carForm.reset();
-        newCarTypeGroup.style.display = 'none'; // Hide the new type field by default
+        newCarTypeGroup.style.display = 'none';
 
         if (mode === 'add') {
             modalTitle.textContent = 'Add New Car';
@@ -112,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('car-transmission').value = carData.transmission;
             document.getElementById('car-image').value = carData.image_url;
 
-            // Smartly handle the car type dropdown for editing
             if (carTypes.includes(carData.type)) {
                 carTypeSelect.value = carData.type;
             } else {
@@ -128,12 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = 'none';
     }
 
-    // 5. Handle Form Submission (Create or Update)
+    // 5. Handle Form Submission (Create or Update) - WITH DEBUGGING
     async function handleFormSubmit(event) {
         event.preventDefault();
+        console.log('--- DEBUG: Form Submitted ---'); // DEBUG
         const isEditing = !!document.getElementById('car-db-id').value;
 
-        // Determine the car type from either the dropdown or the new input field
         let carType = carTypeSelect.value;
         if (carType === 'add_new') {
             carType = newCarTypeInput.value.trim();
@@ -142,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
         }
+        console.log('DEBUG: Determined car type:', carType); // DEBUG
 
         const carData = {
             id: document.getElementById('car-id').value,
@@ -154,8 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
             image_url: document.getElementById('car-image').value,
         };
 
+        console.log('DEBUG: Data being sent to server:', carData); // DEBUG
+
         const url = isEditing ? `${CARS_API_URL}/${carData.id}` : CARS_API_URL;
         const method = isEditing ? 'PATCH' : 'POST';
+        console.log('DEBUG: Sending request to URL:', url, 'with method:', method); // DEBUG
 
         try {
             const response = await fetch(url, {
@@ -165,8 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (!response.ok) throw new Error(`Failed to ${isEditing ? 'update' : 'add'} car`);
             
+            console.log('DEBUG: Server responded successfully.'); // DEBUG
             closeModal();
-            initializePage(); // Re-fetch everything to update the list and dropdown
+            initializePage();
         } catch (error) {
             console.error('Form submission error:', error);
             alert(`Error: Could not save the car. Please try again.`);
@@ -178,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${CARS_API_URL}/${carId}`, { method: 'DELETE' });
             if (!response.ok) throw new Error('Failed to delete car');
-            initializePage(); // Re-fetch everything
+            initializePage();
         } catch (error) {
             console.error('Delete error:', error);
             alert('Error: Could not delete the car.');
@@ -193,7 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     carForm.addEventListener('submit', handleFormSubmit);
 
-    // Show/hide the new car type input field
     carTypeSelect.addEventListener('change', () => {
         if (carTypeSelect.value === 'add_new') {
             newCarTypeGroup.style.display = 'block';
@@ -204,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Event Delegation for Edit/Delete icons
     carsTbody.addEventListener('click', (event) => {
         const target = event.target;
         const carId = target.dataset.id;
@@ -219,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Logout
     if (logoutButton) {
         logoutButton.addEventListener('click', () => {
             sessionStorage.removeItem('isAdminAuthenticated');
