@@ -1,72 +1,64 @@
-// 3d-hero.js - Three.js logic for the homepage hero section
+// 3d-hero.js - UPDATED to load your custom GLTF model
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
     if (!heroSection) return;
 
+    // --- This is the correct URL for your model ---
+    const modelUrl = 'https://raw.githubusercontent.com/NxveenKM/Momentum-Rides/main/Car.glb'; 
+
     // 1. Scene Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); // alpha:true for transparent background
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     heroSection.appendChild(renderer.domElement);
 
-    // Style the canvas
     renderer.domElement.style.position = 'absolute';
     renderer.domElement.style.top = '0';
     renderer.domElement.style.left = '0';
-    renderer.domElement.style.zIndex = '-1'; // Place it behind other content
+    renderer.domElement.style.zIndex = '-1';
 
     // 2. Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 10, 7);
     scene.add(directionalLight);
 
-    // 3. Create the Car Model from basic shapes
-    const carGroup = new THREE.Group();
+    // 3. Load the 3D Model
+    const loader = new THREE.GLTFLoader();
+    let carModel;
 
-    // Car Body
-    const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0x1E90FF, metalness: 0.5, roughness: 0.5 });
-    const bodyGeometry = new THREE.BoxGeometry(4, 1, 2);
-    const carBody = new THREE.Mesh(bodyGeometry, bodyMaterial);
-    carBody.position.y = 0.5;
-    carGroup.add(carBody);
+    loader.load(
+        modelUrl,
+        function (gltf) {
+            carModel = gltf.scene;
+            
+            // --- ADJUST MODEL SCALE AND POSITION HERE ---
+            // You may need to change these values to fit your specific model
+            carModel.scale.set(1.5, 1.5, 1.5); // Example: make the model 1.5 times bigger
+            carModel.position.y = -1;       // Example: move the model down
+            
+            scene.add(carModel);
+        },
+        // Optional: progress function
+        function (xhr) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        // Optional: error function
+        function (error) {
+            console.error('An error happened while loading the 3D model:', error);
+        }
+    );
 
-    // Car Cabin
-    const cabinGeometry = new THREE.BoxGeometry(2, 0.8, 1.8);
-    const carCabin = new THREE.Mesh(cabinGeometry, bodyMaterial);
-    carCabin.position.set(-0.5, 1.4, 0);
-    carGroup.add(carCabin);
-
-    // Wheels
-    const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.2, roughness: 0.8 });
-    const wheelGeometry = new THREE.CylinderGeometry(0.4, 0.4, 0.2, 32);
-    
-    const wheelPositions = [
-        { x: -1.5, y: 0.4, z: 1 },
-        { x: 1.5, y: 0.4, z: 1 },
-        { x: -1.5, y: 0.4, z: -1 },
-        { x: 1.5, y: 0.4, z: -1 }
-    ];
-
-    wheelPositions.forEach(pos => {
-        const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
-        wheel.position.set(pos.x, pos.y, pos.z);
-        wheel.rotation.x = Math.PI / 2;
-        carGroup.add(wheel);
-    });
-
-    scene.add(carGroup);
     camera.position.z = 5;
 
     // 4. Mouse Interaction
     let mouseX = 0;
     document.addEventListener('mousemove', (event) => {
-        // Normalize mouse position from -1 to 1
         mouseX = (event.clientX / window.innerWidth) * 2 - 1;
     });
 
@@ -74,11 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function animate() {
         requestAnimationFrame(animate);
 
-        // Gentle rotation based on mouse position
-        carGroup.rotation.y += (mouseX * 0.5 - carGroup.rotation.y) * 0.05;
-
-        // Slow constant rotation
-        carGroup.rotation.y += 0.001;
+        if (carModel) {
+            // Gentle rotation based on mouse position
+            carModel.rotation.y += (mouseX * 0.5 - carModel.rotation.y) * 0.05;
+        }
 
         renderer.render(scene, camera);
     }
