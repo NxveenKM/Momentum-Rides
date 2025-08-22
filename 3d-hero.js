@@ -1,4 +1,4 @@
-// 3d-hero.js - UPDATED for contained hero section
+// 3d-hero.js - UPDATED with Smoother Interaction and Correct Sizing
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -35,8 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function (gltf) {
             carModel = gltf.scene;
             
-            carModel.scale.set(1.5, 1.5, 1.5);
-            carModel.position.y = -1;
+            // === THIS IS THE FIX for sizing ===
+            carModel.scale.set(1.2, 1.2, 1.2); // Slightly smaller scale
+            carModel.position.y = -1.2;      // Moved down a bit more
             
             scene.add(carModel);
         },
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    // 5. Animation Loop
+    // 5. Animation Loop (UPDATED with Smoother Logic)
     function animate() {
         requestAnimationFrame(animate);
 
@@ -64,16 +65,19 @@ document.addEventListener('DOMContentLoaded', () => {
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(carModel.children, true);
 
+            // === THIS IS THE FIX for the glitchy interaction ===
+            let targetRotationY = 0; // Default rotation when not hovering
+            let targetRotationX = 0;
+
             if (intersects.length > 0) {
-                const targetRotationY = mouse.x * Math.PI;
-                const targetRotationX = -(mouse.y * 0.5);
-                
-                carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.1;
-                carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.1;
-            } else {
-                carModel.rotation.y += (0 - carModel.rotation.y) * 0.05;
-                carModel.rotation.x += (0 - carModel.rotation.x) * 0.05;
+                // Only apply sensitive rotation when the mouse is over the model
+                targetRotationY = mouse.x * 0.5; // Less extreme rotation
+                targetRotationX = -(mouse.y * 0.3);
             }
+
+            // Smoothly interpolate to the target rotation in every frame
+            carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.05;
+            carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.05;
         }
 
         renderer.render(scene, camera);
