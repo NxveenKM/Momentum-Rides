@@ -27,6 +27,36 @@ body {
     background-color: var(--white);
 }
 
+/* --- Decorative Background Blobs --- */
+body {
+    position: relative; /* Required for positioning the blobs */
+    background-color: #f8f9fa; /* A very light gray for a softer feel */
+    overflow-x: hidden; /* Prevents blobs from creating a horizontal scrollbar */
+}
+
+.background-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px); /* This creates the soft, out-of-focus effect */
+    z-index: -1; /* Places them behind all content */
+}
+
+.blob1 {
+    width: 500px;
+    height: 500px;
+    background-color: rgba(30, 144, 255, 0.15); /* Light version of --secondary-color */
+    top: -150px;
+    left: -200px;
+}
+
+.blob2 {
+    width: 400px;
+    height: 400px;
+    background-color: rgba(255, 127, 80, 0.1); /* Light version of --accent-color */
+    bottom: 10%;
+    right: -150px;
+}
+
 .container {
     max-width: 1100px;
     margin: 0 auto;
