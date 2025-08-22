@@ -132,7 +132,6 @@ body {
 /* --- Hero Section --- */
 .hero {
     height: 100vh;
-    background: url('https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?q=80&w=2070') no-repeat center center/cover;
     position: relative;
     display: flex;
     align-items: center;
