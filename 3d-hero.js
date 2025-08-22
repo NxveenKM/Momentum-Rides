@@ -1,8 +1,9 @@
-// 3d-hero.js - UPDATED with 360-degree drag rotation
+// 3d-hero.js - UPDATED with dedicated canvas container
 
 document.addEventListener('DOMContentLoaded', () => {
-    const heroSection = document.querySelector('.hero');
-    if (!heroSection) return;
+    // === THIS IS THE CHANGE ===
+    const canvasContainer = document.getElementById('hero-canvas-container');
+    if (!canvasContainer) return;
 
     const modelUrl = 'https://raw.githubusercontent.com/NxveenKM/Momentum-Rides/main/Car.glb'; 
 
@@ -13,12 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    heroSection.appendChild(renderer.domElement);
-
-    renderer.domElement.style.position = 'absolute';
-    renderer.domElement.style.top = '0';
-    renderer.domElement.style.left = '0';
-    renderer.domElement.style.zIndex = '-1';
+    // === THIS IS THE CHANGE ===
+    canvasContainer.appendChild(renderer.domElement); 
 
     // 2. Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -38,10 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             carModel.scale.set(1.5, 1.5, 1.5);
             carModel.position.y = -1;
-            
-            // === THIS IS THE FIX for the initial orientation ===
-            // Rotates the model 180 degrees to face the front
-            carModel.rotation.y = Math.PI; 
+            carModel.rotation.y = Math.PI;
             
             scene.add(carModel);
         },
@@ -55,11 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     camera.position.z = 8;
 
-    // 4. Mouse Interaction for 360 Drag (UPDATED)
+    // 4. Mouse Interaction for 360 Drag
     let isDragging = false;
-    let previousMousePosition = {
-        x: 0
-    };
+    let previousMousePosition = { x: 0 };
 
     renderer.domElement.addEventListener('mousedown', (e) => {
         isDragging = true;
@@ -69,21 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
     renderer.domElement.addEventListener('mousemove', (e) => {
         if (isDragging && carModel) {
             const deltaX = e.clientX - previousMousePosition.x;
-            // The rotation speed is controlled by the multiplier (e.g., 0.01)
             carModel.rotation.y += deltaX * 0.01;
             previousMousePosition.x = e.clientX;
         }
     });
 
-    renderer.domElement.addEventListener('mouseup', () => {
-        isDragging = false;
-    });
-    
-    // Also handle leaving the window to stop dragging
-    renderer.domElement.addEventListener('mouseleave', () => {
-        isDragging = false;
-    });
-
+    renderer.domElement.addEventListener('mouseup', () => { isDragging = false; });
+    renderer.domElement.addEventListener('mouseleave', () => { isDragging = false; });
 
     // 5. Animation Loop
     function animate() {
