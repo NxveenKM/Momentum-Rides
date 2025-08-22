@@ -162,7 +162,6 @@ body {
     /* Gradient from dark to transparent for a subtle effect */
     background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
     z-index: 2;
-    pointer-events: none;
     border-radius: 20px; /* Match parent's border-radius */
 }
 
@@ -170,7 +169,6 @@ body {
     position: relative;
     z-index: 3;
     max-width: 800px;
-    pointer-events: none;
 }
 
 .hero h1 {
@@ -191,7 +189,6 @@ body {
     padding: 25px;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    pointer-events: auto; /* Re-enables clicks for the widget */
 }
 
 .booking-widget form {
