@@ -1,10 +1,9 @@
-// 3d-hero.js - UPDATED with better camera and more immersive controls
+// 3d-hero.js - UPDATED with 360-degree drag rotation
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
     if (!heroSection) return;
 
-    // --- This is the correct URL for your model ---
     const modelUrl = 'https://raw.githubusercontent.com/NxveenKM/Momentum-Rides/main/Car.glb'; 
 
     // 1. Scene Setup
@@ -37,9 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
         function (gltf) {
             carModel = gltf.scene;
             
-            // Adjust model scale and position
             carModel.scale.set(1.5, 1.5, 1.5);
             carModel.position.y = -1;
+            
+            // === THIS IS THE FIX for the initial orientation ===
+            // Rotates the model 180 degrees to face the front
+            carModel.rotation.y = Math.PI; 
             
             scene.add(carModel);
         },
@@ -51,30 +53,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     );
 
-    // === THIS IS THE FIX for the zoom ===
-    camera.position.z = 8; // Increased from 5 to zoom out
+    camera.position.z = 8;
 
-    // 4. Mouse Interaction (UPDATED)
-    let mouseX = 0;
-    let mouseY = 0;
-    document.addEventListener('mousemove', (event) => {
-        // Normalize mouse position from -1 to 1 for both X and Y
-        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    // 4. Mouse Interaction for 360 Drag (UPDATED)
+    let isDragging = false;
+    let previousMousePosition = {
+        x: 0
+    };
+
+    renderer.domElement.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        previousMousePosition.x = e.clientX;
     });
 
-    // 5. Animation Loop (UPDATED)
+    renderer.domElement.addEventListener('mousemove', (e) => {
+        if (isDragging && carModel) {
+            const deltaX = e.clientX - previousMousePosition.x;
+            // The rotation speed is controlled by the multiplier (e.g., 0.01)
+            carModel.rotation.y += deltaX * 0.01;
+            previousMousePosition.x = e.clientX;
+        }
+    });
+
+    renderer.domElement.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+    
+    // Also handle leaving the window to stop dragging
+    renderer.domElement.addEventListener('mouseleave', () => {
+        isDragging = false;
+    });
+
+
+    // 5. Animation Loop
     function animate() {
         requestAnimationFrame(animate);
-
-        if (carModel) {
-            // === THIS IS THE FIX for more immersive rotation ===
-            // The model now tilts up/down and left/right based on mouse position
-            // The multiplication factor (e.g., 0.5) controls the intensity
-            carModel.rotation.y += (mouseX * 0.5 - carModel.rotation.y) * 0.05;
-            carModel.rotation.x += (mouseY * 0.3 - carModel.rotation.x) * 0.05;
-        }
-
         renderer.render(scene, camera);
     }
 
