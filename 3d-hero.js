@@ -1,4 +1,4 @@
-// 3d-hero.js - UPDATED to load your custom GLTF model
+// 3d-hero.js - UPDATED with better camera and more immersive controls
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -37,38 +37,42 @@ document.addEventListener('DOMContentLoaded', () => {
         function (gltf) {
             carModel = gltf.scene;
             
-            // --- ADJUST MODEL SCALE AND POSITION HERE ---
-            // You may need to change these values to fit your specific model
-            carModel.scale.set(1.5, 1.5, 1.5); // Example: make the model 1.5 times bigger
-            carModel.position.y = -1;       // Example: move the model down
+            // Adjust model scale and position
+            carModel.scale.set(1.5, 1.5, 1.5);
+            carModel.position.y = -1;
             
             scene.add(carModel);
         },
-        // Optional: progress function
         function (xhr) {
             console.log((xhr.loaded / xhr.total * 100) + '% loaded');
         },
-        // Optional: error function
         function (error) {
             console.error('An error happened while loading the 3D model:', error);
         }
     );
 
-    camera.position.z = 5;
+    // === THIS IS THE FIX for the zoom ===
+    camera.position.z = 8; // Increased from 5 to zoom out
 
-    // 4. Mouse Interaction
+    // 4. Mouse Interaction (UPDATED)
     let mouseX = 0;
+    let mouseY = 0;
     document.addEventListener('mousemove', (event) => {
+        // Normalize mouse position from -1 to 1 for both X and Y
         mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    // 5. Animation Loop
+    // 5. Animation Loop (UPDATED)
     function animate() {
         requestAnimationFrame(animate);
 
         if (carModel) {
-            // Gentle rotation based on mouse position
+            // === THIS IS THE FIX for more immersive rotation ===
+            // The model now tilts up/down and left/right based on mouse position
+            // The multiplication factor (e.g., 0.5) controls the intensity
             carModel.rotation.y += (mouseX * 0.5 - carModel.rotation.y) * 0.05;
+            carModel.rotation.x += (mouseY * 0.3 - carModel.rotation.x) * 0.05;
         }
 
         renderer.render(scene, camera);
