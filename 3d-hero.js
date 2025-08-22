@@ -1,4 +1,4 @@
-// 3d-hero.js - FINAL VERSION with Reversed and More Sensitive Controls
+// 3d-hero.js - FINAL VERSION with High-Sensitivity Controls
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             carModel.scale.set(1.5, 1.5, 1.5);
             carModel.position.y = -1;
-            carModel.rotation.y = Math.PI; // Initial rotation
+            // No initial rotation needed as the mouse will control it
             
             scene.add(carModel);
         },
@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let mouseX = 0;
     let mouseY = 0;
     document.addEventListener('mousemove', (event) => {
-        // Normalize mouse position from -1 to 1 for both X and Y
         mouseX = (event.clientX / window.innerWidth) * 2 - 1;
         mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
@@ -66,17 +65,15 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(animate);
 
         if (carModel) {
-            // 1. Add a slow, constant rotation
-            carModel.rotation.y += 0.002;
+            // === THIS IS THE UPDATED LOGIC ===
+            // The target rotation is now much larger, allowing for a full view.
+            // Math.PI is 180 degrees, so moving the mouse to the edge rotates the car significantly.
+            const targetRotationY = mouseX * Math.PI; 
+            const targetRotationX = -(mouseY * 0.5); // Keep vertical tilt subtle
 
-            // 2. Add a more sensitive "look at" effect that follows the mouse
-            // The multiplication factors (e.g., 0.8) control the sensitivity
-            const targetRotationY = mouseX * 0.8; // Increased horizontal sensitivity
-            const targetRotationX = -(mouseY * 0.5); // Increased vertical sensitivity and reversed
-            
-            // The interpolation factor (0.05) controls how quickly the model "catches up"
-            carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.05;
-            carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.05;
+            // The interpolation factor (0.1) is faster for more responsiveness.
+            carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.1;
+            carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.1;
         }
 
         renderer.render(scene, camera);
