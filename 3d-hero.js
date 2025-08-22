@@ -1,9 +1,8 @@
-// 3d-hero.js - UPDATED with dedicated canvas container
+// 3d-hero.js - FINAL VERSION with Immersive Animation
 
 document.addEventListener('DOMContentLoaded', () => {
-    // === THIS IS THE CHANGE ===
-    const canvasContainer = document.getElementById('hero-canvas-container');
-    if (!canvasContainer) return;
+    const heroSection = document.querySelector('.hero');
+    if (!heroSection) return;
 
     const modelUrl = 'https://raw.githubusercontent.com/NxveenKM/Momentum-Rides/main/Car.glb'; 
 
@@ -14,8 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    // === THIS IS THE CHANGE ===
-    canvasContainer.appendChild(renderer.domElement); 
+    heroSection.appendChild(renderer.domElement);
+
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.zIndex = '-1';
 
     // 2. Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -35,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             carModel.scale.set(1.5, 1.5, 1.5);
             carModel.position.y = -1;
-            carModel.rotation.y = Math.PI;
+            carModel.rotation.y = Math.PI; // Initial rotation
             
             scene.add(carModel);
         },
@@ -47,31 +50,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     );
 
-    camera.position.z = 8;
+    // === FIX: Zoomed out camera ===
+    camera.position.z = 10;
 
-    // 4. Mouse Interaction for 360 Drag
-    let isDragging = false;
-    let previousMousePosition = { x: 0 };
-
-    renderer.domElement.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        previousMousePosition.x = e.clientX;
+    // 4. Mouse Interaction for Immersive Effect
+    let mouseX = 0;
+    let mouseY = 0;
+    document.addEventListener('mousemove', (event) => {
+        // Normalize mouse position from -1 to 1 for both X and Y
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    renderer.domElement.addEventListener('mousemove', (e) => {
-        if (isDragging && carModel) {
-            const deltaX = e.clientX - previousMousePosition.x;
-            carModel.rotation.y += deltaX * 0.01;
-            previousMousePosition.x = e.clientX;
-        }
-    });
-
-    renderer.domElement.addEventListener('mouseup', () => { isDragging = false; });
-    renderer.domElement.addEventListener('mouseleave', () => { isDragging = false; });
-
-    // 5. Animation Loop
+    // 5. Animation Loop (UPDATED)
     function animate() {
         requestAnimationFrame(animate);
+
+        if (carModel) {
+            // === FIX: Immersive Rotation Logic ===
+            // 1. Add a slow, constant rotation
+            carModel.rotation.y += 0.002;
+
+            // 2. Add a gentle "look at" effect that follows the mouse
+            // The model smoothly interpolates towards the target rotation
+            const targetRotationY = mouseX * 0.3;
+            const targetRotationX = mouseY * 0.2;
+            carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.02;
+            carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.02;
+        }
+
         renderer.render(scene, camera);
     }
 
