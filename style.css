@@ -30,7 +30,7 @@ body {
 /* --- Decorative Background Blobs --- */
 body {
     position: relative; /* Required for positioning the blobs */
-    background-color: #f8f9fa; /* A very light gray for a softer feel */
+    background-color: #587ca093; /* A very light gray for a softer feel */
     overflow-x: hidden; /* Prevents blobs from creating a horizontal scrollbar */
 }
 
