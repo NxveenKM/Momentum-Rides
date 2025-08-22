@@ -128,13 +128,12 @@ body {
     transition: all 0.3s ease-in-out;
 }
 
-
 /* --- Hero Section (REDESIGNED) --- */
 .hero {
     height: 80vh; /* Reduced height */
     margin: 120px 5% 50px 5%; /* Top, sides, bottom margin */
     border-radius: 20px; /* Rounded corners */
-    background-color: #0D1B2A; /* Dark background color */
+    background-color: var(--primary-color); /* Dark background color */
     position: relative;
     display: flex;
     align-items: center;
@@ -144,6 +143,7 @@ body {
     overflow: visible; /* Allows the 3D model to "pop out" */
 }
 
+/* This is the container for the 3D canvas */
 #hero-canvas-container {
     position: absolute;
     top: -150px; /* Pushes the canvas up to pop out */
@@ -218,6 +218,9 @@ body {
     color: var(--secondary-color);
 }
 
+/* --- Styles for Booking Widget Inputs & Select --- */
+
+/* This unified rule makes the dropdown and date pickers look identical */
 .booking-widget input,
 .booking-widget select {
     width: 100%;
@@ -230,16 +233,18 @@ body {
     font-family: var(--font-body);
 }
 
+/* This adds the custom arrow and corrects the padding ONLY for the dropdown */
 .booking-widget select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    /* === THIS IS THE CORRECTED PART === */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23333333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 15px center;
     background-size: 1em;
     cursor: pointer;
-    padding-right: 40px;
+    padding-right: 40px; /* Adds extra space for the arrow */
 }
 
 .btn-search {
@@ -405,6 +410,137 @@ body {
 .btn-secondary:hover {
     background-color: var(--primary-color);
     color: var(--white);
+}
+
+/* --- Homepage Blog Section --- */
+.blog-section {
+    padding: 80px 0;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.blog-card {
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.blog-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.blog-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.blog-content {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.blog-content h3 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.blog-excerpt {
+    font-size: 0.95rem;
+    flex-grow: 1;
+    margin-bottom: 20px;
+}
+
+.blog-read-more {
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-top: auto;
+}
+
+/* --- Single Blog Post Styles --- */
+.blog-post {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.blog-post-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.blog-post-header h1 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--primary-color);
+    line-height: 1.2;
+    margin-bottom: 15px;
+}
+
+.post-meta {
+    color: #777;
+    font-style: italic;
+}
+
+.post-featured-image {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 40px;
+}
+
+.post-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.post-content h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.post-content p {
+    margin-bottom: 20px;
+}
+
+.post-content a {
+    color: var(--secondary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.post-content a:hover {
+    text-decoration: underline;
+}
+
+.back-to-blog {
+    display: inline-block;
+    margin-top: 40px;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
 }
 
 /* --- Why Choose Us Section --- */
@@ -588,7 +724,7 @@ body {
     appearance: none;
     width: 100%;
     height: 8px;
-    background: #ddd;
+    background: #ddd; 
     border-radius: 5px;
     outline: none;
     opacity: 0.7;
@@ -638,6 +774,75 @@ body {
 }
 
 /* --- Booking Page Specific Styles --- */
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+}
+.summary-label {
+    color: #555;
+}
+.summary-value {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.summary-divider {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
+.booking-form-final .form-group {
+    margin-bottom: 20px;
+}
+
+#booking-location-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: white;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23333333' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+    cursor: pointer;
+}
+
+.booking-location-details {
+    background-color: var(--neutral-light);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.booking-location-details h4 {
+    font-family: var(--font-heading);
+    color: var(--primary-color);
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.booking-location-details i {
+    color: var(--secondary-color);
+    margin-right: 10px;
+}
+
+.booking-location-details p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    padding-left: 30px;
+}
+
 .booking-layout {
     display: flex;
     gap: 30px;
@@ -870,6 +1075,12 @@ body {
     color: var(--primary-color);
 }
 
+.team-member-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+}
+
 .cta-section {
     text-align: center;
     padding: 60px 20px;
@@ -1055,6 +1266,11 @@ body {
 }
 
 /* --- Admin Login Page Styles --- */
+
+.login-logo-link {
+    display: inline-block;
+    margin-bottom: 10px;
+}
 
 .login-body {
     display: flex;
@@ -1338,4 +1554,86 @@ body {
     .steps-container { flex-direction: column; align-items: center; }
     .fleet-grid, .features-grid, .footer-content { grid-template-columns: 1fr; }
     .hero h1 { font-size: 2.2rem; }
+}
+
+/* --- NEW: Animations & Visual Polish --- */
+
+/* Keyframe Animations for scroll effects */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* General animation class for scroll-triggered elements */
+.animate-on-scroll {
+    opacity: 0; /* Start hidden */
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Class added by JavaScript when element is in view */
+.is-visible {
+    opacity: 1;
+    transform: none !important;
+}
+
+/* Specific starting positions */
+.slide-in-up { transform: translateY(40px); }
+.slide-in-left { transform: translateX(-40px); }
+
+
+/* Enhanced Hover Effects for Cards */
+.car-card, .service-card, .blog-card, .team-member {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.car-card:hover, .service-card:hover, .blog-card:hover, .team-member:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+/* Navigation Link Hover Effect */
+.nav-link {
+    position: relative;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--secondary-color);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+.nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* Button Hover Effects */
+.btn-search:hover, .nav-cta:hover, .btn-primary-full:hover, .btn-service:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.btn-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
