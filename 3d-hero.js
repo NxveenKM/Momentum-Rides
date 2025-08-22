@@ -1,24 +1,20 @@
-// 3d-hero.js - FINAL VERSION with Raycasting for Hover Interaction
+// 3d-hero.js - UPDATED for contained hero section
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
-    if (!heroSection) return;
+    const canvasContainer = document.getElementById('hero-canvas-container');
+    if (!heroSection || !canvasContainer) return;
 
     const modelUrl = 'https://raw.githubusercontent.com/NxveenKM/Momentum-Rides/main/Car.glb'; 
 
     // 1. Scene Setup
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, heroSection.clientWidth / heroSection.clientHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    heroSection.appendChild(renderer.domElement);
-
-    renderer.domElement.style.position = 'absolute';
-    renderer.domElement.style.top = '0';
-    renderer.domElement.style.left = '0';
-    renderer.domElement.style.zIndex = '-1';
+    canvasContainer.appendChild(renderer.domElement);
 
     // 2. Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
@@ -27,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     directionalLight.position.set(5, 10, 7);
     scene.add(directionalLight);
     
-    // === NEW: Raycaster for detecting mouse intersection ===
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -57,34 +52,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Mouse Interaction
     document.addEventListener('mousemove', (event) => {
-        // Update the mouse vector for the raycaster.
-        // This converts the mouse position to normalized device coordinates (-1 to +1).
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
         mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    // 5. Animation Loop (UPDATED with Raycasting Logic)
+    // 5. Animation Loop
     function animate() {
         requestAnimationFrame(animate);
 
         if (carModel) {
-            // Update the raycaster with the camera and mouse position
             raycaster.setFromCamera(mouse, camera);
-
-            // Calculate objects intersecting the raycaster's ray
             const intersects = raycaster.intersectObjects(carModel.children, true);
 
             if (intersects.length > 0) {
-                // If the mouse is over the model, apply the sensitive rotation
                 const targetRotationY = mouse.x * Math.PI;
                 const targetRotationX = -(mouse.y * 0.5);
                 
                 carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.1;
                 carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.1;
             } else {
-                // If the mouse is NOT over the model, smoothly return to a default state
-                carModel.rotation.y += (0 - carModel.rotation.y) * 0.05; // Return to center
-                carModel.rotation.x += (0 - carModel.rotation.x) * 0.05; // Return to level
+                carModel.rotation.y += (0 - carModel.rotation.y) * 0.05;
+                carModel.rotation.x += (0 - carModel.rotation.x) * 0.05;
             }
         }
 
@@ -93,9 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle window resizing
     window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = heroSection.clientWidth / heroSection.clientHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
     });
 
     animate();
