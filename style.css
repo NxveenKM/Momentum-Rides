@@ -171,16 +171,18 @@ body {
     color: var(--white);
     text-align: center;
     overflow: visible; /* Allows the 3D model to "pop out" */
+    pointer-events: auto;
 }
 
 /* This is the container for the 3D canvas */
 #hero-canvas-container {
-    position: absolute;
-    top: -100px; /* Reduced the "pop-out" amount to better fit the new scale */
+    position: fixed; /* Changed from absolute to fixed for full viewport coverage */
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 1;
+    pointer-events: none; /* Make the entire canvas ignore mouse events by default */
 }
 
 .hero-overlay {
