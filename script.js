@@ -1,25 +1,18 @@
-// script.js for index.html - UPDATED with Advanced Animations
+// script.js for index.html - Homepage specific logic
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- NEW: Advanced Scroll Animation Logic ---
-    const scrollObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                scrollObserver.unobserve(entry.target); // Optional: stop observing once animated
+    // --- Sticky Header (can remain here or move to global) ---
+    const header = document.querySelector('.header');
+    if (header) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
             }
         });
-    }, {
-        threshold: 0.1 // Trigger when 10% of the element is visible
-    });
-
-    const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
-    elementsToAnimate.forEach(el => {
-        scrollObserver.observe(el);
-    });
-    // --- END of new block ---
-
+    }
 
     // --- Disable Past Dates in Booking Widget ---
     function setMinDateForPickers() {
@@ -73,28 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     populateLocationsDropdown();
-
-    // Mobile Navigation
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-    if (hamburger) {
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-    }
-
-    // Sticky Header
-    const header = document.querySelector('.header');
-    if (header) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-    }
 
     // Homepage Booking Widget Logic
     const homepageBookingForm = document.getElementById('booking-form');
