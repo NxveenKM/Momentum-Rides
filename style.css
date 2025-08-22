@@ -176,7 +176,7 @@ body {
 
 /* This is the container for the 3D canvas */
 #hero-canvas-container {
-    position: fixed; /* Changed from absolute to fixed for full viewport coverage */
+    position: absolute; /* Changed from absolute to fixed for full viewport coverage */
     top: 0;
     left: 0;
     width: 100%;
