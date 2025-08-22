@@ -30,7 +30,7 @@ body {
 /* --- Decorative Background Blobs --- */
 body {
     position: relative; /* Required for positioning the blobs */
-    background-color: #587ca093; /* A very light gray for a softer feel */
+    background-color: #60afff69; /* A very light gray for a softer feel */
     overflow-x: hidden; /* Prevents blobs from creating a horizontal scrollbar */
 }
 
@@ -44,7 +44,7 @@ body {
 .blob1 {
     width: 500px;
     height: 500px;
-    background-color: rgba(30, 144, 255, 0.15); /* Light version of --secondary-color */
+    background-color: rgba(30, 144, 255, 0.3); /* Light version of --secondary-color */
     top: -150px;
     left: -200px;
 }
@@ -52,7 +52,7 @@ body {
 .blob2 {
     width: 400px;
     height: 400px;
-    background-color: rgba(255, 127, 80, 0.1); /* Light version of --accent-color */
+    background-color: rgba(255, 127, 80, 0.25); /* Light version of --accent-color */
     bottom: 10%;
     right: -150px;
 }
