@@ -1,4 +1,4 @@
-// 3d-hero.js - FINAL VERSION with Container-Based Interaction
+// 3d-hero.js - FINAL VERSION with Correct Sizing and Interaction
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -9,10 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Scene Setup
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, heroSection.clientWidth / heroSection.clientHeight, 0.1, 1000);
+    // === THIS IS THE FIX: Camera aspect ratio now uses the full window ===
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
-    renderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
+    // === THIS IS THE FIX: Renderer is now sized to the full window ===
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     canvasContainer.appendChild(renderer.domElement);
 
@@ -45,43 +47,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     camera.position.z = 10;
 
-    // 4. Mouse Interaction (REWRITTEN)
+    // 4. Mouse Interaction
     let mouseX = 0;
     let mouseY = 0;
-    let isMouseInside = false; // Flag to track if the mouse is in the hero container
+    let isMouseInside = false;
 
-    // Listen for mouse movement over the whole document
     document.addEventListener('mousemove', (event) => {
         mouseX = (event.clientX / window.innerWidth) * 2 - 1;
         mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    // Set the flag when the mouse enters the hero section
     heroSection.addEventListener('mouseenter', () => {
         isMouseInside = true;
     });
 
-    // Unset the flag when the mouse leaves the hero section
     heroSection.addEventListener('mouseleave', () => {
         isMouseInside = false;
     });
 
-    // 5. Animation Loop (UPDATED)
+    // 5. Animation Loop
     function animate() {
         requestAnimationFrame(animate);
 
         if (carModel) {
-            let targetRotationY = 0; // Default rotation when not hovering
+            let targetRotationY = 0;
             let targetRotationX = 0;
 
-            // Only apply the follow effect if the mouse is inside the container
             if (isMouseInside) {
                 targetRotationY = mouseX * 0.5;
                 targetRotationX = -(mouseY * 0.3);
             }
 
-            // Always smoothly interpolate to the target rotation.
-            // This creates the smooth return-to-center effect.
             carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.05;
             carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.05;
         }
@@ -91,9 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle window resizing
     window.addEventListener('resize', () => {
-        camera.aspect = heroSection.clientWidth / heroSection.clientHeight;
+        // === THIS IS THE FIX: Resize logic now uses the full window ===
+        camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
+        renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
     animate();
