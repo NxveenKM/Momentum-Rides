@@ -1,34 +1,25 @@
-// script.js for index.html - UPDATED with Dynamic Locations
+// script.js for index.html - UPDATED with Advanced Animations
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- NEW: Fetch and populate pickup locations ---
-    async function populateLocationsDropdown() {
-        const locationSelect = document.getElementById('pickup-location');
-        if (!locationSelect) return;
+    // --- NEW: Advanced Scroll Animation Logic ---
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                scrollObserver.unobserve(entry.target); // Optional: stop observing once animated
+            }
+        });
+    }, {
+        threshold: 0.1 // Trigger when 10% of the element is visible
+    });
 
-        try {
-            const response = await fetch('https://momentum-rides.onrender.com/api/locations');
-            if (!response.ok) throw new Error('Failed to fetch locations');
-            
-            const locations = await response.json();
-            
-            locations.sort().forEach(location => {
-                const option = document.createElement('option');
-                option.value = location;
-                option.textContent = location;
-                locationSelect.appendChild(option);
-            });
+    const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
+    elementsToAnimate.forEach(el => {
+        scrollObserver.observe(el);
+    });
+    // --- END of new block ---
 
-        } catch (error) {
-            console.error('Error populating locations:', error);
-            // Optionally, show an error to the user
-            const errorOption = document.createElement('option');
-            errorOption.textContent = 'Could not load locations';
-            errorOption.disabled = true;
-            locationSelect.appendChild(errorOption);
-        }
-    }
 
     // --- Disable Past Dates in Booking Widget ---
     function setMinDateForPickers() {
@@ -43,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dropoffDateInput.setAttribute('min', today);
         }
     }
+    setMinDateForPickers();
 
     // --- Link Start and End Dates ---
     function linkDatePickers() {
@@ -60,6 +52,27 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+    linkDatePickers();
+
+    // --- Fetch and populate pickup locations ---
+    async function populateLocationsDropdown() {
+        const locationSelect = document.getElementById('pickup-location');
+        if (!locationSelect) return;
+        try {
+            const response = await fetch('https://momentum-rides.onrender.com/api/locations');
+            if (!response.ok) throw new Error('Failed to fetch locations');
+            const locations = await response.json();
+            locations.sort().forEach(location => {
+                const option = document.createElement('option');
+                option.value = location;
+                option.textContent = location;
+                locationSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error populating locations:', error);
+        }
+    }
+    populateLocationsDropdown();
 
     // Mobile Navigation
     const hamburger = document.querySelector('.hamburger');
@@ -81,19 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 header.classList.remove('scrolled');
             }
         });
-    }
-    
-    // On-Scroll Reveal Animation
-    const revealElements = document.querySelectorAll('.reveal');
-    if (revealElements.length > 0) {
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-        revealElements.forEach(el => revealObserver.observe(el));
     }
 
     // Homepage Booking Widget Logic
@@ -120,9 +120,4 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = `fleet.html?${queryParams.toString()}`;
         });
     }
-
-    // --- Initialize all homepage functions ---
-    populateLocationsDropdown();
-    setMinDateForPickers();
-    linkDatePickers();
 });
