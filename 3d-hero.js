@@ -1,4 +1,4 @@
-// 3d-hero.js - UPDATED with Smoother Interaction and Correct Sizing
+// 3d-hero.js - FINAL VERSION with Container-Based Interaction
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -22,9 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 10, 7);
     scene.add(directionalLight);
-    
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
 
     // 3. Load the 3D Model
     const loader = new THREE.GLTFLoader();
@@ -34,11 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
         modelUrl,
         function (gltf) {
             carModel = gltf.scene;
-            
-            // === THIS IS THE FIX for sizing ===
-            carModel.scale.set(1.2, 1.2, 1.2); // Slightly smaller scale
-            carModel.position.y = -1.2;      // Moved down a bit more
-            
+            carModel.scale.set(1.2, 1.2, 1.2);
+            carModel.position.y = -1.2;
             scene.add(carModel);
         },
         function (xhr) {
@@ -51,31 +45,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     camera.position.z = 10;
 
-    // 4. Mouse Interaction
+    // 4. Mouse Interaction (REWRITTEN)
+    let mouseX = 0;
+    let mouseY = 0;
+    let isMouseInside = false; // Flag to track if the mouse is in the hero container
+
+    // Listen for mouse movement over the whole document
     document.addEventListener('mousemove', (event) => {
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    // 5. Animation Loop (UPDATED with Smoother Logic)
+    // Set the flag when the mouse enters the hero section
+    heroSection.addEventListener('mouseenter', () => {
+        isMouseInside = true;
+    });
+
+    // Unset the flag when the mouse leaves the hero section
+    heroSection.addEventListener('mouseleave', () => {
+        isMouseInside = false;
+    });
+
+    // 5. Animation Loop (UPDATED)
     function animate() {
         requestAnimationFrame(animate);
 
         if (carModel) {
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(carModel.children, true);
-
-            // === THIS IS THE FIX for the glitchy interaction ===
             let targetRotationY = 0; // Default rotation when not hovering
             let targetRotationX = 0;
 
-            if (intersects.length > 0) {
-                // Only apply sensitive rotation when the mouse is over the model
-                targetRotationY = mouse.x * 0.5; // Less extreme rotation
-                targetRotationX = -(mouse.y * 0.3);
+            // Only apply the follow effect if the mouse is inside the container
+            if (isMouseInside) {
+                targetRotationY = mouseX * 0.5;
+                targetRotationX = -(mouseY * 0.3);
             }
 
-            // Smoothly interpolate to the target rotation in every frame
+            // Always smoothly interpolate to the target rotation.
+            // This creates the smooth return-to-center effect.
             carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.05;
             carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.05;
         }
