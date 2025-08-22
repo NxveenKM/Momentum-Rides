@@ -1,4 +1,4 @@
-// 3d-hero.js - FINAL VERSION with High-Sensitivity Controls
+// 3d-hero.js - FINAL VERSION with Raycasting for Hover Interaction
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 10, 7);
     scene.add(directionalLight);
+    
+    // === NEW: Raycaster for detecting mouse intersection ===
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
 
     // 3. Load the 3D Model
     const loader = new THREE.GLTFLoader();
@@ -38,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             carModel.scale.set(1.5, 1.5, 1.5);
             carModel.position.y = -1;
-            // No initial rotation needed as the mouse will control it
             
             scene.add(carModel);
         },
@@ -53,27 +56,36 @@ document.addEventListener('DOMContentLoaded', () => {
     camera.position.z = 10;
 
     // 4. Mouse Interaction
-    let mouseX = 0;
-    let mouseY = 0;
     document.addEventListener('mousemove', (event) => {
-        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        // Update the mouse vector for the raycaster.
+        // This converts the mouse position to normalized device coordinates (-1 to +1).
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    // 5. Animation Loop (UPDATED)
+    // 5. Animation Loop (UPDATED with Raycasting Logic)
     function animate() {
         requestAnimationFrame(animate);
 
         if (carModel) {
-            // === THIS IS THE UPDATED LOGIC ===
-            // The target rotation is now much larger, allowing for a full view.
-            // Math.PI is 180 degrees, so moving the mouse to the edge rotates the car significantly.
-            const targetRotationY = mouseX * Math.PI; 
-            const targetRotationX = -(mouseY * 0.5); // Keep vertical tilt subtle
+            // Update the raycaster with the camera and mouse position
+            raycaster.setFromCamera(mouse, camera);
 
-            // The interpolation factor (0.1) is faster for more responsiveness.
-            carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.1;
-            carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.1;
+            // Calculate objects intersecting the raycaster's ray
+            const intersects = raycaster.intersectObjects(carModel.children, true);
+
+            if (intersects.length > 0) {
+                // If the mouse is over the model, apply the sensitive rotation
+                const targetRotationY = mouse.x * Math.PI;
+                const targetRotationX = -(mouse.y * 0.5);
+                
+                carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.1;
+                carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.1;
+            } else {
+                // If the mouse is NOT over the model, smoothly return to a default state
+                carModel.rotation.y += (0 - carModel.rotation.y) * 0.05; // Return to center
+                carModel.rotation.x += (0 - carModel.rotation.x) * 0.05; // Return to level
+            }
         }
 
         renderer.render(scene, camera);
