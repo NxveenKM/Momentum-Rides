@@ -1,4 +1,4 @@
-// 3d-hero.js - FINAL VERSION with Immersive Animation
+// 3d-hero.js - FINAL VERSION with Reversed and More Sensitive Controls
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -50,10 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     );
 
-    // === FIX: Zoomed out camera ===
     camera.position.z = 10;
 
-    // 4. Mouse Interaction for Immersive Effect
+    // 4. Mouse Interaction
     let mouseX = 0;
     let mouseY = 0;
     document.addEventListener('mousemove', (event) => {
@@ -67,16 +66,17 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(animate);
 
         if (carModel) {
-            // === FIX: Immersive Rotation Logic ===
             // 1. Add a slow, constant rotation
             carModel.rotation.y += 0.002;
 
-            // 2. Add a gentle "look at" effect that follows the mouse
-            // The model smoothly interpolates towards the target rotation
-            const targetRotationY = mouseX * 0.3;
-            const targetRotationX = mouseY * 0.2;
-            carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.02;
-            carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.02;
+            // 2. Add a more sensitive "look at" effect that follows the mouse
+            // The multiplication factors (e.g., 0.8) control the sensitivity
+            const targetRotationY = mouseX * 0.8; // Increased horizontal sensitivity
+            const targetRotationX = -(mouseY * 0.5); // Increased vertical sensitivity and reversed
+            
+            // The interpolation factor (0.05) controls how quickly the model "catches up"
+            carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.05;
+            carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.05;
         }
 
         renderer.render(scene, camera);
