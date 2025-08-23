@@ -1,4 +1,4 @@
-// server.js - UPDATED with Server-Side Availability Check
+// server.js - UPDATED with Simplified Initial Seeding Data
 
 const express = require('express');
 const cors = require('cors');
@@ -47,19 +47,14 @@ const carSchema = new mongoose.Schema({
     luggage: Number,
     transmission: String,
     price_per_day: Number,
-    image_url: String
+    image_url: String,
+    stock: { type: Number, default: 1 }
 });
 const Car = mongoose.model('Car', carSchema);
 
-// --- Initial Data for Cars ---
+// --- Initial Data for Cars (for one-time seeding only) ---
 const initialCars = [
-    { id: 1, name: "Kia Seltos", type: "SUV", passengers: 5, luggage: 3, transmission: "Automatic", price_per_day: 2200, image_url: "https://www.cartoq.com/wp-content/uploads/2024/12/2024-Kia-Seltos-hybrid-rendering-.jpg" },
-    { id: 2, name: "Hyundai Verna", type: "Sedan", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 1800, image_url: "https://www.carscoops.com/wp-content/uploads/2023/03/2023-b-Hyundai-Verna-Accent-3.jpg" },
-    { id: 3, name: "Ford Mustang", type: "Luxury", passengers: 2, luggage: 1, transmission: "Automatic", price_per_day: 4500, image_url: "https://www.bpmcdn.com/f/files/lacombe/import/2023-11/34476566_web1_231107-TodaysDrive-2025FordMustangGTD_1.jpg;w=960" },
-    { id: 4, name: "Toyota Innova", type: "Van", passengers: 7, luggage: 4, transmission: "Manual", price_per_day: 2500, image_url: "https://www.thrustzone.com/wp-content/uploads/2025/05/Hycross-EE-toyota-innova-2025-scaled.jpg" },
-    { id: 5, name: "Honda City", type: "Sedan", passengers: 5, luggage: 3, transmission: "Automatic", price_per_day: 2400, image_url: "https://gaadiwaadi.com/wp-content/uploads/2024/11/2025-honda-city-1164x720.jpg" },
-    { id: 6, name: "Mahindra Thar", type: "SUV", passengers: 4, luggage: 2, transmission: "Manual", price_per_day: 2800, image_url: "https://images.overdrive.in/wp-content/uploads/2024/08/mahindra-thar-roxx-left-front-three-quarter0-2024-08-51d5acbccf5c2cdcd8c1e31cb6ff58ff.jpg" },
-    { id: 7, name: "Tata Nexon", type: "Compact SUV", passengers: 5, luggage: 2, transmission: "Automatic", price_per_day: 2000, image_url: "https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Nexon/9675/1751559838445/front-left-side-47.jpg?impolicy=resize&imwidth=420" }
+    { id: 1, name: "Ford Mustang", type: "Luxury", passengers: 2, luggage: 1, transmission: "Automatic", price_per_day: 4500, image_url: "https://www.bpmcdn.com/f/files/lacombe/import/2023-11/34476566_web1_231107-TodaysDrive-2025FordMustangGTD_1.jpg;w=960", stock: 1 }
 ];
 
 async function seedInitialCars() {
@@ -84,7 +79,6 @@ const pickupLocations = [
 
 
 // --- API ENDPOINTS ---
-
 // GET all cars (with availability filtering)
 app.get('/api/cars', async (req, res) => {
     const { pickup, dropoff } = req.query;
@@ -102,8 +96,17 @@ app.get('/api/cars', async (req, res) => {
             startDate: { $lte: requestedDropoff },
             endDate: { $gte: requestedPickup }
         });
-        const unavailableCarIds = conflictingBookings.map(booking => booking.carId);
-        const availableCars = allCars.filter(car => !unavailableCarIds.includes(car.id));
+
+        const bookingCounts = {};
+        conflictingBookings.forEach(booking => {
+            bookingCounts[booking.carId] = (bookingCounts[booking.carId] || 0) + 1;
+        });
+
+        const availableCars = allCars.filter(car => {
+            const bookedCount = bookingCounts[car.id] || 0;
+            return car.stock > bookedCount;
+        });
+
         res.json(availableCars);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching cars' });
@@ -173,14 +176,15 @@ app.delete('/api/cars/:id', async (req, res) => {
 
 
 // --- Booking and Login Endpoints ---
-
-// POST a new booking (UPDATED with final availability check)
 app.post('/api/bookings', async (req, res) => {
     try {
         const { carId, startDate, endDate } = req.body;
 
-        // === THIS IS THE FIX ===
-        // Perform a final check for conflicting bookings right before saving
+        const car = await Car.findOne({ id: carId });
+        if (!car) {
+            return res.status(404).json({ success: false, message: 'Car not found.' });
+        }
+
         const conflictingBookings = await Booking.find({
             carId: carId,
             status: 'Approved',
@@ -188,16 +192,13 @@ app.post('/api/bookings', async (req, res) => {
             endDate: { $gt: new Date(startDate) }
         });
 
-        // If any conflicts are found, reject the new booking
-        if (conflictingBookings.length > 0) {
-            return res.status(409).json({ // 409 Conflict is the appropriate status code
+        if (conflictingBookings.length >= car.stock) {
+            return res.status(409).json({
                 success: false, 
-                message: 'Sorry, this car has just been booked for the selected dates. Please try another date range.' 
+                message: 'Sorry, this car is fully booked for the selected dates. Please try another date range.' 
             });
         }
-        // === END OF FIX ===
 
-        // If no conflicts, proceed to save the new booking
         const newBooking = new Booking(req.body);
         await newBooking.save();
         res.status(201).json({ success: true, message: 'Booking confirmed successfully!' });
