@@ -1508,6 +1508,13 @@ body {
     margin-bottom: 20px;
 }
 
+/* This new rule makes the title expand and center itself */
+.admin-header .page-title {
+    flex-grow: 1; /* Allows the title to take up the middle space */
+    margin-bottom: 0; /* Removes the default bottom margin for better alignment */
+    text-align: center;
+}
+
 .admin-header .btn-primary-full {
     width: auto;
 }
