@@ -25,6 +25,13 @@ body {
     color: var(--text-dark);
     line-height: 1.6;
     background-color: var(--white);
+    display: flex; /* Enables flexbox layout */
+    flex-direction: column; /* Stacks elements vertically */
+    min-height: 100vh; /* Ensures body is at least as tall as the screen */
+}
+
+main {
+    flex-grow: 1; /* Allows the main content to grow and fill empty space */
 }
 
 /* --- Decorative Background Blobs --- */
