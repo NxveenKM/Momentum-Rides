@@ -2,11 +2,13 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- Sticky Header (can remain here or move to global) ---
+    // --- Sticky Header Logic ---
+    // This adds the .scrolled class which triggers our new animation
     const header = document.querySelector('.header');
     if (header) {
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
+            // Trigger the animation after scrolling down a small amount (e.g., 10 pixels)
+            if (window.scrollY > 10) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
