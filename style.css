@@ -30,7 +30,7 @@ body {
 /* --- Decorative Background Blobs --- */
 body {
     position: relative; /* Required for positioning the blobs */
-    background-color: #ffffff; /* A very light gray for a softer feel */
+    background-color: #f8f9fa; /* A very light gray for a softer feel */
     overflow-x: hidden; /* Prevents blobs from creating a horizontal scrollbar */
 }
 
@@ -39,12 +39,13 @@ body {
     border-radius: 50%;
     filter: blur(100px); /* This creates the soft, out-of-focus effect */
     z-index: -1; /* Places them behind all content */
+    animation: blob-move 15s ease-in-out infinite; /* Apply the animation to all blobs */
 }
 
 .blob1 {
     width: 500px;
     height: 500px;
-    background-color: rgba(30, 144, 255, 0.3); /* Light version of --secondary-color */
+    background-color: rgba(30, 144, 255, 0.3); /* Opacity increased to 0.3 */
     top: -150px;
     left: -200px;
 }
@@ -52,9 +53,10 @@ body {
 .blob2 {
     width: 400px;
     height: 400px;
-    background-color: rgba(255, 127, 80, 0.25); /* Light version of --accent-color */
+    background-color: rgba(255, 127, 80, 0.25); /* Opacity increased to 0.25 */
     bottom: 10%;
     right: -150px;
+    animation-delay: -5s; /* Start 5s into the animation */
 }
 
 .blob3 {
@@ -63,6 +65,7 @@ body {
     background-color: rgba(30, 144, 255, 0.2); /* Light blue */
     top: 30%;
     right: -50px;
+    animation-delay: -10s; /* Start 10s into the animation */
 }
 
 .blob4 {
@@ -71,6 +74,34 @@ body {
     background-color: rgba(255, 127, 80, 0.15); /* Light orange */
     bottom: -100px;
     left: -100px;
+    animation-delay: -7s; /* Start 7s into the animation */
+}
+
+.blob5 {
+    width: 250px;
+    height: 250px;
+    background-color: rgba(30, 144, 255, 0.1); /* Lighter blue */
+    top: 50%;
+    left: 20%;
+    animation-delay: -3s; /* Start 3s into the animation */
+}
+
+.blob6 {
+    width: 200px;
+    height: 200px;
+    background-color: rgba(255, 127, 80, 0.1); /* Lighter orange */
+    top: 10%;
+    right: 30%;
+    animation-delay: -8s; /* Start 8s into the animation */
+}
+
+.blob7 {
+    width: 450px;
+    height: 450px;
+    background-color: rgba(30, 144, 255, 0.15); /* Light blue */
+    bottom: 25%;
+    left: -200px;
+    animation-delay: -12s; /* Start 12s into the animation */
 }
 
 .container {
@@ -1711,23 +1742,6 @@ body {
 }
 
 /* --- NEW: Advanced Animations & Effects --- */
-
-/* Keyframes for the background blob animation */
-@keyframes blob-move {
-    0% { transform: scale(1) translate(0, 0); }
-    33% { transform: scale(1.1) translate(20px, -30px); }
-    66% { transform: scale(0.9) translate(-20px, 20px); }
-    100% { transform: scale(1) translate(0, 0); }
-}
-
-/* Apply the animation to the blobs */
-.background-blob {
-    animation: blob-move 15s ease-in-out infinite;
-}
-.blob2 { animation-delay: -5s; } /* Start at a different point in the animation */
-.blob3 { animation-delay: -10s; }
-.blob4 { animation-delay: -7s; }
-
 
 /* Staggered Animation Delays */
 /* We will apply these delays using JavaScript */
