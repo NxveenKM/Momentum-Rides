@@ -1,21 +1,27 @@
-// global.js - Handles animations and mobile navigation for all pages
+// global.js - UPDATED with Staggered Animation Logic
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- Re-triggering Scroll Animation Logic ---
+    // --- Re-triggering & Staggered Scroll Animation Logic ---
     const scrollObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            // If the element is intersecting (in view)
             if (entry.isIntersecting) {
                 entry.target.classList.add('is-visible');
-            } 
-            // If the element is NOT intersecting (out of view)
-            else {
+
+                // === NEW: Check for staggered children ===
+                if (entry.target.classList.contains('stagger-container')) {
+                    const children = entry.target.children;
+                    for (let i = 0; i < children.length; i++) {
+                        children[i].classList.add('animate-on-scroll', 'slide-in-up', `stagger-child-${i + 1}`);
+                    }
+                }
+
+            } else {
                 entry.target.classList.remove('is-visible');
             }
         });
     }, {
-        threshold: 0.1 // Trigger when 10% of the element is visible
+        threshold: 0.1
     });
 
     const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
