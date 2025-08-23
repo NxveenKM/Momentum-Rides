@@ -95,17 +95,22 @@ body {
 /* --- Header & Navigation (FINAL ANIMATED VERSION) --- */
 .header {
     /* Initial state at the top of the page */
-    background-color: rgba(13, 27, 42, 0.7); /* Semi-transparent dark background */
+    background-color: rgba(13, 27, 42, 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     
     position: fixed;
-    top: 0;
-    left: 0; /* Define initial horizontal position */
-    transform: translateX(0); /* Define initial transform */
-    width: 100%;
-    padding: 15px 5%;
     z-index: 10;
+    
+    /* === THIS IS THE FIX for a smooth transition === */
+    /* Use the same centering method for both states */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    top: 0;
+    border-radius: 0;
+    
+    padding: 15px 5%;
     
     /* Smooth transition for all properties */
     transition: all 0.4s ease-in-out;
@@ -113,16 +118,14 @@ body {
 
 .header.scrolled {
     /* Scrolled state (floating window) */
-    background-color: rgba(13, 27, 42, 0.8); /* Slightly darker when floating */
+    background-color: rgba(13, 27, 42, 0.8);
     
-    /* This is the centering logic */
-    left: 50%;
-    transform: translateX(-50%);
-    
+    /* The centering properties (left, transform) do not change */
     width: 95%;
     max-width: 1200px;
-    margin-top: 10px;
-    border-radius: 12px;
+    top: 10px; /* Animate the top position */
+    border-radius: 12px; /* Animate the corners */
+    
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
