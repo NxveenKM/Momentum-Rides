@@ -1,4 +1,4 @@
-// 3d-hero.js - FINAL VERSION with Correct Sizing and Interaction
+// 3d-hero.js - UPDATED with Increased Sensitivity
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -9,12 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Scene Setup
     const scene = new THREE.Scene();
-    // === THIS IS THE FIX: Camera aspect ratio now uses the full window ===
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, heroSection.clientWidth / heroSection.clientHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
-    // === THIS IS THE FIX: Renderer is now sized to the full window ===
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     canvasContainer.appendChild(renderer.domElement);
 
@@ -34,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function (gltf) {
             carModel = gltf.scene;
             carModel.scale.set(1.2, 1.2, 1.2);
-            carModel.position.y = -0.7;
+            carModel.position.y = -0.69;
             scene.add(carModel);
         },
         function (xhr) {
@@ -65,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isMouseInside = false;
     });
 
-    // 5. Animation Loop
+    // 5. Animation Loop (UPDATED)
     function animate() {
         requestAnimationFrame(animate);
 
@@ -74,10 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let targetRotationX = 0;
 
             if (isMouseInside) {
-                targetRotationY = mouseX * 0.5;
-                targetRotationX = -(mouseY * 0.3);
+                // === SENSITIVITY INCREASED HERE ===
+                targetRotationY = mouseX * 0.8; // Increased from 0.5
+                targetRotationX = -(mouseY * 0.5); // Increased from 0.3
             }
 
+            // Smoothly interpolate to the target rotation
             carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.05;
             carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.05;
         }
@@ -87,10 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle window resizing
     window.addEventListener('resize', () => {
-        // === THIS IS THE FIX: Resize logic now uses the full window ===
-        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.aspect = heroSection.clientWidth / heroSection.clientHeight;
         camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(heroSection.clientWidth, heroSection.clientHeight);
     });
 
     animate();
