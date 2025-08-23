@@ -1548,6 +1548,31 @@ body {
 .icon-delete { color: #6c757d; }
 .icon-delete:hover { color: #d9534f; }
 
+/* --- Floating Action Button (FAB) Style --- */
+.fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1001; /* Above content, below modal */
+    transition: transform 0.2s ease-in-out;
+}
+
+.fab:hover {
+    transform: scale(1.1);
+}
+
 /* Modal Styles */
 .modal-overlay {
     position: fixed;
