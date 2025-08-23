@@ -35,9 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
             carModel.scale.set(1.2, 1.2, 1.2);
             carModel.position.y = -0.8;
             
-            // === THIS IS THE FIX: Changed from -0.2 to 0.2 ===
             // Tilts the model slightly upwards on the x-axis
-            carModel.rotation.x = 0.2; 
+            carModel.rotation.x = 0.4; 
             
             scene.add(carModel);
         },
