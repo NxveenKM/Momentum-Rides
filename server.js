@@ -1,4 +1,4 @@
-// server.js - UPDATED with Simplified Initial Seeding Data
+// server.js - UPDATED with Full Booking Edit Functionality
 
 const express = require('express');
 const cors = require('cors');
@@ -52,9 +52,9 @@ const carSchema = new mongoose.Schema({
 });
 const Car = mongoose.model('Car', carSchema);
 
-// --- Initial Data for Cars (for one-time seeding only) ---
+// --- Initial Data for Cars ---
 const initialCars = [
-    { id: 1, name: "Ford Mustang", type: "Luxury", passengers: 2, luggage: 1, transmission: "Automatic", price_per_day: 4500, image_url: "https://www.bpmcdn.com/f/files/lacombe/import/2023-11/34476566_web1_231107-TodaysDrive-2025FordMustangGTD_1.jpg;w=960", stock: 1 }
+    { id: 3, name: "Ford Mustang", type: "Luxury", passengers: 2, luggage: 1, transmission: "Automatic", price_per_day: 4500, image_url: "https://www.bpmcdn.com/f/files/lacombe/import/2023-11/34476566_web1_231107-TodaysDrive-2025FordMustangGTD_1.jpg;w=960", stock: 1 }
 ];
 
 async function seedInitialCars() {
@@ -79,6 +79,7 @@ const pickupLocations = [
 
 
 // --- API ENDPOINTS ---
+
 // GET all cars (with availability filtering)
 app.get('/api/cars', async (req, res) => {
     const { pickup, dropoff } = req.query;
@@ -176,6 +177,8 @@ app.delete('/api/cars/:id', async (req, res) => {
 
 
 // --- Booking and Login Endpoints ---
+
+// POST a new booking
 app.post('/api/bookings', async (req, res) => {
     try {
         const { carId, startDate, endDate } = req.body;
@@ -208,6 +211,7 @@ app.post('/api/bookings', async (req, res) => {
     }
 });
 
+// GET all bookings for the admin dashboard
 app.get('/api/bookings', async (req, res) => {
     try {
         const bookings = await Booking.find({}).sort({ bookingDate: -1 });
@@ -217,6 +221,7 @@ app.get('/api/bookings', async (req, res) => {
     }
 });
 
+// POST to log in an admin
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     const correctUsername = process.env.ADMIN_USERNAME;
@@ -228,20 +233,23 @@ app.post('/api/login', (req, res) => {
     }
 });
 
+// PATCH to update a booking's details or status
 app.patch('/api/bookings/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { status } = req.body;
-        const updatedBooking = await Booking.findByIdAndUpdate(id, { status }, { new: true });
+        // The request body can now contain any booking field (userName, startDate, status, etc.)
+        const updatedBooking = await Booking.findByIdAndUpdate(id, req.body, { new: true });
         if (!updatedBooking) {
             return res.status(404).json({ success: false, message: 'Booking not found' });
         }
         res.json({ success: true, booking: updatedBooking });
     } catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to update booking status' });
+        console.error('Error updating booking:', error);
+        res.status(500).json({ success: false, message: 'Failed to update booking' });
     }
 });
 
+// DELETE a booking
 app.delete('/api/bookings/:id', async (req, res) => {
     try {
         const { id } = req.params;
