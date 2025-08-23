@@ -1,4 +1,4 @@
-// admin.js - UPDATED with Booking Edit Functionality (Complete File)
+// admin.js - UPDATED with Edit Modal Date Validation
 
 document.addEventListener('DOMContentLoaded', () => {
     // Security check
@@ -12,14 +12,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
     const bookingsTbody = document.getElementById('bookings-tbody');
     const logoutButton = document.getElementById('logout-button');
-    // New Modal Elements
     const bookingModal = document.getElementById('booking-modal');
     const bookingModalTitle = document.getElementById('booking-modal-title');
     const bookingEditForm = document.getElementById('booking-edit-form');
     const bookingCancelBtn = document.getElementById('booking-cancel-btn');
     const locationSelect = document.getElementById('booking-location-select');
 
-    let allBookings = []; // To store the fetched booking data
+    let allBookings = [];
+
+    // === NEW: Link Start and End Dates in Edit Modal ===
+    function linkAdminDatePickers() {
+        const startDateInput = document.getElementById('booking-start-date');
+        const endDateInput = document.getElementById('booking-end-date');
+
+        if (startDateInput && endDateInput) {
+            startDateInput.addEventListener('change', () => {
+                if (startDateInput.value) {
+                    endDateInput.min = startDateInput.value;
+                    // If the current end date is now invalid, clear it
+                    if (endDateInput.value < startDateInput.value) {
+                        endDateInput.value = '';
+                    }
+                }
+            });
+        }
+    }
 
     // --- Functions ---
 
@@ -93,16 +110,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- NEW Modal Functions ---
+    // Modal Functions
     function openBookingModal(bookingData) {
         if (!bookingData) return;
         bookingModalTitle.textContent = `Edit Booking for ${bookingData.userName}`;
         document.getElementById('booking-db-id').value = bookingData._id;
         document.getElementById('booking-user-name').value = bookingData.userName;
         document.getElementById('booking-user-email').value = bookingData.userEmail;
-        // Format dates for the date input fields (YYYY-MM-DD)
-        document.getElementById('booking-start-date').value = new Date(bookingData.startDate).toISOString().split('T')[0];
-        document.getElementById('booking-end-date').value = new Date(bookingData.endDate).toISOString().split('T')[0];
+        
+        const startDate = new Date(bookingData.startDate).toISOString().split('T')[0];
+        const endDate = new Date(bookingData.endDate).toISOString().split('T')[0];
+        
+        document.getElementById('booking-start-date').value = startDate;
+        document.getElementById('booking-end-date').value = endDate;
+        // Set the min attribute for the end date when the modal opens
+        document.getElementById('booking-end-date').min = startDate;
+
         locationSelect.value = bookingData.location || '';
         
         bookingModal.style.display = 'flex';
@@ -112,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bookingModal.style.display = 'none';
     }
 
-    // --- NEW: Handle Booking Edit Form Submission ---
+    // Handle Booking Edit Form Submission
     async function handleBookingFormSubmit(event) {
         event.preventDefault();
         const bookingId = document.getElementById('booking-db-id').value;
@@ -134,14 +157,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Failed to update booking');
             
             closeBookingModal();
-            initializePage(); // Refresh the list
+            initializePage();
         } catch (error) {
             console.error('Booking update error:', error);
             alert('Error: Could not save changes. Please try again.');
         }
     }
 
-    // Sends a request to the server to update a booking's status
+    // Update/Delete Status Functions
     async function updateBookingStatus(bookingId, newStatus) {
         try {
             const response = await fetch(`https://momentum-rides.onrender.com/api/bookings/${bookingId}`, {
@@ -158,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Sends a request to the server to delete a booking
     async function deleteBooking(bookingId) {
         try {
             const response = await fetch(`https://momentum-rides.onrender.com/api/bookings/${bookingId}`, {
@@ -204,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // New Modal Listeners
+    // Modal Listeners
     bookingCancelBtn.addEventListener('click', closeBookingModal);
     bookingModal.addEventListener('click', (event) => {
         if (event.target === bookingModal) {
@@ -215,4 +237,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Load
     initializePage();
+    linkAdminDatePickers(); // Call the new function
 });
