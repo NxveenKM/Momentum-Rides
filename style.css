@@ -1683,3 +1683,31 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
+
+/* --- NEW: Advanced Animations & Effects --- */
+
+/* Keyframes for the background blob animation */
+@keyframes blob-move {
+    0% { transform: scale(1) translate(0, 0); }
+    33% { transform: scale(1.1) translate(20px, -30px); }
+    66% { transform: scale(0.9) translate(-20px, 20px); }
+    100% { transform: scale(1) translate(0, 0); }
+}
+
+/* Apply the animation to the blobs */
+.background-blob {
+    animation: blob-move 15s ease-in-out infinite;
+}
+.blob2 { animation-delay: -5s; } /* Start at a different point in the animation */
+.blob3 { animation-delay: -10s; }
+.blob4 { animation-delay: -7s; }
+
+
+/* Staggered Animation Delays */
+/* We will apply these delays using JavaScript */
+.stagger-child-1 { transition-delay: 0.1s; }
+.stagger-child-2 { transition-delay: 0.2s; }
+.stagger-child-3 { transition-delay: 0.3s; }
+.stagger-child-4 { transition-delay: 0.4s; }
+.stagger-child-5 { transition-delay: 0.5s; }
+.stagger-child-6 { transition-delay: 0.6s; }
