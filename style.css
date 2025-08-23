@@ -197,10 +197,10 @@ body {
 
 /* --- Hero Section (REDESIGNED) --- */
 .hero {
-    height: 80vh; /* Reduced height */
-    margin: 120px 5% 50px 5%; /* Top, sides, bottom margin */
-    border-radius: 20px; /* Rounded corners */
-    background-color: var(--primary-color); /* Dark background color */
+    height: 80vh;
+    margin: 120px 5% 50px 5%;
+    border-radius: 20px;
+    background: radial-gradient(ellipse at center, #2c3e50 0%, #1a252f 100%); /* New dark gradient */
     position: relative;
     z-index: 20;
     display: flex;
@@ -208,8 +208,7 @@ body {
     justify-content: center;
     color: var(--white);
     text-align: center;
-    overflow: visible; /* Allows the 3D model to "pop out" */
-    pointer-events: auto;
+    overflow: visible;
 }
 
 /* This is the container for the 3D canvas */
