@@ -1,4 +1,4 @@
-// server.js - UPDATED with Full Booking Edit Functionality
+// server.js - FINAL CORRECTED VERSION with Full Booking Edit Logic
 
 const express = require('express');
 const cors = require('cors');
@@ -233,7 +233,7 @@ app.post('/api/login', (req, res) => {
     }
 });
 
-// PATCH to update a booking's details or status
+// PATCH to update a booking's details or status (UPDATED)
 app.patch('/api/bookings/:id', async (req, res) => {
     try {
         const { id } = req.params;
