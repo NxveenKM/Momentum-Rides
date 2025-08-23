@@ -1,7 +1,7 @@
-// admin.js - FINAL CORRECTED VERSION
+// admin.js - UPDATED with Booking Edit Functionality (Complete File)
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Security check to ensure user is logged in
+    // Security check
     const isAuthenticated = sessionStorage.getItem('isAdminAuthenticated');
     if (isAuthenticated !== 'true') {
         alert('You must be logged in to view this page.');
@@ -9,19 +9,50 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // --- DOM Elements ---
     const bookingsTbody = document.getElementById('bookings-tbody');
+    const logoutButton = document.getElementById('logout-button');
+    // New Modal Elements
+    const bookingModal = document.getElementById('booking-modal');
+    const bookingModalTitle = document.getElementById('booking-modal-title');
+    const bookingEditForm = document.getElementById('booking-edit-form');
+    const bookingCancelBtn = document.getElementById('booking-cancel-btn');
+    const locationSelect = document.getElementById('booking-location-select');
 
-    // Fetches all bookings from the server
-    async function fetchBookings() {
+    let allBookings = []; // To store the fetched booking data
+
+    // --- Functions ---
+
+    // Fetches all bookings and locations
+    async function initializePage() {
         try {
-            const response = await fetch('https://momentum-rides.onrender.com/api/bookings');
-            if (!response.ok) throw new Error('Failed to fetch bookings');
-            const bookings = await response.json();
-            displayBookings(bookings);
+            const [bookingsResponse, locationsResponse] = await Promise.all([
+                fetch('https://momentum-rides.onrender.com/api/bookings'),
+                fetch('https://momentum-rides.onrender.com/api/locations')
+            ]);
+            if (!bookingsResponse.ok) throw new Error('Failed to fetch bookings');
+            if (!locationsResponse.ok) throw new Error('Failed to fetch locations');
+            
+            allBookings = await bookingsResponse.json();
+            const locations = await locationsResponse.json();
+            
+            populateLocationDropdown(locations);
+            displayBookings(allBookings);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Initialization Error:', error);
             bookingsTbody.innerHTML = `<tr><td colspan="7" class="error-row">Could not load bookings.</td></tr>`;
         }
+    }
+
+    // Populates the location dropdown in the edit modal
+    function populateLocationDropdown(locations) {
+        if (!locationSelect) return;
+        locations.sort().forEach(location => {
+            const option = document.createElement('option');
+            option.value = location;
+            option.textContent = location;
+            locationSelect.appendChild(option);
+        });
     }
 
     // Displays the bookings in the table
@@ -31,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
             bookingsTbody.innerHTML = `<tr><td colspan="7">No bookings found.</td></tr>`;
             return;
         }
-
         bookings.forEach(booking => {
             const row = document.createElement('tr');
             const startDate = new Date(booking.startDate).toLocaleDateString();
@@ -54,10 +84,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>₹${booking.totalCost.toLocaleString()}</td>
                 <td>${bookingDate}</td>
                 <td>${statusDropdown}</td>
-                <td><i class="delete-icon fas fa-trash-can" data-id="${booking._id}" title="Delete Booking"></i></td>
+                <td class="actions-cell">
+                    <i class="action-icon icon-edit-booking fas fa-pencil-alt" data-id="${booking._id}" title="Edit Booking"></i>
+                    <i class="action-icon icon-delete fas fa-trash-alt" data-id="${booking._id}" title="Delete Booking"></i>
+                </td>
             `;
             bookingsTbody.appendChild(row);
         });
+    }
+
+    // --- NEW Modal Functions ---
+    function openBookingModal(bookingData) {
+        if (!bookingData) return;
+        bookingModalTitle.textContent = `Edit Booking for ${bookingData.userName}`;
+        document.getElementById('booking-db-id').value = bookingData._id;
+        document.getElementById('booking-user-name').value = bookingData.userName;
+        document.getElementById('booking-user-email').value = bookingData.userEmail;
+        // Format dates for the date input fields (YYYY-MM-DD)
+        document.getElementById('booking-start-date').value = new Date(bookingData.startDate).toISOString().split('T')[0];
+        document.getElementById('booking-end-date').value = new Date(bookingData.endDate).toISOString().split('T')[0];
+        locationSelect.value = bookingData.location || '';
+        
+        bookingModal.style.display = 'flex';
+    }
+
+    function closeBookingModal() {
+        bookingModal.style.display = 'none';
+    }
+
+    // --- NEW: Handle Booking Edit Form Submission ---
+    async function handleBookingFormSubmit(event) {
+        event.preventDefault();
+        const bookingId = document.getElementById('booking-db-id').value;
+
+        const updatedData = {
+            userName: document.getElementById('booking-user-name').value,
+            userEmail: document.getElementById('booking-user-email').value,
+            startDate: document.getElementById('booking-start-date').value,
+            endDate: document.getElementById('booking-end-date').value,
+            location: locationSelect.value
+        };
+
+        try {
+            const response = await fetch(`https://momentum-rides.onrender.com/api/bookings/${bookingId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData)
+            });
+            if (!response.ok) throw new Error('Failed to update booking');
+            
+            closeBookingModal();
+            initializePage(); // Refresh the list
+        } catch (error) {
+            console.error('Booking update error:', error);
+            alert('Error: Could not save changes. Please try again.');
+        }
     }
 
     // Sends a request to the server to update a booking's status
@@ -69,11 +150,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ status: newStatus })
             });
             if (!response.ok) throw new Error('Failed to update status');
-            console.log(`Status for booking ${bookingId} updated to ${newStatus}`);
+            
+            initializePage(); 
         } catch (error) {
             console.error('Update Error:', error);
             alert('Failed to update booking status.');
-            fetchBookings(); // Refresh table on error to show original state
         }
     }
 
@@ -84,36 +165,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'DELETE'
             });
             if (!response.ok) throw new Error('Failed to delete booking');
-            fetchBookings(); // Refresh the table to show the change
+            
+            initializePage();
         } catch (error) {
             console.error('Delete Error:', error);
             alert('Failed to delete booking.');
         }
     }
 
-    // Event Delegation for all actions in the table body
+    // --- Event Listeners ---
     bookingsTbody.addEventListener('click', (event) => {
-        // Handle Delete Icon Clicks
-        if (event.target.matches('.delete-icon')) {
-            const bookingId = event.target.dataset.id;
-            if (confirm('Are you sure you want to permanently delete this booking? This action cannot be undone.')) {
+        const target = event.target;
+        const bookingId = target.dataset.id;
+
+        if (target.matches('.icon-edit-booking')) {
+            const bookingToEdit = allBookings.find(b => b._id === bookingId);
+            openBookingModal(bookingToEdit);
+        }
+        if (target.matches('.icon-delete')) {
+            if (confirm('Are you sure you want to permanently delete this booking?')) {
                 deleteBooking(bookingId);
             }
         }
     });
     
     bookingsTbody.addEventListener('change', (event) => {
-        // Handle Status Dropdown Changes
         if (event.target.matches('.status-select')) {
             const bookingId = event.target.dataset.id;
             const newStatus = event.target.value;
-            event.target.className = `status-select status-${newStatus.toLowerCase()}`;
             updateBookingStatus(bookingId, newStatus);
         }
     });
 
-    // Logout button logic
-    const logoutButton = document.getElementById('logout-button');
     if (logoutButton) {
         logoutButton.addEventListener('click', () => {
             sessionStorage.removeItem('isAdminAuthenticated');
@@ -121,6 +204,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initial load of bookings when the page opens
-    fetchBookings();
+    // New Modal Listeners
+    bookingCancelBtn.addEventListener('click', closeBookingModal);
+    bookingModal.addEventListener('click', (event) => {
+        if (event.target === bookingModal) {
+            closeBookingModal();
+        }
+    });
+    bookingEditForm.addEventListener('submit', handleBookingFormSubmit);
+
+    // Initial Load
+    initializePage();
 });
