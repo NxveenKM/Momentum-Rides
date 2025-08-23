@@ -1,4 +1,4 @@
-// 3d-hero.js - UPDATED with initial downward tilt
+// 3d-hero.js - UPDATED with upward tilt
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
             carModel.scale.set(1.2, 1.2, 1.2);
             carModel.position.y = -0.8;
             
-            // === THIS IS THE NEW LINE ===
-            // Tilts the model slightly downwards on the x-axis
-            carModel.rotation.x = -0.2; 
+            // === THIS IS THE FIX: Changed from -0.2 to 0.2 ===
+            // Tilts the model slightly upwards on the x-axis
+            carModel.rotation.x = 0.2; 
             
             scene.add(carModel);
         },
@@ -74,13 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(animate);
 
         if (carModel) {
-            // The default "resting" rotation is now our initial tilt
+            // === THIS IS THE FIX: The resting rotation is now the upward tilt ===
             let targetRotationY = 0;
-            let targetRotationX = -0.2; 
+            let targetRotationX = 0.2; 
 
             if (isMouseInside) {
                 targetRotationY = mouseX * 0.8;
-                targetRotationX = -(mouseY * 0.5);
+                targetRotationX = -(mouseY * 0.5) + 0.2; // Maintain the base upward tilt
             }
 
             carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.05;
