@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function (gltf) {
             carModel = gltf.scene;
             carModel.scale.set(1.2, 1.2, 1.2);
-            carModel.position.y = -0.69;
+            carModel.position.y = -0.8;
             scene.add(carModel);
         },
         function (xhr) {
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const scrollY = window.scrollY;
         if (carModel) {
             // Move the model up at a fraction of the scroll speed
-            carModel.position.y = -0.69 + scrollY * 0.01;
+            carModel.position.y = -0.8 + scrollY * 0.01;
         }
     });
 

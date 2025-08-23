@@ -92,27 +92,37 @@ body {
     margin-top: 40px;
 }
 
-/* --- Header & Navigation (REDESIGNED) --- */
+/* --- Header & Navigation (FINAL ANIMATED VERSION) --- */
 .header {
-    /* Enhanced glassmorphism effect */
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px); /* For Safari */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    /* Initial state at the top of the page */
+    background-color: transparent; /* Starts fully transparent */
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle line at the top */
     
-    padding: 15px 5%;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
+    padding: 15px 5%;
     z-index: 1000;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    
+    /* Smooth transition for all properties */
+    transition: all 0.4s ease-in-out;
 }
 
 .header.scrolled {
-    background-color: var(--primary-color);
-    border-color: transparent;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    /* Scrolled state (floating window) */
+    background-color: rgba(255, 255, 255, 0.1); /* Glassmorphism background */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    
+    width: 95%; /* Becomes narrower */
+    max-width: 1200px; /* Max width on large screens */
+    margin: 10px auto; /* Adds top/bottom margin and centers it */
+    border-radius: 12px; /* Rounded corners for the floating effect */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1); /* Lifts it off the page */
 }
 
 .navbar {
@@ -129,11 +139,11 @@ body {
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 10px; /* Adds space between links */
+    gap: 10px;
 }
 
 .nav-item {
-    margin-left: 0; /* Removed old margin */
+    margin-left: 0;
 }
 
 .nav-link {
@@ -141,18 +151,16 @@ body {
     text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
-    padding: 8px 16px; /* Creates the button-like shape */
-    border-radius: 20px; /* Pill shape */
+    padding: 8px 16px;
+    border-radius: 20px;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Hover effect for links */
 .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.2);
     color: var(--white);
 }
 
-/* Style for the active page link */
 .nav-link.active {
     background-color: var(--secondary-color);
     color: var(--white);
