@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function (gltf) {
             carModel = gltf.scene;
             carModel.scale.set(1.2, 1.2, 1.2);
-            carModel.position.y = -0.8;
+            carModel.position.y = -0.7;
             scene.add(carModel);
         },
         function (xhr) {
