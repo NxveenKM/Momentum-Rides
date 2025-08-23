@@ -1,4 +1,4 @@
-// fleet-management.js - FINAL CORRECTED VERSION
+// fleet-management.js - UPDATED with Stock Management Logic
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Security Check ---
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             populateCarTypeDropdown();
         } catch (error) {
             console.error('Initialization Error:', error);
-            carsTbody.innerHTML = `<tr><td colspan="5" class="error-row">Could not load fleet data.</td></tr>`;
+            carsTbody.innerHTML = `<tr><td colspan="6" class="error-row">Could not load fleet data.</td></tr>`;
         }
     }
 
@@ -66,11 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
         carTypeSelect.appendChild(addNewOption);
     }
 
-    // 3. Display cars in the table
+    // 3. Display cars in the table (UPDATED)
     function displayCars(cars) {
         carsTbody.innerHTML = '';
         if (cars.length === 0) {
-            carsTbody.innerHTML = `<tr><td colspan="5">No cars in the fleet. Click 'Add New Car' to begin.</td></tr>`;
+            carsTbody.innerHTML = `<tr><td colspan="6">No cars in the fleet. Click 'Add New Car' to begin.</td></tr>`;
             return;
         }
         cars.forEach(car => {
@@ -80,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${car.name}</td>
                 <td>${car.type}</td>
                 <td>₹${car.price_per_day.toLocaleString()}</td>
+                <td>${car.stock}</td>
                 <td class="actions-cell">
                     <i class="action-icon icon-edit fas fa-pencil-alt" data-id="${car.id}" title="Edit Car"></i>
                     <i class="action-icon icon-delete fas fa-trash-alt" data-id="${car.id}" title="Delete Car"></i>
@@ -89,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Modal Handling
+    // 4. Modal Handling (UPDATED)
     function openModal(mode = 'add', carData = null) {
         carForm.reset();
         newCarTypeGroup.style.display = 'none';
@@ -109,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('car-luggage').value = carData.luggage;
             document.getElementById('car-transmission').value = carData.transmission;
             document.getElementById('car-image').value = carData.image_url;
+            document.getElementById('car-stock').value = carData.stock; // Populate stock
 
             if (carTypes.includes(carData.type)) {
                 carTypeSelect.value = carData.type;
@@ -125,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = 'none';
     }
 
-    // 5. Handle Form Submission (Create or Update)
+    // 5. Handle Form Submission (UPDATED)
     async function handleFormSubmit(event) {
         event.preventDefault();
         const isEditing = !!document.getElementById('car-db-id').value;
@@ -148,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             luggage: document.getElementById('car-luggage').value,
             transmission: document.getElementById('car-transmission').value,
             image_url: document.getElementById('car-image').value,
+            stock: document.getElementById('car-stock').value // Add stock to data
         };
 
         const url = isEditing ? `${CARS_API_URL}/${carData.id}` : CARS_API_URL;
