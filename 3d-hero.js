@@ -1,4 +1,4 @@
-// 3d-hero.js - UPDATED with Increased Sensitivity
+// 3d-hero.js - UPDATED with Parallax Scroll Effect
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -55,15 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
         mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    heroSection.addEventListener('mouseenter', () => {
-        isMouseInside = true;
+    heroSection.addEventListener('mouseenter', () => { isMouseInside = true; });
+    heroSection.addEventListener('mouseleave', () => { isMouseInside = false; });
+
+    // === NEW: Parallax Scroll Logic ===
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        if (carModel) {
+            // Move the model up at a fraction of the scroll speed
+            carModel.position.y = -0.69 + scrollY * 0.1;
+        }
     });
 
-    heroSection.addEventListener('mouseleave', () => {
-        isMouseInside = false;
-    });
-
-    // 5. Animation Loop (UPDATED)
+    // 5. Animation Loop
     function animate() {
         requestAnimationFrame(animate);
 
@@ -72,12 +76,10 @@ document.addEventListener('DOMContentLoaded', () => {
             let targetRotationX = 0;
 
             if (isMouseInside) {
-                // === SENSITIVITY INCREASED HERE ===
-                targetRotationY = mouseX * 0.8; // Increased from 0.5
-                targetRotationX = -(mouseY * 0.5); // Increased from 0.3
+                targetRotationY = mouseX * 0.8;
+                targetRotationX = -(mouseY * 0.5);
             }
 
-            // Smoothly interpolate to the target rotation
             carModel.rotation.y += (targetRotationY - carModel.rotation.y) * 0.05;
             carModel.rotation.x += (targetRotationX - carModel.rotation.x) * 0.05;
         }
