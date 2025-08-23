@@ -1499,6 +1499,18 @@ body {
     color: #d9534f; /* Red */
 }
 
+.icon-edit-booking {
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: color 0.2s ease-in-out;
+    color: #6c757d; /* Neutral gray */
+}
+
+.icon-edit-booking:hover {
+    color: var(--secondary-color); /* Blue */
+}
+
 /* --- Admin Fleet Management Styles (UPDATED) --- */
 
 .admin-header {
