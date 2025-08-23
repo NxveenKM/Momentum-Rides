@@ -113,16 +113,20 @@ body {
 
 .header.scrolled {
     /* Scrolled state (floating window) */
-    background-color: rgba(255, 255, 255, 0.1); /* Glassmorphism background */
+    background-color: rgba(13, 27, 42, 0.7); /* Darker, less transparent background */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     
-    width: 95%; /* Becomes narrower */
-    max-width: 1200px; /* Max width on large screens */
-    margin: 10px auto; /* Adds top/bottom margin and centers it */
-    border-radius: 12px; /* Rounded corners for the floating effect */
+    /* === THIS IS THE FIX for centering === */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    width: 95%;
+    max-width: 1200px;
+    margin-top: 10px; /* Replaces the old margin property */
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.1); /* Lifts it off the page */
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
 
 .navbar {
