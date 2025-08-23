@@ -100,7 +100,6 @@ body {
     -webkit-backdrop-filter: blur(12px);
     
     position: fixed;
-    /* === FIX #1: Set a high z-index to stay on top === */
     z-index: 1000; 
     
     /* Use the same centering method for both states */
@@ -110,9 +109,10 @@ body {
     top: 0;
     border-radius: 0;
     
+    /* === THIS IS THE FIX: Define initial padding === */
     padding: 15px 5%;
     
-    /* === FIX #2: Slower transition speed === */
+    /* Smooth transition for all properties */
     transition: all 0.6s ease-in-out; 
 }
 
@@ -120,16 +120,17 @@ body {
     /* Scrolled state (floating window) */
     background-color: rgba(13, 27, 42, 0.8);
     
-    /* The centering properties (left, transform) do not change */
     width: 95%;
     max-width: 1200px;
-    top: 10px; /* Animate the top position */
-    border-radius: 12px; /* Animate the corners */
+    top: 10px;
+    border-radius: 12px;
+    
+    /* === THIS IS THE FIX: Define scrolled padding === */
+    padding: 15px 2%; /* Adjust horizontal padding for the floating state */
     
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
-
 
 .navbar {
     display: flex;
