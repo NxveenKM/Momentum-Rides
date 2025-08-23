@@ -92,21 +92,26 @@ body {
     margin-top: 40px;
 }
 
-/* --- Header & Navigation --- */
+/* --- Header & Navigation (REDESIGNED) --- */
 .header {
-    background-color: rgba(13, 27, 42, 0.8);
-    backdrop-filter: blur(10px);
+    /* Enhanced glassmorphism effect */
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* For Safari */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    
     padding: 15px 5%;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 10;
-    transition: background-color 0.3s ease;
+    z-index: 1000;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .header.scrolled {
     background-color: var(--primary-color);
+    border-color: transparent;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -117,20 +122,18 @@ body {
 }
 
 .nav-logo {
-    font-family: var(--font-heading);
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--white);
-    text-decoration: none;
+    display: flex;
+    align-items: center;
 }
 
 .nav-menu {
     display: flex;
     list-style: none;
+    gap: 10px; /* Adds space between links */
 }
 
 .nav-item {
-    margin-left: 30px;
+    margin-left: 0; /* Removed old margin */
 }
 
 .nav-link {
@@ -138,11 +141,21 @@ body {
     text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
-    transition: color 0.3s ease;
+    padding: 8px 16px; /* Creates the button-like shape */
+    border-radius: 20px; /* Pill shape */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Hover effect for links */
 .nav-link:hover {
-    color: var(--secondary-color);
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+/* Style for the active page link */
+.nav-link.active {
+    background-color: var(--secondary-color);
+    color: var(--white);
 }
 
 .nav-cta {
@@ -152,12 +165,12 @@ body {
     border-radius: 5px;
     text-decoration: none;
     font-weight: 600;
-    transition: transform 0.2s ease, background-color 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .nav-cta:hover {
-    background-color: #ff6347; /* Slightly darker orange */
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .hamburger {
