@@ -95,17 +95,17 @@ body {
 /* --- Header & Navigation (FINAL ANIMATED VERSION) --- */
 .header {
     /* Initial state at the top of the page */
-    background-color: transparent; /* Starts fully transparent */
-    backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle line at the top */
+    background-color: rgba(13, 27, 42, 0.7); /* Semi-transparent dark background */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     
     position: fixed;
     top: 0;
-    left: 0;
+    left: 0; /* Define initial horizontal position */
+    transform: translateX(0); /* Define initial transform */
     width: 100%;
     padding: 15px 5%;
-    z-index: 1000;
+    z-index: 10;
     
     /* Smooth transition for all properties */
     transition: all 0.4s ease-in-out;
@@ -113,17 +113,15 @@ body {
 
 .header.scrolled {
     /* Scrolled state (floating window) */
-    background-color: rgba(13, 27, 42, 0.7); /* Darker, less transparent background */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background-color: rgba(13, 27, 42, 0.8); /* Slightly darker when floating */
     
-    /* === THIS IS THE FIX for centering === */
+    /* This is the centering logic */
     left: 50%;
     transform: translateX(-50%);
     
     width: 95%;
     max-width: 1200px;
-    margin-top: 10px; /* Replaces the old margin property */
+    margin-top: 10px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 30px rgba(0,0,0,0.1);
