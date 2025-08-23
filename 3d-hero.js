@@ -1,4 +1,4 @@
-// 3d-hero.js - UPDATED with Parallax Scroll Effect
+// 3d-hero.js - UPDATED with initial downward tilt
 
 document.addEventListener('DOMContentLoaded', () => {
     const heroSection = document.querySelector('.hero');
@@ -31,8 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
         modelUrl,
         function (gltf) {
             carModel = gltf.scene;
+            
             carModel.scale.set(1.2, 1.2, 1.2);
             carModel.position.y = -0.8;
+            
+            // === THIS IS THE NEW LINE ===
+            // Tilts the model slightly downwards on the x-axis
+            carModel.rotation.x = -0.2; 
+            
             scene.add(carModel);
         },
         function (xhr) {
@@ -55,16 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
         mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    heroSection.addEventListener('mouseenter', () => { isMouseInside = true; });
-    heroSection.addEventListener('mouseleave', () => { isMouseInside = false; });
+    heroSection.addEventListener('mouseenter', () => {
+        isMouseInside = true;
+    });
 
-    // === NEW: Parallax Scroll Logic ===
-    window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        if (carModel) {
-            // Move the model up at a fraction of the scroll speed
-            carModel.position.y = -0.8 + scrollY * 0.02;
-        }
+    heroSection.addEventListener('mouseleave', () => {
+        isMouseInside = false;
     });
 
     // 5. Animation Loop
@@ -72,8 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(animate);
 
         if (carModel) {
+            // The default "resting" rotation is now our initial tilt
             let targetRotationY = 0;
-            let targetRotationX = 0;
+            let targetRotationX = -0.2; 
 
             if (isMouseInside) {
                 targetRotationY = mouseX * 0.8;
