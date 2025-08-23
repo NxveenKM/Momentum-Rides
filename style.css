@@ -100,9 +100,9 @@ body {
     -webkit-backdrop-filter: blur(12px);
     
     position: fixed;
-    z-index: 10;
+    /* === FIX #1: Set a high z-index to stay on top === */
+    z-index: 1000; 
     
-    /* === THIS IS THE FIX for a smooth transition === */
     /* Use the same centering method for both states */
     left: 50%;
     transform: translateX(-50%);
@@ -112,8 +112,8 @@ body {
     
     padding: 15px 5%;
     
-    /* Smooth transition for all properties */
-    transition: all 0.4s ease-in-out;
+    /* === FIX #2: Slower transition speed === */
+    transition: all 0.6s ease-in-out; 
 }
 
 .header.scrolled {
@@ -129,6 +129,7 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 30px rgba(0,0,0,0.1);
 }
+
 
 .navbar {
     display: flex;
@@ -207,7 +208,6 @@ body {
     border-radius: 20px;
     background: radial-gradient(ellipse at center, #2c3e50 0%, #1a252f 100%); /* New dark gradient */
     position: relative;
-    z-index: 20;
     display: flex;
     align-items: center;
     justify-content: center;
