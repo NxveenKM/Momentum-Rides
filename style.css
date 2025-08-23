@@ -101,7 +101,7 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 10;
     transition: background-color 0.3s ease;
 }
 
@@ -181,6 +181,7 @@ body {
     border-radius: 20px; /* Rounded corners */
     background-color: var(--primary-color); /* Dark background color */
     position: relative;
+    z-index: 20;
     display: flex;
     align-items: center;
     justify-content: center;
