@@ -24,7 +24,9 @@ body {
     font-family: var(--font-body);
     color: var(--text-dark);
     line-height: 1.6;
-    background-color: var(--white);
+    background-color: #f8f9fa; /* Matches blob background */
+    position: relative; 
+    overflow-x: hidden; 
     display: flex; /* Enables flexbox layout */
     flex-direction: column; /* Stacks elements vertically */
     min-height: 100vh; /* Ensures body is at least as tall as the screen */
