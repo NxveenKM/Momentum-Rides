@@ -678,6 +678,7 @@ main {
     background-color: var(--primary-color);
     color: var(--neutral-light);
     padding-top: 60px;
+    margin-top: auto;
 }
 .footer-content {
     display: grid;
