@@ -246,6 +246,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Team member image hover effects (only images, not names)
+    document.querySelectorAll('.team-member img').forEach(img => {
+        img.addEventListener('mouseenter', () => {
+            gsap.to(img, {
+                y: -12,
+                scale: 1.05,
+                boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
+                duration: 0.3,
+                ease: "back.out(1.7)"
+            });
+        });
+        
+        img.addEventListener('mouseleave', () => {
+            gsap.to(img, {
+                y: 0,
+                scale: 1,
+                boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+                duration: 0.3,
+                ease: "power2.out"
+            });
+        });
+    });
+    
     // Button hover effects
     document.querySelectorAll('.btn-search, .nav-cta, .btn-primary-full, .btn-service').forEach(button => {
         button.addEventListener('mouseenter', () => {

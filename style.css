@@ -1213,25 +1213,24 @@ main {
 }
 
 .team-section { 
-    text-align: center; 
+    text-align: center;
+    padding: 40px 0; /* Add section padding for better spacing */
 }
 .team-member {
-    /* Base styles for the non-moving card */
-    background: var(--white); 
-    border-radius: var(--radius-md); 
-    padding: var(--spacing-5);
-    box-shadow: var(--shadow-sm);
+    /* Remove card styling to blend with background */
+    background: transparent;
+    border-radius: none;
+    padding: 0;
+    box-shadow: none;
+    /* Center the content */
+    display: inline-block;
+    margin: 0 auto;
 }
 .team-member-link { 
     text-decoration: none; 
     color: inherit; 
-    display: inline-block; 
-    /* Animation is applied ONLY to the link */
-    transition: transform 0.3s ease;
-}
-.team-member-link:hover {
-    /* Pop-out effect is applied ONLY to the link */
-    transform: translateY(-12px);
+    display: inline-block;
+    /* Remove animation from the link itself */
 }
 .team-member img { 
     width: 150px; 
@@ -1241,6 +1240,8 @@ main {
     margin-bottom: 15px; 
     border: 4px solid var(--neutral-light);
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    cursor: pointer;
+    /* GSAP will handle hover animations */
 }
 .team-member h4 { 
     font-family: var(--font-heading); 
