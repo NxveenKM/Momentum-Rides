@@ -64,7 +64,9 @@ body {
     overflow-x: hidden; 
     display: flex;
     flex-direction: column;
-    min-height: 100%;
+    min-height: 100vh; /* Use viewport height instead of 100% */
+    margin: 0; /* Ensure no default margins */
+    padding: 0; /* Ensure no default padding */
 }
 
 main {
@@ -110,7 +112,7 @@ main {
     width: 350px;
     height: 350px;
     background-color: rgba(255, 127, 80, 0.15); /* Light orange */
-    bottom: -100px;
+    bottom: 50px; /* Changed from -100px to prevent extending beyond viewport */
     left: -100px;
     animation-delay: -7s; /* Start 7s into the animation */
 }
@@ -716,8 +718,9 @@ main {
 .footer {
     background-color: var(--primary-color);
     color: var(--neutral-light);
-    padding-top: 60px;
+    padding: 60px 0 0 0; /* Ensure no bottom padding */
     margin-top: auto;
+    margin-bottom: 0; /* Ensure no bottom margin */
 }
 .footer-content {
     display: grid;
@@ -751,7 +754,8 @@ main {
 }
 .footer-bottom {
     text-align: center;
-    padding: 20px;
+    padding: 20px 20px 20px 20px; /* Explicit padding to ensure consistency */
+    margin: 0; /* Remove any default margins */
     border-top: 1px solid #2c3e50;
 }
 
@@ -772,6 +776,13 @@ main {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Add missing blob-move animation */
+@keyframes blob-move {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
 }
 
 /* --- Fleet Page Specific Styles (REDESIGNED) --- */
