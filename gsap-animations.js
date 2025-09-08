@@ -1,5 +1,12 @@
 // gsap-animations.js - Modern GSAP Animations for Momentum Rides
 
+// Check if GSAP is available, if not, ensure elements remain visible
+if (typeof gsap === 'undefined') {
+    console.warn('GSAP not loaded, elements will remain visible without animations');
+    // Exit early if GSAP is not available
+    return;
+}
+
 // Register GSAP plugins
 gsap.registerPlugin(ScrollTrigger, TextPlugin);
 

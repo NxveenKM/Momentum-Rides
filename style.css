@@ -760,25 +760,25 @@ main {
 }
 
 /* --- GSAP Animation Setup --- */
-/* Initial states for GSAP animations */
+/* Initial states for GSAP animations - only hide elements that have GSAP classes */
 .gsap-fade-in {
-    opacity: 0;
-    transform: translateY(30px);
+    opacity: 1; /* Default visible, GSAP will set to 0 when initialized */
+    transform: none;
 }
 
 .gsap-scale-in {
-    opacity: 0;
-    transform: scale(0.8);
+    opacity: 1; /* Default visible, GSAP will set to 0 when initialized */
+    transform: none;
 }
 
 .gsap-slide-left {
-    opacity: 0;
-    transform: translateX(-50px);
+    opacity: 1; /* Default visible, GSAP will set to 0 when initialized */
+    transform: none;
 }
 
 .gsap-slide-right {
-    opacity: 0;
-    transform: translateX(50px);
+    opacity: 1; /* Default visible, GSAP will set to 0 when initialized */
+    transform: none;
 }
 
 /* Remove blob animations - will be handled by GSAP */
