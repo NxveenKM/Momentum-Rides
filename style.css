@@ -718,19 +718,19 @@ main {
 .footer {
     background-color: var(--primary-color);
     color: var(--neutral-light);
-    padding: 60px 0 0 0; /* Ensure no bottom padding */
+    padding: 30px 0 0 0; /* Reduced from 60px to 30px */
     margin-top: auto;
     margin-bottom: 0; /* Ensure no bottom margin */
 }
 .footer-content {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-    margin-bottom: 40px;
+    gap: 25px; /* Reduced from 40px to 25px */
+    margin-bottom: 25px; /* Reduced from 40px to 25px */
 }
 .footer h3 {
     font-family: var(--font-heading);
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Reduced from 20px to 15px */
     color: var(--white);
 }
 .footer p {
@@ -742,7 +742,7 @@ main {
 .footer-links a {
     color: #d4d4d4; /* Better contrast */
     text-decoration: none;
-    line-height: 2;
+    line-height: 1.6; /* Reduced from 2 to 1.6 for more compact spacing */
     transition: color var(--animation-speed) ease;
 }
 .footer-links a:hover {
@@ -754,7 +754,7 @@ main {
 }
 .footer-bottom {
     text-align: center;
-    padding: 20px 20px 20px 20px; /* Explicit padding to ensure consistency */
+    padding: 15px 20px; /* Reduced vertical padding from 20px to 15px */
     margin: 0; /* Remove any default margins */
     border-top: 1px solid #2c3e50;
 }
