@@ -18,6 +18,7 @@
 
 html {
     scroll-behavior: smooth;
+    height: 100%;
 }
 
 /* --- Corrected and Merged Body Styles --- */
@@ -25,12 +26,12 @@ body {
     font-family: var(--font-body);
     color: var(--text-dark);
     line-height: 1.6;
-    background-color: #f8f9fa; /* Light gray background */
+    background-color: #f8f9fa;
     position: relative; 
     overflow-x: hidden; 
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100%; /* Use min-height to ensure it fills the viewport */
 }
 
 main {
