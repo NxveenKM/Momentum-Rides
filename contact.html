@@ -47,12 +47,12 @@
         </nav>
     </header>
 
-    <main class="page-container">
-        <h1 class="page-title">Get In Touch</h1>
-        <p class="page-subtitle">We're here to help! Whether you have a question about our cars or need a custom quote for a tour, please feel free to reach out.</p>
+    <main class="page-container gsap-animate" data-gsap="contact-main">
+        <h1 class="page-title gsap-fade-in" data-gsap="contact-title">Get In Touch</h1>
+        <p class="page-subtitle gsap-fade-in" data-gsap="contact-subtitle">We're here to help! Whether you have a question about our cars or need a custom quote for a tour, please feel free to reach out.</p>
 
         <div class="contact-layout">
-            <div class="contact-form-container" class="animate-on-scroll slide-in-left">
+            <div class="contact-form-container gsap-slide-left" data-gsap="contact-form">
                 <h3>Send Us a Message</h3>
                 <form action="https://formspree.io/" method="POST" class="contact-form">
                     <div class="form-group">
@@ -75,7 +75,7 @@
                 </form>
             </div>
 
-            <div class="contact-details-container" class="animate-on-scroll slide-in-up">
+            <div class="contact-details-container gsap-slide-right" data-gsap="contact-details">
                 <h3>Contact Information</h3>
                 <div class="contact-details">
                     <p><i class="fas fa-map-marker-alt"></i> Mall of Jaipur, Vaishali Nagar, Jaipur, Rajasthan 302021</p>
@@ -128,6 +128,11 @@
         </div>
     </footer>
     <!-- =================== FOOTER END =================== -->
+    <!-- GSAP Core and Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
     <script src="global.js"></script>
+    <script src="gsap-animations.js"></script>
 </body>
 </html>

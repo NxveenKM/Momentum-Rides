@@ -47,13 +47,12 @@
         </nav>
     </header>
 
-    <main class="page-container">
-        <h1 class="page-title">Our Premium Services</h1>
-        <p class="page-subtitle">Beyond car rentals, we offer a complete travel solution for your needs in Jaipur and beyond.</p>
+    <main class="page-container gsap-animate" data-gsap="services-main">
+        <h1 class="page-title gsap-fade-in" data-gsap="services-title">Our Premium Services</h1>
+        <p class="page-subtitle gsap-fade-in" data-gsap="services-subtitle">Beyond car rentals, we offer a complete travel solution for your needs in Jaipur and beyond.</p>
 
-        <div class="services-grid">
-            <div class="services-grid stagger-container">
-            <div class="service-card">
+        <div class="services-grid gsap-stagger" data-gsap="services-grid">
+            <div class="service-card gsap-scale-in" data-gsap="service-card">
                 <img src="https://miro.medium.com/v2/resize:fit:800/1*6qdgAcgKKUxIDHo1DcTlFQ.jpeg" alt="Professional Chauffeur Service">
                 <div class="service-content">
                     <h3>Chauffeur Services</h3>
@@ -62,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="service-card">
+            <div class="service-card gsap-scale-in" data-gsap="service-card">
                 <img src="https://kashmirtourismcabs.com/wp-content/uploads/2024/07/swindon-airport-transfers-0adc6de8.jpeg" alt="Airport Transfer Service">
                 <div class="service-content">
                     <h3>Airport Transfers</h3>
@@ -71,7 +70,7 @@
                 </div>
             </div>
 
-            <div class="service-card">
+            <div class="service-card gsap-scale-in" data-gsap="service-card">
                 <img src="https://www.rajasthantourservices.com/upload/09-nights-10-days-historic-rajasthan-tour.jpg" alt="Car for Outstation Trip in Rajasthan">
                 <div class="service-content">
                     <h3>Rajasthan Tour Packages</h3>
@@ -110,6 +109,11 @@
         </div>
     </footer>
     <!-- =================== FOOTER END =================== -->
+    <!-- GSAP Core and Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
     <script src="global.js"></script>
+    <script src="gsap-animations.js"></script>
 </body>
 </html>

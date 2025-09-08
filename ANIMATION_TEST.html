@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP Animation Test - Momentum Rides</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 50px; 
+            background: #f8f9fa;
+        }
+        .test-section { 
+            margin: 50px 0; 
+            padding: 30px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .test-title { 
+            color: #0D1B2A; 
+            margin-bottom: 20px; 
+        }
+        .animation-demo {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .demo-card {
+            background: #1E90FF;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 200px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="gsap-fade-in" data-gsap="main-title">🎬 GSAP Animation Test</h1>
+    
+    <div class="test-section">
+        <h2 class="test-title gsap-slide-right" data-gsap="test-heading">Animation Tests</h2>
+        
+        <div class="animation-demo">
+            <div class="demo-card gsap-scale-in" data-gsap="demo-card">Scale In Animation</div>
+            <div class="demo-card gsap-fade-in" data-gsap="demo-card">Fade In Animation</div>
+            <div class="demo-card gsap-slide-left" data-gsap="demo-card">Slide Left Animation</div>
+            <div class="demo-card gsap-slide-right" data-gsap="demo-card">Slide Right Animation</div>
+        </div>
+    </div>
+    
+    <div class="test-section gsap-animate" data-gsap="scroll-section">
+        <h2 class="test-title gsap-fade-in" data-gsap="scroll-title">Scroll Triggered Animation</h2>
+        <p class="gsap-fade-in" data-gsap="scroll-text">This section should animate when you scroll down to it!</p>
+        <div style="height: 100vh; background: linear-gradient(45deg, #FF7F50, #1E90FF); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+            Scroll Test Area
+        </div>
+    </div>
+
+    <!-- GSAP Core and Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <script src="global.js"></script>
+    <script src="gsap-animations.js"></script>
+    
+    <script>
+        // Test script to verify GSAP is working
+        console.log("GSAP Version:", gsap.version);
+        console.log("ScrollTrigger loaded:", typeof ScrollTrigger !== 'undefined');
+        
+        // Simple test animation
+        gsap.to(".demo-card", {
+            rotation: 360,
+            duration: 2,
+            ease: "power2.inOut",
+            stagger: 0.2,
+            repeat: -1,
+            yoyo: true
+        });
+    </script>
+</body>
+</html>

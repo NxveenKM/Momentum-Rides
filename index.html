@@ -58,9 +58,9 @@
             <div id="hero-canvas-container"></div>
             <div class="hero-overlay"></div>
             <div class="hero-content">
-                <h1 class="fade-in">Your Journey, Your Car, Your Price.</h1>
-                <p class="fade-in" style="animation-delay: 0.2s;">Explore Jaipur and beyond with our reliable and affordable rental cars.</p>
-                <div class="booking-widget fade-in" style="animation-delay: 0.4s;">
+                <h1 class="gsap-fade-in" data-gsap="hero-title">Your Journey, Your Car, Your Price.</h1>
+                <p class="gsap-fade-in" data-gsap="hero-subtitle">Explore Jaipur and beyond with our reliable and affordable rental cars.</p>
+                <div class="booking-widget gsap-scale-in" data-gsap="booking-widget">
                     <form id="booking-form">
                         <div class="input-group">
                             <label for="pickup-location"><i class="fas fa-map-marker-alt"></i> Pick-up Location</label>
@@ -81,20 +81,20 @@
                 </div>
             </div>
         </section>
-        <section class="how-it-works container animate-on-scroll slide-in-up">
-            <h2 class="section-title">Rent a Car in 3 Easy Steps</h2>
-            <div class="steps-container">
-                <div class="step">
+        <section class="how-it-works container gsap-animate" data-gsap="steps-section">
+            <h2 class="section-title gsap-fade-in" data-gsap="steps-title">Rent a Car in 3 Easy Steps</h2>
+            <div class="steps-container gsap-stagger" data-gsap="steps-container">
+                <div class="step gsap-fade-in" data-gsap="step">
                     <div class="step-icon"><i class="fas fa-car"></i></div>
                     <h3>1. Choose a Car</h3>
                     <p>Browse our diverse fleet to find the perfect car for your needs.</p>
                 </div>
-                <div class="step">
+                <div class="step gsap-fade-in" data-gsap="step">
                     <div class="step-icon"><i class="fas fa-file-alt"></i></div>
                     <h3>2. Add Details</h3>
                     <p>Provide your rental dates and personal information securely.</p>
                 </div>
-                <div class="step">
+                <div class="step gsap-fade-in" data-gsap="step">
                     <div class="step-icon"><i class="fas fa-key"></i></div>
                     <h3>3. Drive Away</h3>
                     <p>Pick up your keys and start your journey with confidence.</p>
@@ -102,10 +102,10 @@
             </div>
         </section>
 
-        <section id="blog-section" class="blog-section container animate-on-scroll slide-in-up">
-            <h2 class="section-title">From Our Blog</h2>
-            <div class="blog-grid">
-                <div class="blog-card">
+        <section id="blog-section" class="blog-section container gsap-animate" data-gsap="blog-section">
+            <h2 class="section-title gsap-fade-in" data-gsap="blog-title">From Our Blog</h2>
+            <div class="blog-grid gsap-stagger" data-gsap="blog-grid">
+                <div class="blog-card gsap-scale-in" data-gsap="blog-card">
                     <a href="article-1.html" class="blog-card-link">
                         <img src="https://remotetraveler.com/wp-content/uploads/2014/10/Pushkar-lake-in-the-evening.jpg" alt="Pushkar Lake at sunset">
                         <div class="blog-content">
@@ -115,7 +115,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="blog-card">
+                <div class="blog-card gsap-scale-in" data-gsap="blog-card">
                     <a href="article-2.html" class="blog-card-link">
                         <img src="https://i.redd.it/e9yo0utefpo61.jpg" alt="A delicious Rajasthani thali">
                         <div class="blog-content">
@@ -125,7 +125,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="blog-card">
+                <div class="blog-card gsap-scale-in" data-gsap="blog-card">
                     <a href="article-3.html" class="blog-card-link">
                         <img src="https://www.brides.com/thmb/sziGossviHtujKGTekMTOvzJOt0=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/17.Weddingcardecoration-interior_BlueNoteWeddings-009cf8b18be34f9798e8f94b5c62ec08.jpg" alt="A decorated car for a wedding">
                         <div class="blog-content">
@@ -167,10 +167,16 @@
         </div>
     </footer>
 
+    <!-- GSAP Core and Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="global.js"></script>
     <script src="script.js"></script>
     <script src="3d-hero.js"></script>
+    <script src="gsap-animations.js"></script>
 </body>
 </html>

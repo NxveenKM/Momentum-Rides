@@ -47,34 +47,34 @@
         </nav>
     </header>
 
-    <main class="page-container">
-        <h1 class="page-title">Driving Journeys, Creating Memories</h1>
-        <p class="page-subtitle">Welcome to Momentum Rides, your trusted travel partner in the heart of Rajasthan.</p>
+    <main class="page-container gsap-animate" data-gsap="about-main">
+        <h1 class="page-title gsap-fade-in" data-gsap="about-title">Driving Journeys, Creating Memories</h1>
+        <p class="page-subtitle gsap-fade-in" data-gsap="about-subtitle">Welcome to Momentum Rides, your trusted travel partner in the heart of Rajasthan.</p>
 
-        <section class="about-section" class="animate-on-scroll slide-in-left">
-            <div class="about-content">
+        <section class="about-section gsap-animate" data-gsap="story-section">
+            <div class="about-content gsap-slide-right" data-gsap="story-content">
                 <h2>Our Story</h2>
                 <p>Founded in the vibrant city of Jaipur, Momentum Rides was born from a passion for travel and a desire to make exploring the incredible landscapes of Rajasthan simple, safe, and unforgettable. Our founder, a Jaipur native and avid traveler, noticed a gap for a car rental service that offered not just vehicles, but genuine local expertise and a commitment to transparent, customer-first service. We started with just three cars and a simple mission: to be the most trusted name in travel for every visitor to our beautiful state.</p>
             </div>
-            <div class="about-image">
+            <div class="about-image gsap-slide-left" data-gsap="story-image">
                 <img src="https://static.tripzilla.in/media/225918/conversions/982fa1d1-48ab-418f-9e6b-c58b1d6a141a-w1024.webp" alt="Scenic road in Rajasthan">
             </div>
         </section>
 
-        <section class="values-section" class="animate-on-scroll slide-in-up">
-            <h2 class="section-title">Why Travel With Us?</h2>
-            <div class="features-grid">
-                 <div class="feature-item">
+        <section class="values-section gsap-animate" data-gsap="values-section">
+            <h2 class="section-title gsap-fade-in" data-gsap="values-title">Why Travel With Us?</h2>
+            <div class="features-grid gsap-stagger" data-gsap="values-grid">
+                 <div class="feature-item gsap-scale-in" data-gsap="feature-item">
                      <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
                      <h3>Local Expertise</h3>
                      <p>As locals, we provide more than just a car; we offer insights and tips to help you discover the hidden gems of Rajasthan.</p>
                  </div>
-                 <div class="feature-item">
+                 <div class="feature-item gsap-scale-in" data-gsap="feature-item">
                     <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
                     <h3>Transparency & Trust</h3>
                     <p>No hidden fees, no last-minute surprises. We believe in clear, upfront pricing and honest communication with our customers.</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-item gsap-scale-in" data-gsap="feature-item">
                     <div class="feature-icon"><i class="fas fa-car-on"></i></div>
                     <h3>Quality & Safety</h3>
                     <p>Our fleet is modern, regularly serviced, and thoroughly cleaned to ensure your journey is safe and comfortable every time.</p>
@@ -82,10 +82,10 @@
              </div>
         </section>
 
-        <section class="team-section" class="animate-on-scroll slide-in-up">
-            <h2 class="section-title">Meet Our Team</h2>
+        <section class="team-section gsap-animate" data-gsap="team-section">
+            <h2 class="section-title gsap-fade-in" data-gsap="team-title">Meet Our Team</h2>
             <div class="team-grid">
-                <div class="team-member">
+                <div class="team-member gsap-scale-in" data-gsap="team-member">
                     <!-- === THIS IS THE UPDATED PART === -->
                     <a href="https://nxveenkm.github.io/Portfolio/" target="_blank" class="team-member-link">
                         <img src="https://nxveenkm.github.io/Portfolio/photo.jpg" alt="Founder & CEO">
@@ -132,6 +132,11 @@
         </div>
     </footer>
     <!-- =================== FOOTER END =================== -->
+    <!-- GSAP Core and Plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
     <script src="global.js"></script>
+    <script src="gsap-animations.js"></script>
 </body>
 </html>
