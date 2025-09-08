@@ -31,7 +31,7 @@ body {
     overflow-x: hidden; 
     display: flex;
     flex-direction: column;
-    min-height: 100%; /* Use min-height to ensure it fills the viewport */
+    min-height: 100%;
 }
 
 main {
@@ -39,12 +39,6 @@ main {
 }
 
 /* --- Decorative Background Blobs --- */
-body {
-    position: relative; /* Required for positioning the blobs */
-    background-color: #f8f9fa; /* A very light gray for a softer feel */
-    overflow-x: hidden; /* Prevents blobs from creating a horizontal scrollbar */
-}
-
 .background-blob {
     position: absolute;
     border-radius: 50%;
